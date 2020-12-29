@@ -28,11 +28,11 @@ class SettingsTableSeeder extends Seeder
                 ],
                 [
                     'key' => 'title_prefix',
-                    'value' => ' | Careerk'
+                    'value' => ' | Kareerk'
                 ],
                 [
                     'key' => 'site_name',
-                    'value' => 'Careerk'
+                    'value' => 'Kareerk'
                 ],
                 [
                     'key' => 'primary_bg',

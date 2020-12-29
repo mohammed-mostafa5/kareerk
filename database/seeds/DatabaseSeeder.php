@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ParagraphTableSeeder::class);
         $this->call(ImageTableSeeder::class);
         $this->call(SocialLinkTableSeeder::class);
-        $this->call(CategoryTableSeeder::class);
+        // $this->call(CategoryTableSeeder::class);
         $this->call(UsersTableSeeder::class);
         // $this->call(ProductSeeder::class);
     }
