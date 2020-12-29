@@ -1,0 +1,31 @@
+.app .sidebar {
+    -webkit-box-shadow: 10px 7px 19px -11px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 10px 7px 19px -11px rgba(0, 0, 0, 0.75);
+    box-shadow: 10px 7px 19px -11px rgba(0, 0, 0, 0.75);
+}
+
+.app .sidebar .nav {
+    background-color: #fff;
+}
+
+.app .sidebar .sidebar-minimizer,
+.app .sidebar .nav-link.active,
+.app .table-header-search {
+    background: #0071df;
+}
+.app .sidebar .nav-link .nav-icon {
+    color: #fff;
+}
+.app .sidebar .nav span,
+.app .sidebar .nav i {
+    color: #000 !important;
+    font-weight: 600;
+}
+.app .sidebar .nav-link.active i,
+.app .sidebar .nav-link.active span {
+    color: #fff !important;
+}
+
+table td img {
+    width: 40px;
+}
