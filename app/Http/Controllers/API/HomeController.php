@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Events\ProductDetails;
-use App\Events\UserActiveBids;
 use App\Models\Faq;
-use App\Models\File;
 use App\Models\Page;
 use App\Models\User;
 use App\Models\Slider;
@@ -26,7 +24,10 @@ use App\Helpers\HelperFunctionTrait;
 use App\Http\Controllers\Controller;
 use App\Mail\ProductDeliveredMail;
 use App\Mail\ProductReceivedMail;
+use App\Models\Client;
+use App\Models\Freelancer;
 use App\Models\Meta;
+use App\Models\Service;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Builder;
@@ -67,19 +68,60 @@ class HomeController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'first_name' => 'required',
-            'last_name' => 'required',
+            'name' => 'required|string|min:3',
             'phone' => 'required',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
-            'address' => 'required',
-            'identification' => 'required|image',
+            'country_id' => 'required',
         ]);
-        $validated['code'] = strtoupper($request->first_name[0]) . strtoupper($request->last_name[0]) .  $this->randomCode(4);
-        $user = User::create($validated);
 
+        if ($request->user_type == 1) {
+            $client = Client::create();
+            $validated['userable_id'] = $client->id;
+            $validated['userable_type'] = 'App\Models\Client';
+        } else {
+            $freelancer = Freelancer::create();
+            $validated['userable_id'] = $freelancer->id;
+            $validated['userable_type'] = 'App\Models\Freelancer';
+        }
+        $user = User::create($validated);
         return response()->json(['msg' => 'ok']);
     }
+
+    public function freelancerExpertise(Request $request)
+    {
+        $freelancer = auth('api')->user();
+        $services = Service::parent()->with('children')->active()->get();
+
+        $validated = $request->validate([
+            'main_service_id' => 'required',
+            'expertise_level' => 'required',
+        ]);
+        $freelancer->userable->update($validated);
+        $freelancer->userable->services()->sync($request->service_id);
+        $freelancer->userable->skills()->sync($request->skill_id);
+
+        return response()->json(compact('services'));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function updatePersonalInformation(Request $request)
     {

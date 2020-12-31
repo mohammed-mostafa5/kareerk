@@ -23,20 +23,15 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
      * @var array
      */
     protected $fillable = [
-
-        // register
-        'first_name',
-        'last_name',
+        'name',
         'username',
-        'code',
-        'verify_code',
         'phone',
-        'address',
         'email',
         'password',
+        'country_id',
+        'userable_id',
+        'userable_type',
         'email_verified_at',
-        'photo',
-        'identification',
         'subscription',
         'approved_at'
     ];
@@ -65,15 +60,10 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
      * @var array
      */
     public static $rules = [
-        'first_name' => 'required',
-        'last_name' => 'required',
+        'name' => 'required',
         'phone' => 'required',
         'email' => 'required|email|max:255|unique:users',
         'password' => 'required|string|min:6|confirmed',
-        'address' => 'required',
-        'identification' => 'required',
-        'about_me' => '',
-        'g-recaptcha-response'   => 'required',
     ];
 
     #################################################################################
@@ -99,29 +89,19 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
         return [];
     }
 
-    #################################################################################
-    ################################### Appends #####################################
-    #################################################################################
-
-    protected $appends = ['photo_path'];
-
-    public function getPhotoPathAttribute()
-    {
-        return $this->photo ? asset('uploads/images/original/' . $this->photo) : null;
-    }
-
-    public function getIdentificationAttribute()
-    {
-        return $this->attributes['identification'] ? asset('uploads/images/original/' . $this->attributes['identification']) : null;
-    }
 
     #################################################################################
     ################################### Relations ###################################
     #################################################################################
 
     /**
-     * Get all of the products for user in wishlist.
+     * Get the owning userable model.
      */
+    public function userable()
+    {
+        return $this->morphTo();
+    }
+
     public function favourites()
     {
         return $this->belongsToMany('App\Models\Product', 'user_favourites', 'user_id', 'product_id');
@@ -142,21 +122,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
         return $this->hasMany('App\Models\UserTransactions', 'user_id', 'id');
     }
 
-    #################################################################################
-    ################################### Functions ###################################
-    #################################################################################
 
-    /**
-     * Grapping Wishlist Products.
-     *
-     */
-    public function whishlistProduct()
-    {
-        if (isset(auth()->user()->wishlist)) {
-            return auth()->user()->wishlist;
-        }
-        return array();
-    }
 
     #################################################################################
     ############################## Accessors & Mutators #############################
@@ -165,43 +131,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     public function setPasswordAttribute($value)
     {
         if ($value) {
-            // $this->attributes['password'] = bcrypt($value);
             $this->attributes['password'] = Hash::make($value);
-        }
-    }
-
-    public function setPhotoAttribute($file)
-    {
-        try {
-            if ($file) {
-
-                $fileName = $this->createFileName($file);
-
-                $this->originalImage($file, $fileName);
-
-                $this->thumbImage($file, $fileName);
-
-                $this->attributes['photo'] = $fileName;
-            }
-        } catch (\Throwable $th) {
-            $this->attributes['photo'] = $file;
-        }
-    }
-
-    public function setIdentificationAttribute($file)
-    {
-        try {
-            if ($file) {
-                $fileName = $this->createFileName($file);
-
-                $this->originalImage($file, $fileName);
-
-                $this->thumbImage($file, $fileName);
-
-                $this->attributes['identification'] = $fileName;
-            }
-        } catch (\Throwable $th) {
-            $this->attributes['identification'] = $file;
         }
     }
 

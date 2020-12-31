@@ -35,7 +35,6 @@ class ProductGallery extends Model
     {
         if ($file) {
 
-
             $fileName = $this->createFileName($file);
 
             $this->originalImage($file, $fileName);

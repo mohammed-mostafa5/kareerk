@@ -43,6 +43,17 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('logout', 'HomeController@logout');
 
     // User Dashboard
+    Route::post('freelancer-expertise', 'HomeController@freelancerExpertise');
+
+
+
+
+
+
+
+
+
+
     Route::post('create-product', 'HomeController@createProduct');
     Route::post('add-bid/{id}', 'HomeController@addBid');
     Route::post('add-review/{id}', 'HomeController@addReview');

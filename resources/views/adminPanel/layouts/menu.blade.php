@@ -138,7 +138,7 @@
 
 
 {{--////////// Products ////////////--}}
-<div class="accordion nav-item" id="accordionProducts">
+{{-- <div class="accordion nav-item" id="accordionProducts">
     <div class="card bg-dark m-0">
         <div class="card-header p-1" id="headingProducts">
             <h2 class="mb-0">
@@ -153,29 +153,29 @@
             <div class="card-body bg-secondary p-0">
 
                 <li class="nav-item {{ Request::is('adminPanel/categories*') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('adminPanel.categories.index') }}">
-                        <i class="nav-icon icon-cursor"></i>
-                        <span>@lang('models/categories.plural')</span>
-                    </a>
-                </li>
+<a class="nav-link" href="{{ route('adminPanel.categories.index') }}">
+    <i class="nav-icon icon-cursor"></i>
+    <span>@lang('models/categories.plural')</span>
+</a>
+</li>
 
-                <li class="nav-item {{ Request::is('adminPanel/products*') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('adminPanel.products.index') }}">
-                        <i class="nav-icon icon-cursor"></i>
-                        <span>@lang('models/products.plural')</span>
-                    </a>
-                </li>
+<li class="nav-item {{ Request::is('adminPanel/products*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('adminPanel.products.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>@lang('models/products.plural')</span>
+    </a>
+</li>
 
-                <li class="nav-item {{ Request::is('adminPanel/reviews*') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('adminPanel.reviews.index') }}">
-                        <i class="nav-icon icon-cursor"></i>
-                        <span>@lang('models/reviews.plural')</span>
-                    </a>
-                </li>
-            </div>
-        </div>
-    </div>
+<li class="nav-item {{ Request::is('adminPanel/reviews*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('adminPanel.reviews.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>@lang('models/reviews.plural')</span>
+    </a>
+</li>
 </div>
+</div>
+</div>
+</div> --}}
 
 
 {{--////////// Contact ////////////--}}
@@ -227,3 +227,41 @@
 </script>
 
 @endsection
+
+
+<li class="nav-item {{ Request::is('adminPanel/services*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('adminPanel.services.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>@lang('models/services.plural')</span>
+    </a>
+</li>
+<li class="nav-item {{ Request::is('adminPanel/skills*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('adminPanel.skills.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>@lang('models/skills.plural')</span>
+    </a>
+</li>
+<li class="nav-item {{ Request::is('adminPanel/clients*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('adminPanel.clients.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>@lang('models/clients.plural')</span>
+    </a>
+</li>
+<li class="nav-item {{ Request::is('adminPanel/freelancers*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('adminPanel.freelancers.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>@lang('models/freelancers.plural')</span>
+    </a>
+</li>
+<li class="nav-item {{ Request::is('adminPanel/countries*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('adminPanel.countries.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>@lang('models/countries.plural')</span>
+    </a>
+</li>
+<li class="nav-item {{ Request::is('adminPanel/languages*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('adminPanel.languages.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>@lang('models/languages.plural')</span>
+    </a>
+</li>

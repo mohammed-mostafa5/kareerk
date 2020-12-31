@@ -125,6 +125,13 @@ Route::group(['prefix' => 'adminPanel', 'namespace' => 'AdminPanel', 'as' => 'ad
         Route::patch('reviews/add-to-home/{id}', 'ReviewController@addToHome')->name('reviews.addToHome');
         Route::patch('reviews/remove-from-home/{id}', 'ReviewController@removeFromHome')->name('reviews.removeFromHome');
 
+        Route::resource('services', 'ServiceController');
+        Route::resource('skills', 'SkillController');
+        Route::resource('clients', 'ClientController');
+        Route::resource('freelancers', 'FreelancerController');
+        Route::resource('countries', 'CountryController');
+        Route::resource('languages', 'LanguageController');
+
         // //Settings
         Route::get('customSettings', 'CustomSettingController@settings')->name('customSettings.show');
         Route::patch('customSettings/{id}', 'CustomSettingController@update')->name('customSettings.update');

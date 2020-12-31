@@ -34,8 +34,8 @@ class AppServiceProvider extends ServiceProvider
             app()->setLocale($default);
         }
 
-        // $settings = Setting::get();
+        $settings = Setting::get();
 
-        // View::share('settings', $settings);
+        View::share('settings', $settings);
     }
 }

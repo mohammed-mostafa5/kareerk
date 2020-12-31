@@ -9,7 +9,7 @@
                 {{-- <th>@lang('models/sliders.fields.link')</th> --}}
                 <th>@lang('models/sliders.fields.status')</th>
                 <th>@lang('models/sliders.fields.sort')</th>
-                <th colspan="3">@lang('crud.action')</th>
+                <th>@lang('crud.action')</th>
             </tr>
         </thead>
         <tbody>
@@ -20,8 +20,7 @@
                 <td>{{ $name }}</td>
                 <td>
                     @if ($i)
-                    <img src="{{asset('uploads/images/thumbnail/' . $slider->photo)}}" alt="{{$slider->name}}"
-                        style="width:40px">
+                    <img src="{{asset('uploads/images/thumbnail/' . $slider->photo)}}" alt="{{$slider->name}}" style="width:40px">
                     @endif
                 </td>
                 <td>{{ $slider->translate($locale)->title }}</td>
@@ -32,13 +31,11 @@
 
                 <td>
                     @if ($i)
-                        
+
                     {!! Form::open(['route' => ['adminPanel.sliders.destroy', $slider->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>
-                        <a href="{{ route('adminPanel.sliders.show', [$slider->id]) }}" class='btn btn-ghost-success'><i
-                                class="fa fa-eye"></i></a>
-                        <a href="{{ route('adminPanel.sliders.edit', [$slider->id]) }}" class='btn btn-ghost-info'><i
-                                class="fa fa-edit"></i></a>
+                        <a href="{{ route('adminPanel.sliders.show', [$slider->id]) }}" class='btn btn-ghost-success'><i class="fa fa-eye"></i></a>
+                        <a href="{{ route('adminPanel.sliders.edit', [$slider->id]) }}" class='btn btn-ghost-info'><i class="fa fa-edit"></i></a>
                         {!! Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn
                         btn-ghost-danger', 'onclick' => 'return confirm("'.__('crud.are_you_sure').'")']) !!}
                     </div>

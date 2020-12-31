@@ -71,7 +71,6 @@ class Images extends Model
     {
         if ($file) {
             try {
-                //code...
                 $fileName = $this->createFileName($file);
 
                 $this->originalImage($file, $fileName);
@@ -80,7 +79,6 @@ class Images extends Model
 
                 $this->attributes['photo'] = $fileName;
             } catch (\Throwable $th) {
-                //throw $th;
                 $this->attributes['photo'] = $file;
             }
         }
