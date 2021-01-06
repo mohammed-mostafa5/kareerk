@@ -2,15 +2,23 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Events\ProductDetails;
 use App\Models\Faq;
+use App\Models\Job;
+use App\Models\Meta;
 use App\Models\Page;
 use App\Models\User;
+use App\Models\Skill;
+use App\Models\Client;
 use App\Models\Slider;
 use App\Models\Contact;
+use App\Models\Country;
 use App\Models\Deposit;
 use App\Models\Product;
+use App\Models\Service;
 use App\Models\Category;
+use App\Models\JobFiles;
+use App\Models\Language;
+use App\Models\Freelancer;
 use App\Models\Newsletter;
 use App\Models\SocialLink;
 use App\Helpers\MailsTrait;
@@ -18,16 +26,15 @@ use App\Models\FaqCategory;
 use App\Models\Information;
 use Illuminate\Http\Request;
 use App\Models\ProductReview;
+use App\Events\ProductDetails;
 use App\Models\ProductGallery;
+use App\Mail\ProductReceivedMail;
+use App\Mail\ProductDeliveredMail;
 use Illuminate\Support\Facades\DB;
+use App\Models\FreelancerEducation;
+use App\Models\FreelancerEmployment;
 use App\Helpers\HelperFunctionTrait;
 use App\Http\Controllers\Controller;
-use App\Mail\ProductDeliveredMail;
-use App\Mail\ProductReceivedMail;
-use App\Models\Client;
-use App\Models\Freelancer;
-use App\Models\Meta;
-use App\Models\Service;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Builder;
@@ -88,10 +95,38 @@ class HomeController extends Controller
         return response()->json(['msg' => 'ok']);
     }
 
+    public function services()
+    {
+        $services = Service::parent()->with('children')->active()->get();
+
+        return response()->json(compact('services'));
+    }
+
+    public function skills()
+    {
+        $skills = Skill::parent()->with('children')->active()->get();
+
+        return response()->json(compact('skills'));
+    }
+
+    public function countries()
+    {
+        $countries = Country::active()->get();
+
+        return response()->json(compact('countries'));
+    }
+
+    public function languages()
+    {
+        $languages = Language::active()->get();
+
+        return response()->json(compact('languages'));
+    }
+
+    // Freelancer Step 1
     public function freelancerExpertise(Request $request)
     {
         $freelancer = auth('api')->user();
-        $services = Service::parent()->with('children')->active()->get();
 
         $validated = $request->validate([
             'main_service_id' => 'required',
@@ -100,9 +135,213 @@ class HomeController extends Controller
         $freelancer->userable->update($validated);
         $freelancer->userable->services()->sync($request->service_id);
         $freelancer->userable->skills()->sync($request->skill_id);
-
-        return response()->json(compact('services'));
+        $freelancer->userable->update(['step' => 2]);
+        $freelancerData = $freelancer->userable->with('user', 'services', 'skills')->get();
+        return response()->json(compact('freelancerData'));
     }
+
+    // Freelancer Step 2
+    public function freelancerEducation(Request $request)
+    {
+        $educations = json_decode($request->education);
+        $freelancer = auth('api')->user();
+        foreach ($educations as $education) {
+            FreelancerEducation::create([
+                'freelancer_id' => $freelancer->id,
+                'school' => $education->school,
+                'study' => $education->study,
+                'degree' => $education->degree,
+                'from_date' => $education->from_date,
+                'to_date' => $education->to_date,
+                'description' => $education->description,
+            ]);
+        }
+
+        $freelancer->userable->update(['step' => 3]);
+        $freelancerData = $freelancer->userable->with('user', 'services', 'skills', 'education')->get();
+        return response()->json(compact('freelancerData'));
+    }
+
+    // Freelancer Step 3
+    public function freelancerEmployment(Request $request)
+    {
+        $employments = json_decode($request->employment);
+        $freelancer = auth('api')->user();
+        foreach ($employments as $employment) {
+            FreelancerEmployment::create([
+                'freelancer_id' => $freelancer->id,
+                'country_id' => $employment->country_id,
+                'city' => $employment->city,
+                'company' => $employment->company,
+                'title' => $employment->title,
+                'from_date' => $employment->from_date,
+                'to_date' => $employment->to_date,
+                'description' => $employment->description,
+                'still_working' => $employment->still_working,
+            ]);
+        }
+
+        $freelancer->userable->update(['step' => 4]);
+        $freelancerData = $freelancer->userable->with('user', 'services', 'skills', 'education', 'employment')->get();
+        return response()->json(compact('freelancerData'));
+    }
+
+    // Freelancer Step 4
+    public function freelancerLanguages(Request $request)
+    {
+        $freelancer = auth('api')->user();
+        $request->validate([
+            'level' => 'required',
+        ]);
+        $freelancer->userable->languages()->sync([$request->language_id => ['level' => $request->level]]);
+        $freelancer->userable->update(['step' => 5]);
+        $freelancerData = $freelancer->userable->with('user', 'services', 'skills', 'education', 'employment', 'languages')->get();
+        return response()->json(compact('freelancerData'));
+    }
+
+    // Freelancer Step 5
+    public function freelancerHourlyRate(Request $request)
+    {
+        $freelancer = auth('api')->user();
+        $request->validate([
+            'hourly_rate' => 'required',
+        ]);
+        $freelancer->userable->update(['step' => 6, 'hourly_rate' => $request->hourly_rate]);
+        $freelancerData = $freelancer->userable->with('user', 'services', 'skills', 'education', 'employment', 'languages')->get();
+        return response()->json(compact('freelancerData'));
+    }
+
+    // Freelancer Step 6
+    public function freelancerTitleOverview(Request $request)
+    {
+        $freelancer = auth('api')->user();
+        $request->validate([
+            'title' => 'required',
+            'overview' => 'required',
+        ]);
+        $freelancer->userable->update(['step' => 7, 'title' => $request->title, 'overview' => $request->overview]);
+        $freelancerData = $freelancer->userable->with('user', 'services', 'skills', 'education', 'employment', 'languages')->get();
+        return response()->json(compact('freelancerData'));
+    }
+
+    // Freelancer Step 7
+    public function freelancerProfilePhoto(Request $request)
+    {
+        $freelancer = auth('api')->user();
+        $request->validate([
+            'photo' => 'required',
+        ]);
+        $freelancer->userable->update(['step' => 7, 'photo' => $request->photo]);
+        $freelancerData = $freelancer->userable->with('user', 'services', 'skills', 'education', 'employment', 'languages')->get();
+        return response()->json(compact('freelancerData'));
+    }
+
+    // Freelancer Step 8
+    public function freelancerLocation(Request $request)
+    {
+        $freelancer = auth('api')->user();
+        $request->validate([
+            'city' => 'required',
+            'address' => 'required',
+        ]);
+        $freelancer->userable->update(['step' => 8, 'city' => $request->city, 'address' => $request->address]);
+        $freelancerData = $freelancer->userable->with('user', 'services', 'skills', 'education', 'employment', 'languages')->get();
+        return response()->json(compact('freelancerData'));
+    }
+
+
+    // Job Step 1
+    public function jobTitle(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required',
+            'service_id' => 'required',
+        ]);
+        $validated['client_id'] = auth('api')->id();
+
+        $job = Job::create($validated);
+        $job->update(['step' => 2]);
+        $jobData = $job->get();
+        return response()->json(compact('jobData'));
+    }
+
+    // Job Step 2
+    public function jobDescription(Request $request)
+    {
+        $validated = $request->validate([
+            'description' => 'required',
+            'job_id' => 'required',
+            'file' => 'required|array',
+            'file.*' => 'image',
+        ]);
+        $job = Job::find($request->job_id);
+
+        $job->update(['step' => 3, 'description' => $request->description]);
+
+        foreach ($request->file as $file) {
+            JobFiles::create([
+                'job_id' => $job->id,
+                'file' => $file
+            ]);
+        }
+        $jobData = $job->with('files')->get();
+        return response()->json(compact('jobData'));
+    }
+
+    // Job Step 3
+    public function jobExpertise(Request $request)
+    {
+        $validated = $request->validate([
+            'job_id' => 'required',
+            'expertise_level' => 'required',
+        ]);
+        $job = Job::find($request->job_id);
+
+        $job->update(['step' => 4, 'expertise_level' => $request->expertise_level]);
+        $job->skills()->sync($request->skill_id);
+
+        $jobData = $job->with('files', 'skills')->get();
+        return response()->json(compact('jobData'));
+    }
+
+    // Job Step 4
+    public function jobVisibility(Request $request)
+    {
+        $validated = $request->validate([
+            'job_id' => 'required',
+            'visibility' => 'required',
+            'freelancers_count' => 'required',
+        ]);
+        $job = Job::find($request->job_id);
+
+        $job->update(['step' => 5, 'visibility' => $request->visibility, 'freelancers_count' => $request->freelancers_count]);
+
+        $jobData = $job->with('files', 'skills')->get();
+        return response()->json(compact('jobData'));
+    }
+
+    // Job Step 5
+    public function jobBudget(Request $request)
+    {
+        $validated = $request->validate([
+            'job_id' => 'required',
+            'budget' => 'required',
+            'payment_type' => 'required',
+            'expected_time' => 'required',
+        ]);
+        $job = Job::find($request->job_id);
+
+        $job->update([
+            'budget' => $request->budget,
+            'payment_type' => $request->payment_type,
+            'expected_time' => $request->expected_time
+        ]);
+
+        $jobData = $job->with('files', 'skills')->get();
+        return response()->json(compact('jobData'));
+    }
+
+
 
 
 

@@ -228,40 +228,59 @@
 
 @endsection
 
-
+@can('services view')
 <li class="nav-item {{ Request::is('adminPanel/services*') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('adminPanel.services.index') }}">
         <i class="nav-icon icon-cursor"></i>
         <span>@lang('models/services.plural')</span>
     </a>
 </li>
+@endcan
+@can('skills view')
 <li class="nav-item {{ Request::is('adminPanel/skills*') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('adminPanel.skills.index') }}">
         <i class="nav-icon icon-cursor"></i>
         <span>@lang('models/skills.plural')</span>
     </a>
 </li>
+@endcan
+@can('clients view')
 <li class="nav-item {{ Request::is('adminPanel/clients*') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('adminPanel.clients.index') }}">
         <i class="nav-icon icon-cursor"></i>
         <span>@lang('models/clients.plural')</span>
     </a>
 </li>
+@endcan
+@can('freelancers view')
 <li class="nav-item {{ Request::is('adminPanel/freelancers*') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('adminPanel.freelancers.index') }}">
         <i class="nav-icon icon-cursor"></i>
         <span>@lang('models/freelancers.plural')</span>
     </a>
 </li>
+@endcan
+@can('countries view')
 <li class="nav-item {{ Request::is('adminPanel/countries*') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('adminPanel.countries.index') }}">
         <i class="nav-icon icon-cursor"></i>
         <span>@lang('models/countries.plural')</span>
     </a>
 </li>
+@endcan
+@can('languages view')
 <li class="nav-item {{ Request::is('adminPanel/languages*') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('adminPanel.languages.index') }}">
         <i class="nav-icon icon-cursor"></i>
         <span>@lang('models/languages.plural')</span>
     </a>
 </li>
+@endcan
+@can('jobs view')
+<li class="nav-item {{ Request::is('adminPanel/jobs*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('adminPanel.jobs.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>@lang('models/jobs.plural')</span>
+    </a>
+</li>
+@endcan

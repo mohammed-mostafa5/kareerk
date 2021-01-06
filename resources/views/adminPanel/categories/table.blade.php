@@ -31,10 +31,16 @@
                     {!! Form::open(['route' => ['adminPanel.categories.destroy', $category->id], 'method' => 'delete'])
                     !!}
                     <div class='btn-group'>
+                        @can('categories view')
                         <a href="{{ route('adminPanel.categories.show', [$category->id]) }}" class='btn btn-ghost-success'><i class="fa fa-eye"></i></a>
+                        @endcan
+                        @can('categories edit')
                         <a href="{{ route('adminPanel.categories.edit', [$category->id]) . "?languages=$locale" }}" class='btn btn-ghost-info'><i class="fa fa-edit"></i></a>
+                        @endcan
+                        @can('categories destroy')
                         {!! Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn
                         btn-ghost-danger', 'onclick' => 'return confirm("'.__('crud.are_you_sure').'")']) !!}
+                        @endcan
                     </div>
                     {!! Form::close() !!}
                 </td>

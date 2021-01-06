@@ -24,8 +24,8 @@ class CreateFreelancersTable extends Migration
             $table->string('photo')->nullable();
             $table->string('city')->nullable();
             $table->text('address')->nullable();
-            $table->unsignedTinyInteger('step')->nullable();
-            $table->unsignedTinyInteger('status')->nullable();
+            $table->unsignedTinyInteger('step')->default(1);
+            $table->unsignedTinyInteger('status')->default(0);
             $table->timestamps();
             $table->softDeletes();
 
@@ -77,6 +77,7 @@ class CreateFreelancersTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('freelancer_id');
             $table->unsignedInteger('country_id');
+            $table->string('city');
             $table->string('company');
             $table->string('title')->nullable();
             $table->string('from_date');

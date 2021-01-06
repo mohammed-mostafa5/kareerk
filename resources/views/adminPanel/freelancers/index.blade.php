@@ -13,7 +13,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i>
                         @lang('models/freelancers.plural')
-                        <a class="pull-right" href="{{ route('adminPanel.freelancers.create') }}"><i class="fa fa-plus-square fa-lg"></i></a>
+                        {{-- <a class="pull-right" href="{{ route('adminPanel.freelancers.create') }}"><i class="fa fa-plus-square fa-lg"></i></a> --}}
                     </div>
                     <div class="card-body">
                         @include('adminPanel.freelancers.table')

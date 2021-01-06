@@ -57,4 +57,13 @@ class Language extends Model
     {
         return $this->attributes['status'] ? 'Active' : 'Inactive';
     }
+
+    #################################################################################
+    ############################## Scopes #############################
+    #################################################################################
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
 }

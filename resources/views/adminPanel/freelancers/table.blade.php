@@ -27,9 +27,13 @@
                 <td>
                     {!! Form::open(['route' => ['adminPanel.freelancers.destroy', $freelancer->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>
+                        @can('freelancers view')
                         <a href="{{ route('adminPanel.freelancers.show', [$freelancer->id]) }}" class='btn btn-ghost-success'><i class="fa fa-eye"></i></a>
-                        <a href="{{ route('adminPanel.freelancers.edit', [$freelancer->id]) }}" class='btn btn-ghost-info'><i class="fa fa-edit"></i></a>
+                        @endcan
+                        {{-- <a href="{{ route('adminPanel.freelancers.edit', [$freelancer->id]) }}" class='btn btn-ghost-info'><i class="fa fa-edit"></i></a> --}}
+                        @can('freelancers destroy')
                         {!! Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-ghost-danger', 'onclick' => 'return confirm("'.__('crud.are_you_sure').'")']) !!}
+                        @endcan
                     </div>
                     {!! Form::close() !!}
                 </td>

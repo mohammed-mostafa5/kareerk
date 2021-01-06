@@ -34,10 +34,16 @@
 
                     {!! Form::open(['route' => ['adminPanel.sliders.destroy', $slider->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>
+                        @can('sliders view')
                         <a href="{{ route('adminPanel.sliders.show', [$slider->id]) }}" class='btn btn-ghost-success'><i class="fa fa-eye"></i></a>
+                        @endcan
+                        @can('sliders edit')
                         <a href="{{ route('adminPanel.sliders.edit', [$slider->id]) }}" class='btn btn-ghost-info'><i class="fa fa-edit"></i></a>
+                        @endcan
+                        @can('sliders destroy')
                         {!! Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn
                         btn-ghost-danger', 'onclick' => 'return confirm("'.__('crud.are_you_sure').'")']) !!}
+                        @endcan
                     </div>
                     {!! Form::close() !!}
                     @endif

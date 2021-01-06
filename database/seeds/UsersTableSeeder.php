@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Freelancer;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -13,20 +14,28 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         User::create([
-
-            'first_name' => 'Ahmed',
-            'last_name' => 'Abdullah',
-            'username' => 'ahmed777',
-            'code' => 'AH1205',
+            'name' => 'Ahmed Abdullah',
             'phone' => '01001010101',
-            'identification' => 'id.jpg',
-            'address' => 'Nasr-City, Cairo, Egypt',
+            'country_id' => '1',
+            'userable_id' => '1',
+            'userable_type' => 'App\Models\Freelancer',
             'email' => 'user@email.com',
             'password' => 'password',
             'approved_at' => now(),
             'email_verified_at' => now(),
         ]);
 
-        factory(App\Models\User::class, 10)->create();
+
+        Freelancer::create([
+            'main_service_id' => 1,
+            'expertise_level' => 1,
+            'hourly_rate' => 10,
+            'title' => 'Web Developer',
+            'overview' => 'PHP Web Developer',
+            'city' => 'Cairo',
+            'address' => 'Nasr-City, Cairo, Egypt',
+        ]);
+
+        // factory(App\Models\User::class, 10)->create();
     }
 }

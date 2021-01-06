@@ -131,6 +131,7 @@ Route::group(['prefix' => 'adminPanel', 'namespace' => 'AdminPanel', 'as' => 'ad
         Route::resource('freelancers', 'FreelancerController');
         Route::resource('countries', 'CountryController');
         Route::resource('languages', 'LanguageController');
+        Route::resource('jobs', 'JobController');
 
         // //Settings
         Route::get('customSettings', 'CustomSettingController@settings')->name('customSettings.show');

@@ -1,0 +1,95 @@
+<?php
+
+namespace App\Models;
+
+use Eloquent as Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+/**
+ * Class Job
+ * @package App\Models
+ * @version January 3, 2021, 10:26 am EET
+ *
+ * @property integer $service_id
+ * @property string $name
+ * @property string $description
+ * @property integer $expertise_level
+ * @property integer $visibility
+ * @property integer $freelancers_count
+ * @property integer $payment_type
+ * @property integer $budget
+ * @property string $expected_time
+ * @property integer $step
+ * @property integer $status
+ */
+class Job extends Model
+{
+    use SoftDeletes;
+
+    public $table = 'jobs';
+
+
+    protected $dates = ['deleted_at'];
+
+
+
+    public $fillable = [
+        'service_id',
+        'client_id',
+        'name',
+        'description',
+        'expertise_level',
+        'visibility',
+        'freelancers_count',
+        'payment_type',
+        'budget',
+        'expected_time',
+        'step',
+        'status'
+    ];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'service_id' => 'integer',
+        'name' => 'string',
+        'description' => 'string',
+        'expertise_level' => 'integer',
+        'visibility' => 'integer',
+        'freelancers_count' => 'integer',
+        'payment_type' => 'integer',
+        'budget' => 'integer',
+        'expected_time' => 'string',
+        'step' => 'integer',
+        'status' => 'integer'
+    ];
+
+    /**
+     * Validation rules
+     *
+     * @var array
+     */
+    public static $rules = [];
+
+
+
+
+    #################################################################################
+    ################################### Relations ###################################
+    #################################################################################
+
+
+    public function skills()
+    {
+        return $this->belongsToMany('App\Models\Skill', 'job_skills', 'job_id', 'skill_id');
+    }
+
+    public function files()
+    {
+        return $this->hasMany('App\Models\JobFiles', 'job_id', 'id');
+    }
+}

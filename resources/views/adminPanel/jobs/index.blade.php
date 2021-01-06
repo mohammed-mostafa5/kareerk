@@ -2,7 +2,7 @@
 
 @section('content')
 <ol class="breadcrumb">
-    <li class="breadcrumb-item">@lang('models/countries.plural')</li>
+    <li class="breadcrumb-item">@lang('models/jobs.plural')</li>
 </ol>
 <div class="container-fluid">
     <div class="animated fadeIn">
@@ -12,13 +12,11 @@
                 <div class="card">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i>
-                        @lang('models/countries.plural')
-                        @can('countries create')
-                        <a class="pull-right" href="{{ route('adminPanel.countries.create') }}"><i class="fa fa-plus-square fa-lg"></i></a>
-                        @endcan
+                        @lang('models/jobs.plural')
+                        {{-- <a class="pull-right" href="{{ route('adminPanel.jobs.create') }}"><i class="fa fa-plus-square fa-lg"></i></a> --}}
                     </div>
                     <div class="card-body">
-                        @include('adminPanel.countries.table')
+                        @include('adminPanel.jobs.table')
                         <div class="pull-right mr-3">
 
                         </div>

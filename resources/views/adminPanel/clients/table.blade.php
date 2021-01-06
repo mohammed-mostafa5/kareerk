@@ -13,9 +13,15 @@
                 <td>
                     {!! Form::open(['route' => ['adminPanel.clients.destroy', $client->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>
+                        @can('clients view')
                         <a href="{{ route('adminPanel.clients.show', [$client->id]) }}" class='btn btn-ghost-success'><i class="fa fa-eye"></i></a>
+                        @endcan
+                        @can('clients edit')
                         <a href="{{ route('adminPanel.clients.edit', [$client->id]) }}" class='btn btn-ghost-info'><i class="fa fa-edit"></i></a>
+                        @endcan
+                        @can('clients destroy')
                         {!! Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-ghost-danger', 'onclick' => 'return confirm("'.__('crud.are_you_sure').'")']) !!}
+                        @endcan
                     </div>
                     {!! Form::close() !!}
                 </td>

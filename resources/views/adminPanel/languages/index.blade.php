@@ -13,7 +13,9 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i>
                         @lang('models/languages.plural')
+                        @can('languages create')
                         <a class="pull-right" href="{{ route('adminPanel.languages.create') }}"><i class="fa fa-plus-square fa-lg"></i></a>
+                        @endcan
                     </div>
                     <div class="card-body">
                         @include('adminPanel.languages.table')

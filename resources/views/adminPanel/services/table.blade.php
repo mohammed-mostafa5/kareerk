@@ -19,9 +19,15 @@
                 <td>
                     {!! Form::open(['route' => ['adminPanel.services.destroy', $service->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>
+                        @can('services view')
                         <a href="{{ route('adminPanel.services.show', [$service->id]) }}" class='btn btn-ghost-success'><i class="fa fa-eye"></i></a>
+                        @endcan
+                        @can('services edit')
                         <a href="{{ route('adminPanel.services.edit', [$service->id]) . "?languages=en" }}" class='btn btn-ghost-info'><i class="fa fa-edit"></i></a>
+                        @endcan
+                        @can('services destroy')
                         {!! Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-ghost-danger', 'onclick' => 'return confirm("'.__('crud.are_you_sure').'")']) !!}
+                        @endcan
                     </div>
                     {!! Form::close() !!}
                 </td>

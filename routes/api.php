@@ -37,6 +37,10 @@ Route::get('categories', 'HomeController@categories');
 Route::get('products', 'HomeController@products');
 Route::get('products/{id}', 'HomeController@product');
 
+Route::get('services', 'HomeController@services');
+Route::get('skills', 'HomeController@skills');
+Route::get('countries', 'HomeController@countries');
+Route::get('languages', 'HomeController@languages');
 // Authenticated Routes
 Route::group(['middleware' => ['auth:api']], function () {
 
@@ -44,7 +48,19 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     // User Dashboard
     Route::post('freelancer-expertise', 'HomeController@freelancerExpertise');
+    Route::post('freelancer-education', 'HomeController@freelancerEducation');
+    Route::post('freelancer-employment', 'HomeController@freelancerEmployment');
+    Route::post('freelancer-languages', 'HomeController@freelancerLanguages');
+    Route::post('freelancer-hourly-rate', 'HomeController@freelancerHourlyRate');
+    Route::post('freelancer-title-overview', 'HomeController@freelancerTitleOverview');
+    Route::post('freelancer-profile-photo', 'HomeController@freelancerProfilePhoto');
+    Route::post('freelancer-location', 'HomeController@freelancerLocation');
 
+    Route::post('job-title', 'HomeController@jobTitle');
+    Route::post('job-description', 'HomeController@jobDescription');
+    Route::post('job-expertise', 'HomeController@jobExpertise');
+    Route::post('job-visibility', 'HomeController@jobVisibility');
+    Route::post('job-budget', 'HomeController@jobBudget');
 
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\ImageUploaderTrait;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -21,7 +22,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Freelancer extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, ImageUploaderTrait;
 
     public $table = 'freelancers';
 
@@ -69,6 +70,30 @@ class Freelancer extends Model
 
 
 
+
+
+    public function setPhotoAttribute($file)
+    {
+        if ($file) {
+
+            $fileName = $this->createFileName($file);
+
+            $this->originalImage($file, $fileName);
+
+            $this->thumbImage($file, $fileName);
+
+            $this->attributes['photo'] = $fileName;
+        }
+    }
+
+
+
+    public function getPhotoAttribute($val)
+    {
+
+        return $val ? asset('uploads/images/original') . '/' . $val : null;
+    }
+
     #################################################################################
     ################################### Relations ###################################
     #################################################################################
@@ -87,5 +112,20 @@ class Freelancer extends Model
     public function skills()
     {
         return $this->belongsToMany('App\Models\Skill', 'freelancer_skills', 'freelancer_id', 'skill_id');
+    }
+
+    public function languages()
+    {
+        return $this->belongsToMany('App\Models\Language', 'freelancer_languages', 'freelancer_id', 'language_id')->withPivot('level');
+    }
+
+    public function education()
+    {
+        return $this->hasMany('App\Models\FreelancerEducation', 'freelancer_id', 'id');
+    }
+
+    public function employment()
+    {
+        return $this->hasMany('App\Models\FreelancerEmployment', 'freelancer_id', 'id');
     }
 }

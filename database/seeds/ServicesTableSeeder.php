@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Category;
+use App\Models\Service;
 
-class CategoryTableSeeder extends Seeder
+class ServicesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,18 +14,19 @@ class CategoryTableSeeder extends Seeder
     {
         $allData = [
             [
-                'en' => ['name' => 'Woman Care'],
-                'ar' => ['name' => 'العناية بالمرأة'],
+                'en' => ['name' => 'Service 1'],
+                'ar' => ['name' => 'Service 1'],
                 'status' => '1',
             ],
             [
-                'en' => ['name' => 'Hair Care'],
-                'ar' => ['name' => 'العناية بالشعر'],
+                'en' => ['name' => 'Service 2'],
+                'ar' => ['name' => 'Service 2'],
                 'status' => '1',
+                'parent_id' => '1',
             ],
             [
-                'en' => ['name' => 'Baby Care'],
-                'ar' => ['name' => 'العناية بالطفل'],
+                'en' => ['name' => 'Service 3'],
+                'ar' => ['name' => 'Service 3'],
                 'status' => '1',
                 'parent_id' => '1',
             ],
@@ -35,7 +36,7 @@ class CategoryTableSeeder extends Seeder
 
         foreach ($allData as $data) {
 
-            Category::create($data);
+            Service::create($data);
         }
     }
 }
