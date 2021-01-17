@@ -142,3 +142,18 @@ Route::group(['prefix' => 'adminPanel', 'namespace' => 'AdminPanel', 'as' => 'ad
 ///////////////////////////////////////////////////////////////////////////
 ///								end admin panel routes 					///
 ///////////////////////////////////////////////////////////////////////////
+
+
+Route::group(['prefix' => 'adminPanel'], function () {
+    Route::resource('chats', 'ChatController', ["as" => 'adminPanel']);
+});
+
+
+Route::group(['prefix' => 'adminPanel'], function () {
+    Route::resource('messages', 'MessageController', ["as" => 'adminPanel']);
+});
+
+
+Route::group(['prefix' => 'adminPanel'], function () {
+    Route::resource('chatContacts', 'ChatContactController', ["as" => 'adminPanel']);
+});

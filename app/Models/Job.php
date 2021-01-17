@@ -36,7 +36,7 @@ class Job extends Model
     public $fillable = [
         'service_id',
         'client_id',
-        'name',
+        'title',
         'description',
         'expertise_level',
         'visibility',
@@ -56,7 +56,7 @@ class Job extends Model
     protected $casts = [
         'id' => 'integer',
         'service_id' => 'integer',
-        'name' => 'string',
+        'title' => 'string',
         'description' => 'string',
         'expertise_level' => 'integer',
         'visibility' => 'integer',
@@ -88,8 +88,23 @@ class Job extends Model
         return $this->belongsToMany('App\Models\Skill', 'job_skills', 'job_id', 'skill_id');
     }
 
+    public function invitations()
+    {
+        return $this->belongsToMany('App\Models\Freelancer', 'job_invitations', 'job_id', 'freelancer_id');
+    }
+
     public function files()
     {
         return $this->hasMany('App\Models\JobFiles', 'job_id', 'id');
+    }
+
+    public function proposals()
+    {
+        return $this->hasMany('App\Models\JobProposal', 'job_id', 'id');
+    }
+
+    public function service()
+    {
+        return $this->belongsTo('App\Models\Service', 'service_id', 'id');
     }
 }

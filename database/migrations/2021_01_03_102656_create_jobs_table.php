@@ -18,7 +18,7 @@ class CreateJobsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('client_id')->nullable();
             $table->unsignedInteger('service_id')->nullable();
-            $table->string('name')->nullable();
+            $table->string('title')->nullable();
             $table->text('description')->nullable();
             $table->unsignedTinyInteger('expertise_level')->nullable();
             $table->unsignedTinyInteger('visibility')->nullable()->comment('1 => Any One, 2 => Invite Only');
@@ -58,6 +58,56 @@ class CreateJobsTable extends Migration
             $table->foreign('job_id')->references('id')->on('jobs')->onDelete('cascade');
             $table->foreign('skill_id')->references('id')->on('skills')->onDelete('cascade');
         });
+
+        Schema::create('job_invitations', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('job_id');
+            $table->unsignedInteger('freelancer_id');
+
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('job_id')->references('id')->on('jobs')->onDelete('cascade');
+            $table->foreign('freelancer_id')->references('id')->on('freelancers')->onDelete('cascade');
+        });
+
+        Schema::create('job_proposals', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('job_id');
+            $table->unsignedInteger('freelancer_id');
+            $table->string('expected_time');
+            $table->text('cover_letter');
+
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('job_id')->references('id')->on('jobs')->onDelete('cascade');
+            $table->foreign('freelancer_id')->references('id')->on('freelancers')->onDelete('cascade');
+        });
+
+        Schema::create('proposal_milestones', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('proposal_id');
+            $table->string('description');
+            $table->string('due_date');
+            $table->string('amount');
+
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('proposal_id')->references('id')->on('job_proposals')->onDelete('cascade');
+        });
+
+        Schema::create('proposal_files', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('proposal_id');
+            $table->string('file');
+
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('proposal_id')->references('id')->on('job_proposals')->onDelete('cascade');
+        });
     }
 
     /**
@@ -67,6 +117,12 @@ class CreateJobsTable extends Migration
      */
     public function down()
     {
+        Schema::drop('proposal_files');
+        Schema::drop('proposal_milestones');
+        Schema::drop('job_proposals');
+        Schema::drop('job_invitations');
+        Schema::drop('job_skills');
+        Schema::drop('job_files');
         Schema::drop('jobs');
     }
 }

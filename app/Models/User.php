@@ -122,6 +122,17 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
         return $this->hasMany('App\Models\UserTransactions', 'user_id', 'id');
     }
 
+    public function chatContacts()
+    {
+        return $this->belongsToMany(\App\Models\User::class, 'chat_contacts', 'user_id', 'other_user_id')
+            ->withPivot('chat_id');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+
 
 
     #################################################################################
@@ -138,5 +149,14 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     public function getStatusAttribute()
     {
         return $this->attributes['status'] ? 'Active' : 'Inactive';
+    }
+
+    #################################################################################
+    ################################### Scopes #####################################
+    #################################################################################
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
     }
 }

@@ -284,3 +284,21 @@
     </a>
 </li>
 @endcan
+<li class="nav-item {{ Request::is('adminPanel/chats*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('adminPanel.chats.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>@lang('models/chats.plural')</span>
+    </a>
+</li>
+<li class="nav-item {{ Request::is('adminPanel/messages*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('adminPanel.messages.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>@lang('models/messages.plural')</span>
+    </a>
+</li>
+<li class="nav-item {{ Request::is('adminPanel/chatContacts*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('adminPanel.chatContacts.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>@lang('models/chatContacts.plural')</span>
+    </a>
+</li>
