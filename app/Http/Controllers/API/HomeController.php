@@ -23,11 +23,13 @@ use App\Models\Language;
 use App\Models\Freelancer;
 use App\Models\Newsletter;
 use App\Models\SocialLink;
+use App\Events\SendMessage;
 use App\Helpers\MailsTrait;
 use App\Models\ChatContact;
 use App\Models\FaqCategory;
 use App\Models\Information;
 use App\Models\JobProposal;
+use App\Models\MessageFiles;
 use Illuminate\Http\Request;
 use App\Models\ProductReview;
 use App\Events\ProductDetails;
@@ -39,7 +41,6 @@ use App\Models\FreelancerEducation;
 use App\Helpers\HelperFunctionTrait;
 use App\Http\Controllers\Controller;
 use App\Models\FreelancerEmployment;
-use App\Models\MessageFiles;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Builder;
@@ -74,7 +75,9 @@ class HomeController extends Controller
 
         $user = auth('api')->user();
 
-        return response()->json(compact('user', 'token'));
+        $chatContactsData = $this->userChatContacts(true);
+
+        return response()->json(compact('user', 'token', 'chatContactsData'));
     }
 
     public function register(Request $request)
@@ -444,35 +447,33 @@ class HomeController extends Controller
     ##########################################################################
 
     // Chat
-    public function userUnseenMessages()
-    {
-        $user = auth('api')->user();
-        $chatsId = ChatContact::where('user_id', $user->id)->pluck('chat_id')->toArray();
-
-        $messages = Message::whereIn('chat_id', $chatsId)
-            ->where('user_id', '!=', $user->id)
-            ->where('seen', 0)
-            ->with('user')->latest('id')->get();
-
-        return response()->json(compact('messages'));
-    }
-
-    public function userChatContacts(Request $request)
+    public function userChatContacts($flag = false)
     {
         $this->handleChatContact();
 
-        $chatContacts = ChatContact::where('user_id', auth('api')->id())
-            ->join('chats', 'chat_contacts.chat_id', '=', 'chats.id')
+        $chatContactsQuery = ChatContact::join('chats', 'chat_contacts.chat_id', '=', 'chats.id')
+            ->where('user_id', auth('api')->id())
             ->with(
                 'otherUser:id,name,email,phone,userable_id,userable_type,country_id',
                 'otherUser.country',
                 'otherUser.userable',
                 'chat',
             )
-            ->orderBy('chats.updated_at', 'desc')
-            ->get();
+            ->orderBy('chats.updated_at', 'desc');
 
-        return response()->json(compact('chatContacts'));
+        if ($flag) {
+            $chatContactsQuery->whereNotNull('latest_message');
+        }
+
+        $chatContacts = $chatContactsQuery->get();
+
+        $unseenMessagesCount = $chatContacts->sum('unseen_count');
+
+        if ($flag) {
+            return compact('chatContacts', 'unseenMessagesCount');
+        }
+
+        return response()->json(compact('chatContacts', 'unseenMessagesCount'));
     }
 
     public function sendMessage(Request $request)
@@ -503,13 +504,18 @@ class HomeController extends Controller
             'latest_message' => $message->text ?? 'Photo'
         ]);
 
-        Message::where('chat_id', $message->chat_id)
-            ->where('user_id', '!=', auth('api')->id())
+        ChatContact::where('chat_id', request('chat_id'))->where('user_id', '!=', $user->id)
+            ->increment('unseen_count');
+
+        Message::where('chat_id', $message->chat_id)->where('user_id', '!=', $user->id)
             ->update(['seen' => 1]);
-        return response()->json($user);
+
+        ChatContact::where('chat_id', request('chat_id'))->where('user_id', $user->id)
+            ->update(['unseen_count' => 0]);
+
         $otherContactId = $user->chatContacts()->where('chat_id', request('chat_id'))->first()->id;
 
-        // event(new SendMessage($message, $otherContactId));
+        event(new SendMessage($message, $otherContactId));
 
         return response()->json(compact('message'));
     }
