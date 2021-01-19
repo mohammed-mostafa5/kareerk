@@ -25,7 +25,7 @@ class CreateJobsTable extends Migration
             $table->integer('freelancers_count')->nullable();
             $table->integer('payment_type')->nullable();
             $table->integer('budget')->nullable();
-            $table->string('expected_time')->nullable();
+            $table->unsignedTinyInteger('expected_time')->nullable();
             $table->unsignedTinyInteger('step')->default(1);
             $table->unsignedTinyInteger('status')->default(0);
             $table->timestamps();
@@ -75,7 +75,7 @@ class CreateJobsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('job_id');
             $table->unsignedInteger('freelancer_id');
-            $table->string('expected_time');
+            $table->unsignedTinyInteger('expected_time');
             $table->text('cover_letter');
 
             $table->timestamps();

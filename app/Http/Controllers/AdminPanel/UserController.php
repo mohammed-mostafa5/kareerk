@@ -89,7 +89,7 @@ class UserController extends AppBaseController
         $user = User::find($id);
         $user->update(['approved_at' => now()]);
 
-        Mail::to($user->email)->send(new UserApproveMail($user));
+        // Mail::to($user->email)->send(new UserApproveMail($user));
 
         return back();
     }

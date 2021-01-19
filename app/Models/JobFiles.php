@@ -13,7 +13,6 @@ class JobFiles extends Model
 
     public $table = 'job_files';
 
-
     public $fillable = [
         'job_id',
         'file',
@@ -23,17 +22,13 @@ class JobFiles extends Model
 
     public static $rules = [];
 
-
-
     public function setFileAttribute($file)
     {
         if ($file) {
 
             $fileName = $this->createFileName($file);
 
-            $this->originalImage($file, $fileName);
-
-            $this->thumbImage($file, $fileName);
+            $this->saveFile($file, $fileName);
 
             $this->attributes['file'] = $fileName;
         }
@@ -43,8 +38,7 @@ class JobFiles extends Model
 
     public function getFileAttribute($val)
     {
-
-        return $val ? asset('uploads/images/original') . '/' . $val : null;
+        return $val ? asset('uploads/files') . '/' . $val : null;
     }
 
     #################################################################################

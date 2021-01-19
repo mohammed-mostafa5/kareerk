@@ -107,4 +107,9 @@ class Job extends Model
     {
         return $this->belongsTo('App\Models\Service', 'service_id', 'id');
     }
+
+    public function notification()
+    {
+        return $this->morphOne(Notification::class, 'notifable');
+    }
 }

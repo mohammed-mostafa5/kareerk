@@ -109,6 +109,11 @@ class Freelancer extends Model
         return $this->belongsToMany('App\Models\Service', 'freelancer_services', 'freelancer_id', 'service_id');
     }
 
+    public function mainService()
+    {
+        return $this->belongsTo(Service::class, 'main_service_id', 'id');
+    }
+
     public function skills()
     {
         return $this->belongsToMany('App\Models\Skill', 'freelancer_skills', 'freelancer_id', 'skill_id');

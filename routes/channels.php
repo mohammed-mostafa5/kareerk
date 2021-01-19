@@ -23,7 +23,3 @@ Broadcast::channel('chat-{chat}', function ($user, Chat $chat) {
 Broadcast::channel('user-{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
-
-// Broadcast::channel('product-{id}', function ($user) {
-//     return !!$user;
-// });

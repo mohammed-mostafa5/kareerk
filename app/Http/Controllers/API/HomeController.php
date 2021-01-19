@@ -33,6 +33,7 @@ use App\Models\MessageFiles;
 use Illuminate\Http\Request;
 use App\Models\ProductReview;
 use App\Events\ProductDetails;
+use App\Events\SendNotification;
 use App\Models\ProductGallery;
 use App\Mail\ProductReceivedMail;
 use App\Mail\ProductDeliveredMail;
@@ -41,6 +42,7 @@ use App\Models\FreelancerEducation;
 use App\Helpers\HelperFunctionTrait;
 use App\Http\Controllers\Controller;
 use App\Models\FreelancerEmployment;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Builder;
@@ -142,6 +144,13 @@ class HomeController extends Controller
         return response()->json(compact('languages'));
     }
 
+    public function jobs()
+    {
+        $jobs = Job::with('files', 'skills', 'service')->get();
+
+        return response()->json(compact('jobs'));
+    }
+
     public function job($id)
     {
         $job = Job::with('files', 'skills', 'service')->find($id);
@@ -151,7 +160,7 @@ class HomeController extends Controller
 
     public function freelancer($id)
     {
-        $freelancer = Freelancer::with('user', 'services', 'skills', 'education', 'employment', 'languages')->find($id);
+        $freelancer = Freelancer::with('user', 'services', 'mainService', 'mainService', 'skills', 'education', 'employment', 'languages')->find($id);
 
         return response()->json(compact('freelancer'));
     }
@@ -171,7 +180,7 @@ class HomeController extends Controller
         $freelancer->userable->services()->sync($request->service_id);
         $freelancer->userable->skills()->sync($request->skill_id);
         $freelancer->userable->update(['step' => 2]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'skills', 'education', 'employment', 'languages');
+        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -193,7 +202,7 @@ class HomeController extends Controller
         }
 
         $freelancer->userable->update(['step' => 3]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'skills', 'education', 'employment', 'languages');
+        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -217,7 +226,7 @@ class HomeController extends Controller
         }
 
         $freelancer->userable->update(['step' => 4]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'skills', 'education', 'employment', 'languages');
+        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -230,7 +239,7 @@ class HomeController extends Controller
         ]);
         $freelancer->userable->languages()->sync([$request->language_id => ['level' => $request->level]]);
         $freelancer->userable->update(['step' => 5]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'skills', 'education', 'employment', 'languages');
+        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -242,7 +251,7 @@ class HomeController extends Controller
             'hourly_rate' => 'required',
         ]);
         $freelancer->userable->update(['step' => 6, 'hourly_rate' => $request->hourly_rate]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'skills', 'education', 'employment', 'languages');
+        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -255,7 +264,7 @@ class HomeController extends Controller
             'overview' => 'required',
         ]);
         $freelancer->userable->update(['step' => 7, 'title' => $request->title, 'overview' => $request->overview]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'skills', 'education', 'employment', 'languages');
+        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -267,7 +276,7 @@ class HomeController extends Controller
             'photo' => 'required',
         ]);
         $freelancer->userable->update(['step' => 7, 'photo' => $request->photo]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'skills', 'education', 'employment', 'languages');
+        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -280,7 +289,17 @@ class HomeController extends Controller
             'address' => 'required',
         ]);
         $freelancer->userable->update(['step' => 8, 'status' => 1, 'city' => $request->city, 'address' => $request->address]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'skills', 'education', 'employment', 'languages');
+        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        return response()->json(compact('freelancerData'));
+    }
+
+    // Freelancer Finish Profile
+    public function freelancerFinishProfile()
+    {
+        $freelancer = auth('api')->user();
+
+        $freelancer->userable->update(['status' => 2]);
+        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -316,6 +335,18 @@ class HomeController extends Controller
 
         $proposalData = $proposal->load('milestones', 'files');
 
+
+        $notification = Notification::create([
+            'user_id' => $proposal->client_id,
+            'other_user_id' => $proposal->freelancer_id,
+            'text' => 'New Job Proposal',
+            'type' => 'job',
+            'notifable_id' => $job->id,
+            'notifable_type' => 'App\Models\Job',
+        ]);
+
+        event(new SendNotification($notification));
+
         return response()->json(compact('proposalData'));
     }
 
@@ -328,7 +359,7 @@ class HomeController extends Controller
         $jobData = Job::where('status', 0)->firstOrCreate([
             'client_id' => auth('api')->user()->userable->id
         ]);
-        $jobData->load('files', 'skills', 'service');
+        $jobData->load('files', 'skills', 'service.mainService');
         return response()->json(compact('jobData'));
     }
 
@@ -349,7 +380,7 @@ class HomeController extends Controller
             'service_id' => $request->service_id
         ]);
 
-        $jobData = $job->load('files', 'skills', 'service');
+        $jobData = $job->load('files', 'skills', 'service.mainService');
 
         return response()->json(compact('jobData'));
     }
@@ -361,11 +392,16 @@ class HomeController extends Controller
             'job_id' => 'required',
             'description' => 'required',
             'file' => 'array',
-            'file.*' => 'nullable|image',
+            'file.*' => 'nullable|mimes:jpeg,png,jpg,pdf,docx',
+            'deleted_files' => 'nullable|array',
         ]);
         $job = Job::find($request->job_id);
 
         $job->update(['step' => 3, 'description' => $request->description]);
+
+        if (request()->filled('deleted_files')) {
+            JobFiles::whereIn('id', request('deleted_files'))->delete();
+        }
 
         if ($request->file) {
             foreach ($request->file as $file) {
@@ -375,7 +411,7 @@ class HomeController extends Controller
                 ]);
             }
         }
-        $jobData = $job->load('files', 'skills', 'service');
+        $jobData = $job->load('files', 'skills', 'service.mainService');
         return response()->json(compact('jobData'));
     }
 
@@ -391,7 +427,7 @@ class HomeController extends Controller
         $job->update(['step' => 4, 'expertise_level' => $request->expertise_level]);
         $job->skills()->sync($request->skill_id);
 
-        $jobData = $job->load('files', 'skills', 'service');
+        $jobData = $job->load('files', 'skills', 'service.mainService');
         return response()->json(compact('jobData'));
     }
 
@@ -407,7 +443,7 @@ class HomeController extends Controller
 
         $job->update(['step' => 5, 'visibility' => $request->visibility, 'freelancers_count' => $request->freelancers_count]);
 
-        $jobData = $job->load('files', 'skills', 'service');
+        $jobData = $job->load('files', 'skills', 'service.mainService');
         return response()->json(compact('jobData'));
     }
 
@@ -429,7 +465,20 @@ class HomeController extends Controller
             'status' => 2
         ]);
 
-        $jobData = $job->load('files', 'skills', 'service');
+        $jobData = $job->load('files', 'skills', 'service.mainService');
+
+        return response()->json(compact('jobData'));
+    }
+
+    // Job Step 5
+    public function jobPublish(Request $request)
+    {
+
+        $job = Job::find($request->job_id);
+
+        $job->update(['status' => 3]);
+
+        $jobData = $job->load('files', 'skills', 'service.mainService');
 
         return response()->json(compact('jobData'));
     }
@@ -440,6 +489,17 @@ class HomeController extends Controller
         $job->invitations()->sync($request->freelancer_id);
 
         $jobData = $job->with('invitations')->get();
+
+        $notification = Notification::create([
+            'user_id' => $request->freelancer_id,
+            'other_user_id' => $job->client_id,
+            'text' => 'New Job Invitation',
+            'type' => 'job',
+            'notifable_id' => $job->id,
+            'notifable_type' => 'App\Models\Job',
+        ]);
+
+        event(new SendNotification($notification));
 
         return response()->json(compact('jobData'));
     }
