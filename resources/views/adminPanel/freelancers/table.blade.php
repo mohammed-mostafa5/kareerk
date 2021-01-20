@@ -6,7 +6,7 @@
                 <th>@lang('models/freelancers.fields.expertise_level')</th>
                 <th>@lang('models/freelancers.fields.hourly_rate')</th>
                 <th>@lang('models/freelancers.fields.title')</th>
-                <th>@lang('models/freelancers.fields.overview')</th>
+                {{-- <th>@lang('models/freelancers.fields.overview')</th> --}}
                 {{-- <th>@lang('models/freelancers.fields.photo')</th> --}}
                 <th>@lang('models/freelancers.fields.city')</th>
                 <th>@lang('models/freelancers.fields.address')</th>
@@ -20,7 +20,7 @@
                 <td>{{ $freelancer->expertise_level }}</td>
                 <td>{{ $freelancer->hourly_rate }}</td>
                 <td>{{ $freelancer->title }}</td>
-                <td>{{ $freelancer->overview }}</td>
+                {{-- <td>{{ $freelancer->overview }}</td> --}}
                 {{-- <td>{{ $freelancer->photo }}</td> --}}
                 <td>{{ $freelancer->city }}</td>
                 <td>{{ $freelancer->address }}</td>

@@ -12,6 +12,7 @@ return array(
         'title' => 'Title',
         'overview' => 'Overview',
         'photo' => 'Photo',
+        'country' => 'Country',
         'city' => 'City',
         'address' => 'Address',
         'created_at' => 'Created At',
