@@ -76,7 +76,11 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('user-chat-contacts', 'HomeController@userChatContacts');
     Route::post('send-message', 'HomeController@sendMessage');
 
-
+    // Notifications
+    Route::get('notifications', 'HomeController@notifications');
+    Route::get('delete-notification/{id}', 'HomeController@deleteNotification');
+    Route::get('clear-notifications', 'HomeController@clearNotifications');
+    Route::get('notification-seen/{id}', 'HomeController@notificationSeen');
 
 
 

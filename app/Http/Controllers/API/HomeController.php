@@ -639,6 +639,47 @@ class HomeController extends Controller
         return $contact->chat_id;
     }
 
+    ##########################################################################
+
+    // Notifications
+    public function notifications()
+    {
+        $user = auth('api')->user();
+        $notifications = Notification::where('user_id', auth('api')->id())->with('otherUser', 'notifable')->get();
+        $count = $notifications->count();
+
+        return response()->json(compact('notifications', 'count'));
+    }
+
+    public function deleteNotification($id)
+    {
+        $notification = Notification::find($id);
+        if (!$notification || $notification->user_id != auth('api')->id()) {
+            return response()->json(['msg' => 'cannot delete this notification'], 409);
+        }
+
+        $notification->delete();
+
+        return response()->json(['msg' => 'ok']);
+    }
+
+    public function clearNotifications()
+    {
+        Notification::where('user_id', auth('api')->id())->delete();
+
+        return response()->json(['msg' => 'ok']);
+    }
+
+    public function notificationSeen($id)
+    {
+        $notification = Notification::find($id);
+        if ($notification && $notification->user_id == auth('api')->id()) {
+            $notification->update(['seen' => 1]);
+        }
+
+        return response()->json(['msg' => 'ok']);
+    }
+
 
 
 
