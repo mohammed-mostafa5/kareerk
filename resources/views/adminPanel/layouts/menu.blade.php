@@ -38,14 +38,29 @@
                     </a>
                 </li>
                 @endcan
-
-
-                <li class="nav-item {{ Request::is('adminPanel/transactions*') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('adminPanel.users.transactions') }}">
+                @can('clients view')
+                <li class="nav-item {{ Request::is('adminPanel/clients*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('adminPanel.clients.index') }}">
                         <i class="nav-icon icon-user"></i>
-                        <span>@lang('models/transactions.plural')</span>
+                        <span>@lang('models/clients.plural')</span>
                     </a>
                 </li>
+                @endcan
+                @can('freelancers view')
+                <li class="nav-item {{ Request::is('adminPanel/freelancers*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('adminPanel.freelancers.index') }}">
+                        <i class="nav-icon icon-user"></i>
+                        <span>@lang('models/freelancers.plural')</span>
+                    </a>
+                </li>
+                @endcan
+
+                {{-- <li class="nav-item {{ Request::is('adminPanel/transactions*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('adminPanel.users.transactions') }}">
+                    <i class="nav-icon icon-user"></i>
+                    <span>@lang('models/transactions.plural')</span>
+                </a>
+                </li> --}}
 
             </div>
         </div>
@@ -244,22 +259,7 @@
     </a>
 </li>
 @endcan
-@can('clients view')
-<li class="nav-item {{ Request::is('adminPanel/clients*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('adminPanel.clients.index') }}">
-        <i class="nav-icon icon-cursor"></i>
-        <span>@lang('models/clients.plural')</span>
-    </a>
-</li>
-@endcan
-@can('freelancers view')
-<li class="nav-item {{ Request::is('adminPanel/freelancers*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('adminPanel.freelancers.index') }}">
-        <i class="nav-icon icon-cursor"></i>
-        <span>@lang('models/freelancers.plural')</span>
-    </a>
-</li>
-@endcan
+
 @can('countries view')
 <li class="nav-item {{ Request::is('adminPanel/countries*') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('adminPanel.countries.index') }}">
@@ -284,11 +284,12 @@
     </a>
 </li>
 @endcan
-<li class="nav-item {{ Request::is('adminPanel/chats*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('adminPanel.chats.index') }}">
-        <i class="nav-icon icon-cursor"></i>
-        <span>@lang('models/chats.plural')</span>
-    </a>
+
+{{-- <li class="nav-item {{ Request::is('adminPanel/chats*') ? 'active' : '' }}">
+<a class="nav-link" href="{{ route('adminPanel.chats.index') }}">
+    <i class="nav-icon icon-cursor"></i>
+    <span>@lang('models/chats.plural')</span>
+</a>
 </li>
 <li class="nav-item {{ Request::is('adminPanel/messages*') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('adminPanel.messages.index') }}">
@@ -301,4 +302,4 @@
         <i class="nav-icon icon-cursor"></i>
         <span>@lang('models/chatContacts.plural')</span>
     </a>
-</li>
+</li> --}}

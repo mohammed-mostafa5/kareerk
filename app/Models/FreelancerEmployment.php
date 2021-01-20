@@ -24,4 +24,11 @@ class FreelancerEmployment extends Model
 
 
     public $timestamps = false;
+
+    // Relations
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
 }

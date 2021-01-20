@@ -84,15 +84,6 @@ class UserController extends AppBaseController
     }
 
 
-    public function approve($id)
-    {
-        $user = User::find($id);
-        $user->update(['approved_at' => now()]);
-
-        // Mail::to($user->email)->send(new UserApproveMail($user));
-
-        return back();
-    }
 
 
     public function transactions()

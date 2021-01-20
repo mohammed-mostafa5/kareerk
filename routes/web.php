@@ -94,7 +94,6 @@ Route::group(['prefix' => 'adminPanel', 'namespace' => 'AdminPanel', 'as' => 'ad
         // User CURD
         Route::resource('users', 'UserController')->only(['index', 'show', 'update']);
         Route::get('transactions', 'UserController@transactions')->name('users.transactions');
-        Route::patch('users/approve/{id}', 'UserController@approve')->name('user.approve');
 
         // Informations CURD
         Route::resource('information', 'InformationController');
@@ -128,7 +127,10 @@ Route::group(['prefix' => 'adminPanel', 'namespace' => 'AdminPanel', 'as' => 'ad
         Route::resource('services', 'ServiceController');
         Route::resource('skills', 'SkillController');
         Route::resource('clients', 'ClientController');
+
         Route::resource('freelancers', 'FreelancerController');
+        Route::patch('freelancers/approve/{id}', 'FreelancerController@approve')->name('freelancers.approve');
+
         Route::resource('countries', 'CountryController');
         Route::resource('languages', 'LanguageController');
         Route::resource('jobs', 'JobController');

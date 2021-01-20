@@ -70,9 +70,6 @@ class HomeController extends Controller
             if ($user->status == 'Inactive') {
                 return response()->json(['msg' => __('lang.notActive')], 403);
             }
-            if (!$user->approved_at) {
-                return response()->json(['msg' => __('lang.notApproved')], 403);
-            }
         }
 
         $user = auth('api')->user();
@@ -188,7 +185,10 @@ class HomeController extends Controller
     public function freelancerEducation(Request $request)
     {
         $educations = json_decode($request->education);
-        $freelancer = auth('api')->user();
+        $freelancer = auth('api')->user()->userable;
+        if ($freelancer->education()) {
+            $freelancer->education()->delete();
+        }
         foreach ($educations as $education) {
             FreelancerEducation::create([
                 'freelancer_id' => $freelancer->id,
@@ -201,8 +201,8 @@ class HomeController extends Controller
             ]);
         }
 
-        $freelancer->userable->update(['step' => 3]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        $freelancer->update(['step' => 3]);
+        $freelancerData = $freelancer->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -210,8 +210,15 @@ class HomeController extends Controller
     public function freelancerEmployment(Request $request)
     {
         $employments = json_decode($request->employment);
-        $freelancer = auth('api')->user();
+        $freelancer = auth('api')->user()->userable;
+
+        if ($freelancer->employment()) {
+            $freelancer->employment()->delete();
+        }
+
         foreach ($employments as $employment) {
+            $toDate = $employment->to_date ?? null;
+
             FreelancerEmployment::create([
                 'freelancer_id' => $freelancer->id,
                 'country_id' => $employment->country_id,
@@ -219,14 +226,14 @@ class HomeController extends Controller
                 'company' => $employment->company,
                 'title' => $employment->title,
                 'from_date' => $employment->from_date,
-                'to_date' => $employment->to_date,
+                'to_date' => $toDate,
                 'description' => $employment->description,
                 'still_working' => $employment->still_working,
             ]);
         }
 
-        $freelancer->userable->update(['step' => 4]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        $freelancer->update(['step' => 4]);
+        $freelancerData = $freelancer->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -234,10 +241,11 @@ class HomeController extends Controller
     public function freelancerLanguages(Request $request)
     {
         $freelancer = auth('api')->user();
-        $request->validate([
-            'level' => 'required',
-        ]);
-        $freelancer->userable->languages()->sync([$request->language_id => ['level' => $request->level]]);
+
+        $languages = json_decode($request->languages);
+        foreach ($languages as $language) {
+            $freelancer->userable->languages()->syncWithoutDetaching([$language->language_id => ['level' => $language->level]]);
+        }
         $freelancer->userable->update(['step' => 5]);
         $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
@@ -372,10 +380,12 @@ class HomeController extends Controller
             'service_id' => 'required',
         ]);
 
+
         $job = Job::find($request->job_id);
+        $status = $job->status == 0 ? 1 :  $job->status;
         $job->update([
             'step' => 2,
-            'status' => 1,
+            'status' => $status,
             'title' => $request->title,
             'service_id' => $request->service_id
         ]);

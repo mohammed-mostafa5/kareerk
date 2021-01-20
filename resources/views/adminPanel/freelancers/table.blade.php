@@ -7,7 +7,7 @@
                 <th>@lang('models/freelancers.fields.hourly_rate')</th>
                 <th>@lang('models/freelancers.fields.title')</th>
                 <th>@lang('models/freelancers.fields.overview')</th>
-                <th>@lang('models/freelancers.fields.photo')</th>
+                {{-- <th>@lang('models/freelancers.fields.photo')</th> --}}
                 <th>@lang('models/freelancers.fields.city')</th>
                 <th>@lang('models/freelancers.fields.address')</th>
                 <th>@lang('crud.action')</th>
@@ -16,26 +16,35 @@
         <tbody>
             @foreach($freelancers as $freelancer)
             <tr>
-                <td>{{ $freelancer->main_service_id }}</td>
+                <td>{{ $freelancer->mainService->name }}</td>
                 <td>{{ $freelancer->expertise_level }}</td>
                 <td>{{ $freelancer->hourly_rate }}</td>
                 <td>{{ $freelancer->title }}</td>
                 <td>{{ $freelancer->overview }}</td>
-                <td>{{ $freelancer->photo }}</td>
+                {{-- <td>{{ $freelancer->photo }}</td> --}}
                 <td>{{ $freelancer->city }}</td>
                 <td>{{ $freelancer->address }}</td>
                 <td>
-                    {!! Form::open(['route' => ['adminPanel.freelancers.destroy', $freelancer->id], 'method' => 'delete']) !!}
+                    {!! Form::open(['route' => ['adminPanel.freelancers.destroy', $freelancer->id], 'method' => 'delete', 'class' => 'd-inline']) !!}
                     <div class='btn-group'>
                         @can('freelancers view')
                         <a href="{{ route('adminPanel.freelancers.show', [$freelancer->id]) }}" class='btn btn-ghost-success'><i class="fa fa-eye"></i></a>
                         @endcan
                         {{-- <a href="{{ route('adminPanel.freelancers.edit', [$freelancer->id]) }}" class='btn btn-ghost-info'><i class="fa fa-edit"></i></a> --}}
-                        @can('freelancers destroy')
+                        {{-- @can('freelancers destroy')
                         {!! Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-ghost-danger', 'onclick' => 'return confirm("'.__('crud.are_you_sure').'")']) !!}
-                        @endcan
+                        @endcan --}}
+
+
                     </div>
                     {!! Form::close() !!}
+                    <form action="{{ route('adminPanel.freelancers.approve', [$freelancer->id]) }}" method="post" class="d-inline">
+                        @csrf
+                        @method('patch')
+                        @can('freelancers approve')
+                        <button type="submit" class="btn btn-primary btn-sm" {{$freelancer->status == 3 ? 'disabled': ''}}>Approve</button>
+                        @endcan
+                    </form>
                 </td>
             </tr>
             @endforeach

@@ -6,6 +6,7 @@ use App\Http\Requests\AdminPanel\CreateFreelancerRequest;
 use App\Http\Requests\AdminPanel\UpdateFreelancerRequest;
 use App\Repositories\AdminPanel\FreelancerRepository;
 use App\Http\Controllers\AppBaseController;
+use App\Models\Freelancer;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
@@ -72,14 +73,13 @@ class FreelancerController extends AppBaseController
      */
     public function show($id)
     {
-        $freelancer = $this->freelancerRepository->find($id);
+        $freelancer = Freelancer::find($id);
 
         if (empty($freelancer)) {
             Flash::error(__('messages.not_found', ['model' => __('models/freelancers.singular')]));
 
             return redirect(route('adminPanel.freelancers.index'));
         }
-
         return view('adminPanel.freelancers.show')->with('freelancer', $freelancer);
     }
 
@@ -152,5 +152,17 @@ class FreelancerController extends AppBaseController
         Flash::success(__('messages.deleted', ['model' => __('models/freelancers.singular')]));
 
         return redirect(route('adminPanel.freelancers.index'));
+    }
+
+
+
+    public function approve($id)
+    {
+        $freelancer = Freelancer::find($id);
+        $freelancer->update(['status' => 3]);
+
+        // Mail::to($user->email)->send(new UserApproveMail($user));
+
+        return back();
     }
 }
