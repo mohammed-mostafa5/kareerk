@@ -10,7 +10,7 @@
 <!-- Main Service Id Field -->
 <div class="form-group show">
     {!! Form::label('main_service_id', __('models/freelancers.fields.main_service_id').':') !!}
-    <p>{{ $freelancer->mainService->name }}</p>
+    <p>{{ $freelancer->mainService->name ?? ''}}</p>
 </div>
 
 <!-- Expertise Level Field -->
@@ -118,7 +118,7 @@
 <!-- country -->
 <div class="form-group show">
     {!! Form::label('country', 'Country : ') !!}
-    <p>{{ $employment->country->name }}</p>
+    <p>{{ $employment->country->name ?? '' }}</p>
 </div>
 <!-- city -->
 <div class="form-group show">
@@ -172,7 +172,7 @@
 <!-- level -->
 <div class="form-group show">
     {!! Form::label('level', 'Level : ') !!}
-    <p>{{ $language->pivot->level }}</p>
+    <p>{{ $language->pivot->level ?? '' }}</p>
 </div>
 
 <div class="clearfix"></div>
@@ -190,7 +190,7 @@
 <!-- main_service -->
 <div class="form-group show">
     {!! Form::label('main_service', 'Main Service : ') !!}
-    <p>{{ $freelancer->mainservice->name }}</p>
+    <p>{{ $freelancer->mainservice->name ?? '' }}</p>
 </div>
 <div class="clearfix"></div>
 <hr>

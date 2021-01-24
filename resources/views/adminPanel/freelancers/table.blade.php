@@ -2,28 +2,21 @@
     <table class="table table-striped" id="freelancers-table">
         <thead>
             <tr>
+                <th>@lang('models/freelancers.fields.name')</th>
+                <th>@lang('models/freelancers.fields.email')</th>
+                <th>@lang('models/freelancers.fields.phone')</th>
                 <th>@lang('models/freelancers.fields.main_service_id')</th>
-                <th>@lang('models/freelancers.fields.expertise_level')</th>
-                <th>@lang('models/freelancers.fields.hourly_rate')</th>
-                <th>@lang('models/freelancers.fields.title')</th>
-                {{-- <th>@lang('models/freelancers.fields.overview')</th> --}}
-                {{-- <th>@lang('models/freelancers.fields.photo')</th> --}}
-                <th>@lang('models/freelancers.fields.city')</th>
-                <th>@lang('models/freelancers.fields.address')</th>
                 <th>@lang('crud.action')</th>
             </tr>
         </thead>
         <tbody>
             @foreach($freelancers as $freelancer)
             <tr>
-                <td>{{ $freelancer->mainService->name }}</td>
-                <td>{{ $freelancer->expertise_level }}</td>
-                <td>{{ $freelancer->hourly_rate }}</td>
-                <td>{{ $freelancer->title }}</td>
-                {{-- <td>{{ $freelancer->overview }}</td> --}}
-                {{-- <td>{{ $freelancer->photo }}</td> --}}
-                <td>{{ $freelancer->city }}</td>
-                <td>{{ $freelancer->address }}</td>
+                <td>{{ $freelancer->user->name ?? '' }}</td>
+                <td>{{ $freelancer->user->email ?? '' }}</td>
+                <td>{{ $freelancer->user->phone ?? '' }}</td>
+                <td>{{ $freelancer->mainService->name ?? '' }}</td>
+
                 <td>
                     {!! Form::open(['route' => ['adminPanel.freelancers.destroy', $freelancer->id], 'method' => 'delete', 'class' => 'd-inline']) !!}
                     <div class='btn-group'>

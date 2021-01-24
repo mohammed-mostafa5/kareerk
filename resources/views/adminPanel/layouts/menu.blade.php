@@ -30,14 +30,14 @@
                 </li>
                 @endcan
 
-                @can('users view')
+                {{-- @can('users view')
                 <li class="nav-item {{ Request::is('adminPanel/users*') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('adminPanel.users.index') }}">
-                        <i class="nav-icon icon-user"></i>
-                        <span>@lang('models/users.plural')</span>
-                    </a>
+                <a class="nav-link" href="{{ route('adminPanel.users.index') }}">
+                    <i class="nav-icon icon-user"></i>
+                    <span>@lang('models/users.plural')</span>
+                </a>
                 </li>
-                @endcan
+                @endcan --}}
                 @can('clients view')
                 <li class="nav-item {{ Request::is('adminPanel/clients*') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('adminPanel.clients.index') }}">

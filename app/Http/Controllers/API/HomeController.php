@@ -72,7 +72,7 @@ class HomeController extends Controller
             }
         }
 
-        $user = auth('api')->user();
+        $user = auth('api')->user()->load('userable');
 
         $chatContactsData = $this->userChatContacts(true);
 
@@ -100,6 +100,7 @@ class HomeController extends Controller
             $validated['userable_type'] = 'App\Models\Freelancer';
         }
         $user = User::create($validated);
+        $user->load('userable');
         $token = auth('api')->login($user);
         return response()->json(compact('user', 'token'));
     }

@@ -4,14 +4,16 @@
             <tr>
                 <th>@lang('models/clients.fields.name')</th>
                 <th>@lang('models/clients.fields.email')</th>
+                <th>@lang('models/clients.fields.phone')</th>
                 <th>@lang('crud.action')</th>
             </tr>
         </thead>
         <tbody>
             @foreach($clients as $client)
             <tr>
-                <td>{{$client->user->name}}</td>
-                <td>{{$client->user->email}}</td>
+                <td>{{$client->user->name ?? ''}}</td>
+                <td>{{$client->user->email ?? ''}}</td>
+                <td>{{$client->user->phone ?? ''}}</td>
                 <td>
                     {!! Form::open(['route' => ['adminPanel.clients.destroy', $client->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>
