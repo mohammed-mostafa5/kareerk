@@ -100,6 +100,6 @@ class Skill extends Model
 
     public function children()
     {
-        return $this->hasMany('App\Models\Service', 'parent_id', 'id');
+        return $this->hasMany('App\Models\Skill', 'parent_id', 'id');
     }
 }

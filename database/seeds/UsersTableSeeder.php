@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Client;
 use App\Models\Freelancer;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -14,12 +15,24 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         User::create([
-            'name' => 'Ahmed Abdullah',
+            'name' => 'Freelancer',
             'phone' => '01001010101',
             'country_id' => '1',
             'userable_id' => '1',
             'userable_type' => 'App\Models\Freelancer',
-            'email' => 'user@email.com',
+            'email' => 'freelancer@email.com',
+            'password' => 'password',
+            'approved_at' => now(),
+            'email_verified_at' => now(),
+        ]);
+
+        User::create([
+            'name' => 'Client',
+            'phone' => '01001010101',
+            'country_id' => '1',
+            'userable_id' => '1',
+            'userable_type' => 'App\Models\Client',
+            'email' => 'client@email.com',
             'password' => 'password',
             'approved_at' => now(),
             'email_verified_at' => now(),
@@ -35,6 +48,8 @@ class UsersTableSeeder extends Seeder
             'city' => 'Cairo',
             'address' => 'Nasr-City, Cairo, Egypt',
         ]);
+
+        Client::create();
 
         // factory(App\Models\User::class, 10)->create();
     }

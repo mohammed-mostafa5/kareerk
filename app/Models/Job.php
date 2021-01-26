@@ -82,7 +82,10 @@ class Job extends Model
     ################################### Relations ###################################
     #################################################################################
 
-
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'client_id', 'id');
+    }
     public function skills()
     {
         return $this->belongsToMany('App\Models\Skill', 'job_skills', 'job_id', 'skill_id');
@@ -111,5 +114,20 @@ class Job extends Model
     public function notification()
     {
         return $this->morphOne(Notification::class, 'notifable');
+    }
+
+
+    #################################################################################
+    ################################### Scopes #####################################
+    #################################################################################
+
+    public function scopeOpen($query)
+    {
+        return $query->where('available', 1);
+    }
+
+    public function scopePublic($query)
+    {
+        return $query->where('visibility', 1);
     }
 }

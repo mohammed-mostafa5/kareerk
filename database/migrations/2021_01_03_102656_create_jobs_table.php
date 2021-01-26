@@ -20,7 +20,7 @@ class CreateJobsTable extends Migration
             $table->unsignedInteger('service_id')->nullable();
             $table->string('title')->nullable();
             $table->text('description')->nullable();
-            $table->unsignedTinyInteger('expertise_level')->nullable();
+            $table->unsignedTinyInteger('expertise_level')->nullable()->comment('1 => Entry Level, 2 => Intermediate, 3 => Expert');
             $table->unsignedTinyInteger('visibility')->nullable()->comment('1 => Any One, 2 => Invite Only');
             $table->integer('freelancers_count')->nullable();
             $table->integer('payment_type')->nullable();
@@ -28,6 +28,7 @@ class CreateJobsTable extends Migration
             $table->unsignedTinyInteger('expected_time')->nullable();
             $table->unsignedTinyInteger('step')->default(1);
             $table->unsignedTinyInteger('status')->default(0);
+            $table->unsignedTinyInteger('available')->default(1);
             $table->timestamps();
             $table->softDeletes();
 
@@ -75,7 +76,7 @@ class CreateJobsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('job_id');
             $table->unsignedInteger('freelancer_id');
-            $table->unsignedTinyInteger('expected_time');
+            $table->string('expected_time');
             $table->text('cover_letter');
 
             $table->timestamps();
@@ -89,8 +90,13 @@ class CreateJobsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('proposal_id');
             $table->string('description');
-            $table->string('due_date');
+            $table->integer('duration');
+            $table->unsignedTinyInteger('duration_type')->comment('1 => Hour, 2 => Day, 3 => Week, 4 => Month');
             $table->string('amount');
+            $table->unsignedTinyInteger('status')->default(1)->comment('1 => New, 2 => Finished, 3 => Done, 4 => Refused/Problem');
+            $table->dateTime('expected_start');
+            $table->dateTime('payment_at')->nullable();
+            $table->dateTime('finished_at')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

@@ -62,6 +62,8 @@ class HomeController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
+        $freelancer = null;
+        $client = null;
 
         if (!$token = auth('api')->attempt($credentials)) {
             return response()->json(['msg' => __('lang.wrongCredential')], 401);
@@ -71,12 +73,16 @@ class HomeController extends Controller
                 return response()->json(['msg' => __('lang.notActive')], 403);
             }
         }
+        $user = auth('api')->user();
+        if ($user->userable_type == 'App\Models\Freelancer') {
+            $freelancer = Freelancer::with('services', 'mainService', 'skills', 'education', 'employment', 'languages')->find($user->userable_id);
+        } else {
+            $client = Client::find($user->userable_id);
+        }
 
-        $user = auth('api')->user()->load('userable');
+        // $chatContactsData = $this->userChatContacts(true);
 
-        $chatContactsData = $this->userChatContacts(true);
-
-        return response()->json(compact('user', 'token', 'chatContactsData'));
+        return response()->json(compact('user', 'token', 'freelancer', 'client'));
     }
 
     public function register(Request $request)
@@ -100,9 +106,21 @@ class HomeController extends Controller
             $validated['userable_type'] = 'App\Models\Freelancer';
         }
         $user = User::create($validated);
-        $user->load('userable');
+
+        if ($user->userable_type == 'App\Models\Freelancer') {
+            $user->load('userable.services', 'userable.mainService', 'userable.skills', 'userable.education', 'userable.employment', 'userable.languages');
+        } else {
+            $user->load('userable');
+        }
         $token = auth('api')->login($user);
         return response()->json(compact('user', 'token'));
+    }
+
+    public function logout()
+    {
+        auth('api')->logout();
+
+        return response()->json(['msg' => __('lang.logoutMsg')]);
     }
 
     ##########################################################################
@@ -142,23 +160,23 @@ class HomeController extends Controller
         return response()->json(compact('languages'));
     }
 
-    public function jobs()
+    public function clientJobs()
     {
-        $jobs = Job::with('files', 'skills', 'service')->get();
+        $jobs = Job::where('client_id', auth('api')->id())->with('client.user', 'files', 'skills', 'service.mainService')->get();
 
         return response()->json(compact('jobs'));
     }
 
     public function job($id)
     {
-        $job = Job::with('files', 'skills', 'service')->find($id);
+        $job = Job::with('client.user', 'files', 'skills', 'service.mainService')->find($id);
 
         return response()->json(compact('job'));
     }
 
     public function freelancer($id)
     {
-        $freelancer = Freelancer::with('user', 'services', 'mainService', 'mainService', 'skills', 'education', 'employment', 'languages')->find($id);
+        $freelancer = Freelancer::with('services', 'mainService', 'skills', 'education', 'employment', 'languages')->find($id);
 
         return response()->json(compact('freelancer'));
     }
@@ -178,7 +196,7 @@ class HomeController extends Controller
         $freelancer->userable->services()->sync($request->service_id);
         $freelancer->userable->skills()->sync($request->skill_id);
         $freelancer->userable->update(['step' => 2]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        $freelancerData = $freelancer->userable->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -203,7 +221,7 @@ class HomeController extends Controller
         }
 
         $freelancer->update(['step' => 3]);
-        $freelancerData = $freelancer->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        $freelancerData = $freelancer->load('client.user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -234,21 +252,20 @@ class HomeController extends Controller
         }
 
         $freelancer->update(['step' => 4]);
-        $freelancerData = $freelancer->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        $freelancerData = $freelancer->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
     // Freelancer Step 4
     public function freelancerLanguages(Request $request)
     {
-        $freelancer = auth('api')->user();
+        $freelancer = auth('api')->user()->userable;
+        $languages = json_decode($request->languages, true);
 
-        $languages = json_decode($request->languages);
-        foreach ($languages as $language) {
-            $freelancer->userable->languages()->syncWithoutDetaching([$language->language_id => ['level' => $language->level]]);
-        }
-        $freelancer->userable->update(['step' => 5]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        $freelancer->languages()->sync($languages);
+
+        $freelancer->update(['step' => 5]);
+        $freelancerData = $freelancer->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -260,7 +277,7 @@ class HomeController extends Controller
             'hourly_rate' => 'required',
         ]);
         $freelancer->userable->update(['step' => 6, 'hourly_rate' => $request->hourly_rate]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        $freelancerData = $freelancer->userable->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -273,7 +290,7 @@ class HomeController extends Controller
             'overview' => 'required',
         ]);
         $freelancer->userable->update(['step' => 7, 'title' => $request->title, 'overview' => $request->overview]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        $freelancerData = $freelancer->userable->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -285,7 +302,7 @@ class HomeController extends Controller
             'photo' => 'required',
         ]);
         $freelancer->userable->update(['step' => 7, 'photo' => $request->photo]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        $freelancerData = $freelancer->userable->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -298,7 +315,7 @@ class HomeController extends Controller
             'address' => 'required',
         ]);
         $freelancer->userable->update(['step' => 8, 'status' => 1, 'city' => $request->city, 'address' => $request->address]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        $freelancerData = $freelancer->userable->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -308,7 +325,7 @@ class HomeController extends Controller
         $freelancer = auth('api')->user();
 
         $freelancer->userable->update(['status' => 2]);
-        $freelancerData = $freelancer->userable->load('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        $freelancerData = $freelancer->userable->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -321,20 +338,23 @@ class HomeController extends Controller
             'job_id' => 'required',
             'expected_time' => 'required',
             'cover_letter' => 'required',
-            'file' => 'required|array',
-            'file.*' => 'image',
+            'file' => 'array',
+            'file.*' => 'nullable|mimes:jpeg,png,jpg,pdf,docx',
         ]);
 
         $validated['freelancer_id'] = auth('api')->id();
 
         $proposal = $job->proposals()->create($validated);
-        foreach ($milestones as $milestone) {
-            $proposal->milestones()->create([
-                'description' => $milestone->description,
-                'due_date' => $milestone->due_date,
-                'amount' => $milestone->amount,
-            ]);
+        if ($milestones) {
+            foreach ($milestones as $milestone) {
+                $proposal->milestones()->create([
+                    'description' => $milestone->description,
+                    'due_date' => $milestone->due_date,
+                    'amount' => $milestone->amount,
+                ]);
+            }
         }
+
         foreach ($request->file as $file) {
             $proposal->files()->create([
                 'proposal_id' => $proposal->id,
@@ -359,6 +379,27 @@ class HomeController extends Controller
         return response()->json(compact('proposalData'));
     }
 
+    public function freelancerHome()
+    {
+        $jobsQuery = Job::public()->open()->with('service');
+
+        if (request()->filled('services')) {
+            $jobsQuery->whereIn('service_id', request('services'));
+        } elseif (request()->filled('main_service_id')) {
+            // $jobsQuery->whereIn('service_id', function ($subQuery) {
+            //     $subQuery->select('id')->from('services')
+            //         ->where('parent_id', request('main_service_id'));
+            // });
+            $jobsQuery->whereHas('service', function (Builder $query) {
+                $query->where('parent_id', request('main_service_id'));
+            });
+        }
+
+        $jobs = $jobsQuery->get();
+
+        return response()->json(compact('jobs'));
+    }
+
 
     ##########################################################################
 
@@ -368,7 +409,7 @@ class HomeController extends Controller
         $jobData = Job::where('status', 0)->firstOrCreate([
             'client_id' => auth('api')->user()->userable->id
         ]);
-        $jobData->load('files', 'skills', 'service.mainService');
+        $jobData->load('client.user', 'files', 'skills', 'service.mainService');
         return response()->json(compact('jobData'));
     }
 
@@ -391,7 +432,7 @@ class HomeController extends Controller
             'service_id' => $request->service_id
         ]);
 
-        $jobData = $job->load('files', 'skills', 'service.mainService');
+        $jobData = $job->load('client.user', 'files', 'skills', 'service.mainService');
 
         return response()->json(compact('jobData'));
     }
@@ -422,7 +463,7 @@ class HomeController extends Controller
                 ]);
             }
         }
-        $jobData = $job->load('files', 'skills', 'service.mainService');
+        $jobData = $job->load('client.user', 'files', 'skills', 'service.mainService');
         return response()->json(compact('jobData'));
     }
 
@@ -438,7 +479,7 @@ class HomeController extends Controller
         $job->update(['step' => 4, 'expertise_level' => $request->expertise_level]);
         $job->skills()->sync($request->skill_id);
 
-        $jobData = $job->load('files', 'skills', 'service.mainService');
+        $jobData = $job->load('user', 'files', 'skills', 'service.mainService');
         return response()->json(compact('jobData'));
     }
 
@@ -454,7 +495,7 @@ class HomeController extends Controller
 
         $job->update(['step' => 5, 'visibility' => $request->visibility, 'freelancers_count' => $request->freelancers_count]);
 
-        $jobData = $job->load('files', 'skills', 'service.mainService');
+        $jobData = $job->load('client.user', 'files', 'skills', 'service.mainService');
         return response()->json(compact('jobData'));
     }
 
@@ -476,7 +517,7 @@ class HomeController extends Controller
             'status' => 2
         ]);
 
-        $jobData = $job->load('files', 'skills', 'service.mainService');
+        $jobData = $job->load('client.user', 'files', 'skills', 'service.mainService');
 
         return response()->json(compact('jobData'));
     }
@@ -489,7 +530,7 @@ class HomeController extends Controller
 
         $job->update(['status' => 3]);
 
-        $jobData = $job->load('files', 'skills', 'service.mainService');
+        $jobData = $job->load('client.user', 'files', 'skills', 'service.mainService');
 
         return response()->json(compact('jobData'));
     }
