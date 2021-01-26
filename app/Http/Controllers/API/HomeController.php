@@ -95,6 +95,8 @@ class HomeController extends Controller
             'country_id' => 'required',
             'user_type' => 'required',
         ]);
+        $freelancer = null;
+        $client = null;
 
         if ($request->user_type == 1) {
             $client = Client::create();
@@ -108,12 +110,12 @@ class HomeController extends Controller
         $user = User::create($validated);
 
         if ($user->userable_type == 'App\Models\Freelancer') {
-            $user->load('userable.services', 'userable.mainService', 'userable.skills', 'userable.education', 'userable.employment', 'userable.languages');
+            $freelancer = Freelancer::with('services', 'mainService', 'skills', 'education', 'employment', 'languages')->find($user->userable_id);
         } else {
-            $user->load('userable');
+            $client = Client::find($user->userable_id);
         }
         $token = auth('api')->login($user);
-        return response()->json(compact('user', 'token'));
+        return response()->json(compact('user', 'token', 'freelancer', 'client'));
     }
 
     public function logout()
