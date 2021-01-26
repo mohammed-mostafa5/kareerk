@@ -85,6 +85,7 @@ class HomeController extends Controller
         return response()->json(compact('user', 'token', 'freelancer', 'client'));
     }
 
+
     public function register(Request $request)
     {
         $validated = $request->validate([
