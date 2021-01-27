@@ -51,4 +51,9 @@ class Message extends Model
     {
         return $this->belongsTo(\App\Models\User::class);
     }
+
+    public function files()
+    {
+        return $this->hasMany(MessageFiles::class);
+    }
 }

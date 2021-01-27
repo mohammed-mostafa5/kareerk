@@ -64,6 +64,7 @@ class CreateJobsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('job_id');
             $table->unsignedInteger('freelancer_id');
+            $table->unsignedTinyInteger('proposaled')->default(0);
 
             $table->timestamps();
             $table->softDeletes();
@@ -78,6 +79,7 @@ class CreateJobsTable extends Migration
             $table->unsignedInteger('freelancer_id');
             $table->string('expected_time');
             $table->text('cover_letter');
+            $table->unsignedTinyInteger('accepted')->default(0);
 
             $table->timestamps();
             $table->softDeletes();

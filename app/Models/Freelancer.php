@@ -133,4 +133,10 @@ class Freelancer extends Model
     {
         return $this->hasMany('App\Models\FreelancerEmployment', 'freelancer_id', 'id');
     }
+
+
+    public function invitations()
+    {
+        return $this->belongsToMany('App\Models\Job', 'job_invitations', 'freelancer_id', 'job_id');
+    }
 }

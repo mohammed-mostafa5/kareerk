@@ -50,4 +50,9 @@ class Client extends Model
     {
         return $this->morphOne('App\Models\User', 'userable');
     }
+
+    public function invitations()
+    {
+        return $this->hasManyThrough(Invitation::class, Job::class);
+    }
 }
