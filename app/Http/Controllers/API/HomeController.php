@@ -364,8 +364,10 @@ class HomeController extends Controller
         $proposalData = $proposal->load('milestones', 'files');
 
         $invitation = $job->invitations()->where('freelancer_id', $proposal->freelancer_id)->first();
-        $invitation->pivot->update(['proposaled' => 1]);
-        // return $invitation;
+
+        if ($invitation) {
+            $invitation->pivot->update(['proposaled' => 1]);
+        }
 
         $notification = Notification::create([
             'user_id' => $proposal->client_id,
@@ -422,10 +424,14 @@ class HomeController extends Controller
 
     public function freelancerJobs()
     {
-        $freelancer = auth('api')->user()->userable;
-        $jobs = Job::query();
-        $freelancerProposals = $jobs->proposals()->where('freelancer_id', $freelancer->id)->get();
-        return $freelancerProposals;
+        $jobs = Job::whereHas('proposals', function (Builder $query) {
+            $query->where('freelancer_id', auth('api')->user()->userable_id)
+                ->where('accepted', 1);
+        })->get();
+
+        $jobs->load('proposals', 'files', 'skills', 'service.mainService');
+
+        return response()->json(compact('jobs'));
     }
 
 
