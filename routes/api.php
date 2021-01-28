@@ -49,32 +49,38 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::post('logout', 'HomeController@logout');
 
-    // User Dashboard
-    Route::post('freelancer-expertise', 'HomeController@freelancerExpertise');
-    Route::post('freelancer-education', 'HomeController@freelancerEducation');
-    Route::post('freelancer-employment', 'HomeController@freelancerEmployment');
-    Route::post('freelancer-languages', 'HomeController@freelancerLanguages');
-    Route::post('freelancer-hourly-rate', 'HomeController@freelancerHourlyRate');
-    Route::post('freelancer-title-overview', 'HomeController@freelancerTitleOverview');
-    Route::post('freelancer-profile-photo', 'HomeController@freelancerProfilePhoto');
-    Route::post('freelancer-location', 'HomeController@freelancerLocation');
-    Route::post('freelancer-finish-profile', 'HomeController@freelancerFinishProfile');
-    Route::post('submit-proposal', 'HomeController@submitProposal');
-    Route::get('freelancer-home', 'HomeController@freelancerHome');
-    Route::get('freelancer-jobs', 'HomeController@freelancerJobs');
+    Route::group(['middleware' => 'freelancer'], function () {
+        // User Dashboard
+        Route::post('freelancer-expertise', 'HomeController@freelancerExpertise');
+        Route::post('freelancer-education', 'HomeController@freelancerEducation');
+        Route::post('freelancer-employment', 'HomeController@freelancerEmployment');
+        Route::post('freelancer-languages', 'HomeController@freelancerLanguages');
+        Route::post('freelancer-hourly-rate', 'HomeController@freelancerHourlyRate');
+        Route::post('freelancer-title-overview', 'HomeController@freelancerTitleOverview');
+        Route::post('freelancer-profile-photo', 'HomeController@freelancerProfilePhoto');
+        Route::post('freelancer-location', 'HomeController@freelancerLocation');
+        Route::post('freelancer-finish-profile', 'HomeController@freelancerFinishProfile');
+        Route::post('submit-proposal', 'HomeController@submitProposal');
+        Route::get('freelancer-home', 'HomeController@freelancerHome');
+        Route::get('freelancer-jobs', 'HomeController@freelancerJobs');
+        Route::get('freelancer-proposals', 'HomeController@freelancerProposals');
+        Route::get('freelancer-invitations', 'HomeController@freelancerInvitations');
+    });
 
-    Route::post('create_job', 'HomeController@createJob');
-    Route::post('job-title', 'HomeController@jobTitle');
-    Route::post('job-description', 'HomeController@jobDescription');
-    Route::post('job-expertise', 'HomeController@jobExpertise');
-    Route::post('job-visibility', 'HomeController@jobVisibility');
-    Route::post('job-budget', 'HomeController@jobBudget');
-    Route::post('job-publish', 'HomeController@jobPublish');
-    Route::post('job-invitation', 'HomeController@jobInvitation');
-    Route::post('accept-proposal', 'HomeController@acceptProposal');
-    Route::get('client-jobs', 'HomeController@clientJobs');
-    Route::get('client-unpublished-jobs', 'HomeController@clientUnpublishedJobs');
-    Route::get('client-invitations', 'HomeController@clientInvitations');
+    Route::group(['middleware' => 'client'], function () {
+        Route::post('create_job', 'HomeController@createJob');
+        Route::post('job-title', 'HomeController@jobTitle');
+        Route::post('job-description', 'HomeController@jobDescription');
+        Route::post('job-expertise', 'HomeController@jobExpertise');
+        Route::post('job-visibility', 'HomeController@jobVisibility');
+        Route::post('job-budget', 'HomeController@jobBudget');
+        Route::post('job-publish', 'HomeController@jobPublish');
+        Route::post('job-invitation', 'HomeController@jobInvitation');
+        Route::post('accept-proposal', 'HomeController@acceptProposal');
+        Route::get('client-jobs', 'HomeController@clientJobs');
+        Route::get('client-unpublished-jobs', 'HomeController@clientUnpublishedJobs');
+        Route::get('client-invitations', 'HomeController@clientInvitations');
+    });
 
     // Chat
     Route::get('messages', 'HomeController@messages');

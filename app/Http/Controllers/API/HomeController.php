@@ -434,6 +434,26 @@ class HomeController extends Controller
         return response()->json(compact('jobs'));
     }
 
+    public function freelancerProposals()
+    {
+        $jobs = Job::whereHas('proposals', function (Builder $query) {
+            $query->where('freelancer_id', auth('api')->user()->userable_id);
+        })->get();
+
+        $jobs->load('proposals', 'files', 'skills', 'service.mainService');
+
+        return response()->json(compact('jobs'));
+    }
+
+
+    public function freelancerInvitations()
+    {
+        $freelancer = Freelancer::find(auth('api')->user()->userable_id);
+        $invitations = $freelancer->invitations()->with('job.files', 'job.skills', 'job.service.mainService')->get();
+
+        return response()->json(compact('invitations'));
+    }
+
 
     ##########################################################################
 
