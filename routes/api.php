@@ -50,7 +50,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('logout', 'HomeController@logout');
 
     Route::group(['middleware' => 'freelancer'], function () {
-        // User Dashboard
         Route::post('freelancer-expertise', 'HomeController@freelancerExpertise');
         Route::post('freelancer-education', 'HomeController@freelancerEducation');
         Route::post('freelancer-employment', 'HomeController@freelancerEmployment');

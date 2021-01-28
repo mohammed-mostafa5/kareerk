@@ -445,7 +445,6 @@ class HomeController extends Controller
         return response()->json(compact('jobs'));
     }
 
-
     public function freelancerInvitations()
     {
         $freelancer = Freelancer::find(auth('api')->user()->userable_id);
