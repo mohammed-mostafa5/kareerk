@@ -182,12 +182,12 @@ class HomeController extends Controller
     // Freelancer Step 1
     public function freelancerExpertise(Request $request)
     {
-        $freelancer = auth('api')->user();
-
         $validated = $request->validate([
             'main_service_id' => 'required',
             'expertise_level' => 'required',
         ]);
+        $freelancer = auth('api')->user();
+
         $freelancer->userable->update($validated);
         $freelancer->userable->services()->sync($request->service_id);
         $freelancer->userable->skills()->sync($request->skill_id);
@@ -305,23 +305,26 @@ class HomeController extends Controller
     // Freelancer Step 8
     public function freelancerLocation(Request $request)
     {
-        $freelancer = auth('api')->user();
         $request->validate([
             'city' => 'required',
             'address' => 'required',
         ]);
-        $freelancer->userable->update(['step' => 8, 'status' => 1, 'city' => $request->city, 'address' => $request->address]);
-        $freelancerData = $freelancer->userable->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
+
+        $freelancer = auth('api')->user()->userable;
+
+        $status = $freelancer->status < 1 ? 1 :  $freelancer->status;
+        $freelancer->update(['step' => 8, 'status' => $status, 'city' => $request->city, 'address' => $request->address]);
+        $freelancerData = $freelancer->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
     // Freelancer Finish Profile
     public function freelancerFinishProfile()
     {
-        $freelancer = auth('api')->user();
-
-        $freelancer->userable->update(['status' => 2]);
-        $freelancerData = $freelancer->userable->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        $freelancer = auth('api')->user()->userable;
+        $status = $freelancer->status < 2 ? 2 :  $freelancer->status;
+        $freelancer->update(['status' => $status]);
+        $freelancerData = $freelancer->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -420,8 +423,9 @@ class HomeController extends Controller
     public function freelancerJobs()
     {
         $freelancer = auth('api')->user()->userable;
-        $jobs = Job::where('job_proposals.freelancer_id', $freelancer->id)->get();
-        return $jobs;
+        $jobs = Job::query();
+        $freelancerProposals = $jobs->proposals()->where('freelancer_id', $freelancer->id)->get();
+        return $freelancerProposals;
     }
 
 
@@ -446,9 +450,8 @@ class HomeController extends Controller
             'service_id' => 'required',
         ]);
 
-
         $job = Job::find($request->job_id);
-        $status = $job->status == 0 ? 1 :  $job->status;
+        $status = $job->status < 1 ? 1 :  $job->status;
         $job->update([
             'step' => 2,
             'status' => $status,
@@ -533,12 +536,12 @@ class HomeController extends Controller
             'expected_time' => 'required',
         ]);
         $job = Job::find($request->job_id);
-
+        $status = $job->status < 2 ? 2 :  $job->status;
         $job->update([
             'budget' => $request->budget,
             'payment_type' => $request->payment_type,
             'expected_time' => $request->expected_time,
-            'status' => 2
+            'status' => $status
         ]);
 
         $jobData = $job->load('client.user', 'files', 'skills', 'service.mainService');
@@ -551,8 +554,8 @@ class HomeController extends Controller
     {
 
         $job = Job::find($request->job_id);
-
-        $job->update(['status' => 3]);
+        $status = $job->status < 3 ? 3 :  $job->status;
+        $job->update(['status' => $status]);
 
         $jobData = $job->load('client.user', 'files', 'skills', 'service.mainService');
 
@@ -622,7 +625,6 @@ class HomeController extends Controller
             'notifable_type' => 'App\Models\Job',
         ]);
         event(new SendNotification($notification));
-
 
         return response()->json(compact('proposalData'));
     }
