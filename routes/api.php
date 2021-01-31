@@ -75,6 +75,7 @@ Route::group(['middleware' => ['auth:api']], function () {
         Route::post('job-budget', 'HomeController@jobBudget');
         Route::post('job-publish', 'HomeController@jobPublish');
         Route::post('job-invitation', 'HomeController@jobInvitation');
+        Route::get('freelancers-search', 'HomeController@freelancersSearch');
         Route::post('accept-proposal', 'HomeController@acceptProposal');
         Route::get('client-jobs', 'HomeController@clientJobs');
         Route::get('client-unpublished-jobs', 'HomeController@clientUnpublishedJobs');

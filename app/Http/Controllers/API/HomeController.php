@@ -80,9 +80,9 @@ class HomeController extends Controller
             $client = Client::find($user->userable_id);
         }
 
-        // $chatContactsData = $this->userChatContacts(true);
+        $chatContactsData = $this->userChatContacts(true);
 
-        return response()->json(compact('user', 'token', 'freelancer', 'client'));
+        return response()->json(compact('user', 'token', 'freelancer', 'client', 'chatContactsData'));
     }
 
 
@@ -453,7 +453,6 @@ class HomeController extends Controller
         return response()->json(compact('invitations'));
     }
 
-
     ##########################################################################
 
     // Create Job
@@ -587,6 +586,22 @@ class HomeController extends Controller
         return response()->json(compact('jobData'));
     }
 
+    public function freelancersSearch()
+    {
+        $freelancersQuery = Freelancer::query();
+
+        if (request()->filled('name')) {
+            $freelancersQuery->whereHas('user', function (Builder $query) {
+                $query->where('name', 'like', '%' . request('name') . '%');
+            });
+        }
+
+        $freelancers = $freelancersQuery->with('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages')->get();
+
+        return response()->json(compact('freelancers'));
+    }
+
+
     public function jobInvitation(Request $request)
     {
         $job = Job::find($request->job_id);
@@ -653,7 +668,6 @@ class HomeController extends Controller
 
         return response()->json(compact('proposalData'));
     }
-
 
     ##########################################################################
 
