@@ -26,4 +26,9 @@ class JobProposal extends Model
     {
         return $this->hasMany('App\Models\Proposalfiles', 'proposal_id', 'id');
     }
+
+    public function job()
+    {
+        return $this->belongsTo(Job::class);
+    }
 }

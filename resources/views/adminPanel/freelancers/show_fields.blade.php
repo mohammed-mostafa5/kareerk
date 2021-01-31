@@ -16,7 +16,20 @@
 <!-- Expertise Level Field -->
 <div class="form-group show">
     {!! Form::label('expertise_level', __('models/freelancers.fields.expertise_level').':') !!}
-    <p>{{ $freelancer->expertise_level }}</p>
+    @switch($freelancer->expertise_level)
+    @case(1)
+    Entry level
+    @break
+    @case(2)
+    Intermediate
+    @break
+    @case(3)
+    Expert
+    @break
+    @default
+
+    @endswitch
+    {{-- <p>{{ $freelancer->expertise_level }}</p> --}}
 </div>
 
 <!-- Hourly Rate Field -->

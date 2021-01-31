@@ -370,7 +370,7 @@ class HomeController extends Controller
         }
 
         $notification = Notification::create([
-            'user_id' => $proposal->client_id,
+            'user_id' => $proposal->job->client_id,
             'other_user_id' => $proposal->freelancer_id,
             'text' => 'New Job Proposal',
             'type' => 'job',
@@ -785,11 +785,12 @@ class HomeController extends Controller
     // Notifications
     public function notifications()
     {
-        $user = auth('api')->user();
-        $notifications = Notification::where('user_id', auth('api')->id())->with('otherUser', 'notifable')->get();
-        $count = $notifications->count();
+        $userId = auth('api')->id();
 
-        return response()->json(compact('notifications', 'count'));
+        $notifications = Notification::where('user_id', $userId)->with('otherUser', 'notifable')->get();
+        $unseenCount = $notifications->where('user_id', $userId)->where('seen', 0)->count();
+
+        return response()->json(compact('notifications', 'unseenCount'));
     }
 
     public function deleteNotification($id)
