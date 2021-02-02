@@ -49,7 +49,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::post('logout', 'HomeController@logout');
 
-    Route::group(['middleware' => 'freelancer'], function () {
+    Route::group(['middleware' => 'checkUserType:Freelancer'], function () {
         Route::post('freelancer-expertise', 'HomeController@freelancerExpertise');
         Route::post('freelancer-education', 'HomeController@freelancerEducation');
         Route::post('freelancer-employment', 'HomeController@freelancerEmployment');
@@ -66,7 +66,7 @@ Route::group(['middleware' => ['auth:api']], function () {
         Route::get('freelancer-invitations', 'HomeController@freelancerInvitations');
     });
 
-    Route::group(['middleware' => 'client'], function () {
+    Route::group(['middleware' => 'checkUserType:Client'], function () {
         Route::post('create_job', 'HomeController@createJob');
         Route::post('job-title', 'HomeController@jobTitle');
         Route::post('job-description', 'HomeController@jobDescription');

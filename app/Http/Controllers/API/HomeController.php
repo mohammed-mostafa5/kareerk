@@ -21,6 +21,7 @@ use App\Models\Category;
 use App\Models\JobFiles;
 use App\Models\Language;
 use App\Models\Freelancer;
+use App\Models\Invitation;
 use App\Models\Newsletter;
 use App\Models\SocialLink;
 use App\Events\SendMessage;
@@ -30,11 +31,12 @@ use App\Models\FaqCategory;
 use App\Models\Information;
 use App\Models\JobProposal;
 use App\Models\MessageFiles;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Models\ProductReview;
 use App\Events\ProductDetails;
-use App\Events\SendNotification;
 use App\Models\ProductGallery;
+use App\Events\SendNotification;
 use App\Mail\ProductReceivedMail;
 use App\Mail\ProductDeliveredMail;
 use Illuminate\Support\Facades\DB;
@@ -42,7 +44,6 @@ use App\Models\FreelancerEducation;
 use App\Helpers\HelperFunctionTrait;
 use App\Http\Controllers\Controller;
 use App\Models\FreelancerEmployment;
-use App\Models\Notification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Builder;
@@ -334,7 +335,7 @@ class HomeController extends Controller
             'job_id' => 'required',
             'expected_time' => 'required',
             'cover_letter' => 'required',
-            'file' => 'array',
+            'file' => 'nullable|array',
             'file.*' => 'nullable|mimes:jpeg,png,jpg,pdf,docx',
         ]);
 
@@ -604,19 +605,30 @@ class HomeController extends Controller
 
     public function jobInvitation(Request $request)
     {
+        $request->validate([
+            'freelancer_id' => 'array',
+            'freelancer_id.*' => 'required',
+        ]);
         $job = Job::find($request->job_id);
-        $job->invitations()->sync($request->freelancer_id);
+
+        if ($job->visibility != 1) {
+            return response()->json(['msg' => 'Job visibility must be invited only'], 420);
+        }
+
+        $job->invitations()->syncWithoutDetaching(request('freelancer_id'));
 
         $jobData = $job->with('invitations')->get();
 
-        $notification = Notification::create([
-            'user_id' => $request->freelancer_id,
-            'other_user_id' => $job->client_id,
-            'text' => 'New Job Invitation',
-            'type' => 'job',
-            'notifable_id' => $job->id,
-            'notifable_type' => 'App\Models\Job',
-        ]);
+        foreach (request('freelancer_id') as $freelancerId) {
+            $notification = Notification::create([
+                'user_id' => $freelancerId,
+                'other_user_id' => $job->client_id,
+                'text' => 'New Job Invitation',
+                'type' => 'job',
+                'notifable_id' => $job->id,
+                'notifable_type' => 'App\Models\Job',
+            ]);
+        }
 
         event(new SendNotification($notification));
 
@@ -705,7 +717,7 @@ class HomeController extends Controller
     {
         $request->validate([
             'chat_id' => 'required',
-            'text'    => 'required',
+            'text'    => 'nullable',
             'file'    => 'nullable|array',
             'file.*'  => 'nullable|image',
         ]);

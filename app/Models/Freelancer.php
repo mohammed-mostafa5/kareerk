@@ -29,8 +29,6 @@ class Freelancer extends Model
 
     protected $dates = ['deleted_at'];
 
-
-
     public $fillable = [
         'main_service_id',
         'expertise_level',
@@ -44,28 +42,7 @@ class Freelancer extends Model
         'status'
     ];
 
-    /**
-     * The attributes that should be casted to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'main_service_id' => 'integer',
-        'expertise_level' => 'integer',
-        'hourly_rate' => 'integer',
-        'title' => 'string',
-        'overview' => 'string',
-        'photo' => 'string',
-        'city' => 'string',
-        'address' => 'string'
-    ];
 
-    /**
-     * Validation rules
-     *
-     * @var array
-     */
     public static $rules = [];
 
 

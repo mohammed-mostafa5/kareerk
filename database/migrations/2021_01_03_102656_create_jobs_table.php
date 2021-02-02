@@ -67,7 +67,6 @@ class CreateJobsTable extends Migration
             $table->unsignedTinyInteger('proposaled')->default(0);
 
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('job_id')->references('id')->on('jobs')->onDelete('cascade');
             $table->foreign('freelancer_id')->references('id')->on('freelancers')->onDelete('cascade');

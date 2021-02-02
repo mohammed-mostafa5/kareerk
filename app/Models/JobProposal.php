@@ -24,7 +24,7 @@ class JobProposal extends Model
 
     public function files()
     {
-        return $this->hasMany('App\Models\Proposalfiles', 'proposal_id', 'id');
+        return $this->hasMany('App\Models\ProposalFiles', 'proposal_id', 'id');
     }
 
     public function job()

@@ -93,7 +93,7 @@ class Job extends Model
 
     public function invitations()
     {
-        return $this->belongsToMany('App\Models\Freelancer', 'job_invitations', 'job_id', 'freelancer_id')->withPivot('proposaled');
+        return $this->belongsToMany('App\Models\Freelancer', 'job_invitations', 'job_id', 'freelancer_id')->withPivot('proposaled')->withTimestamps();
     }
 
     public function files()
