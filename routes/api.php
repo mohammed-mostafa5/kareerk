@@ -94,7 +94,14 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('notification-seen/{id}', 'HomeController@notificationSeen');
 
 
-
+    // Milestones
+    Route::post('add-milestone', 'HomeController@addMilestone');
+    Route::post('update-milestone', 'HomeController@updateMilestone');
+    Route::post('delete-milestone', 'HomeController@deleteMilestone');
+    Route::post('milestone-payment', 'HomeController@milestonePayment');
+    Route::post('milestone-finish', 'HomeController@milestonefinish');
+    Route::post('milestone-done', 'HomeController@milestoneDone');
+    Route::post('milestone-has-problem', 'HomeController@milestoneHasProblem');
 
 
 

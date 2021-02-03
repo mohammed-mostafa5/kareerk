@@ -44,6 +44,7 @@ use App\Models\FreelancerEducation;
 use App\Helpers\HelperFunctionTrait;
 use App\Http\Controllers\Controller;
 use App\Models\FreelancerEmployment;
+use App\Models\ProposalMilestone;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Builder;
@@ -332,11 +333,11 @@ class HomeController extends Controller
     public function submitProposal(Request $request)
     {
         $validated = $request->validate([
-            'job_id' => 'required',
+            'job_id'        => 'required',
             'expected_time' => 'required',
-            'cover_letter' => 'required',
-            'file' => 'nullable|array',
-            'file.*' => 'nullable|mimes:jpeg,png,jpg,pdf,docx',
+            'cover_letter'  => 'required',
+            'file'          => 'nullable|array',
+            'file.*'        => 'nullable|mimes:jpeg,png,jpg,pdf,docx',
         ]);
 
         $job = Job::find($request->job_id);
@@ -348,9 +349,11 @@ class HomeController extends Controller
         if ($milestones) {
             foreach ($milestones as $milestone) {
                 $proposal->milestones()->create([
-                    'description' => $milestone->description,
-                    'due_date' => $milestone->due_date,
-                    'amount' => $milestone->amount,
+                    'description'    => $milestone->description,
+                    'duration'       => $milestone->duration,
+                    'duration_type'  => $milestone->duration_type,
+                    'amount'         => $milestone->amount,
+                    'expected_start' => $milestone->expected_start,
                 ]);
             }
         }
@@ -371,11 +374,11 @@ class HomeController extends Controller
         }
 
         $notification = Notification::create([
-            'user_id' => $proposal->job->client_id,
-            'other_user_id' => $proposal->freelancer_id,
-            'text' => 'New Job Proposal',
-            'type' => 'job',
-            'notifable_id' => $job->id,
+            'user_id'        => $proposal->job->client_id,
+            'other_user_id'  => $proposal->freelancer_id,
+            'text'           => 'New Job Proposal',
+            'type'           => 'job',
+            'notifable_id'   => $job->id,
             'notifable_type' => 'App\Models\Job',
         ]);
 
@@ -574,7 +577,7 @@ class HomeController extends Controller
         return response()->json(compact('jobData'));
     }
 
-    // Job Step 5
+    // Job Publish
     public function jobPublish(Request $request)
     {
 
@@ -847,6 +850,112 @@ class HomeController extends Controller
 
         return response()->json(['msg' => 'ok']);
     }
+
+
+    // Milestones Handle
+    public function addMilestone(Request $request)
+    {
+        $request->validate([
+            'proposal_id'       => 'required',
+            'description'       => 'required',
+            'duration'          => 'required',
+            'duration_type'     => 'required',
+            'amount'            => 'required',
+            'expected_start'    => 'required',
+        ]);
+
+        $milestone = ProposalMilestone::create([
+            'proposal_id'       => $request->proposal_id,
+            'description'       => $request->description,
+            'duration'          => $request->duration,
+            'duration_type'     => $request->duration_type,
+            'amount'            => $request->amount,
+            'expected_start'    => $request->expected_start,
+        ]);
+
+        return response()->json(compact('milestone'));
+    }
+
+    public function updateMilestone(Request $request)
+    {
+        $request->validate([
+            'milestone_id'      => 'required',
+            'proposal_id'       => 'required',
+            'description'       => 'required',
+            'duration'          => 'required',
+            'duration_type'     => 'required',
+            'amount'            => 'required',
+            'expected_start'    => 'required',
+        ]);
+        $milestone = ProposalMilestone::findOrFail($request->milestone_id);
+        $milestone->update([
+            'proposal_id'       => $request->proposal_id,
+            'description'       => $request->description,
+            'duration'          => $request->duration,
+            'duration_type'     => $request->duration_type,
+            'amount'            => $request->amount,
+            'expected_start'    => $request->expected_start,
+        ]);
+
+        return response()->json(compact('milestone'));
+    }
+
+    public function deleteMilestone(Request $request)
+    {
+        $request->validate([
+            'milestone_id'      => 'required',
+        ]);
+        $milestone = ProposalMilestone::findOrFail($request->milestone_id);
+        $milestone->delete();
+
+        return response()->json(['msg' => 'Milestone Deleted Successfuly']);
+    }
+
+    public function milestonePayment(Request $request)
+    {
+        $request->validate([
+            'milestone_id'      => 'required',
+        ]);
+        $milestone = ProposalMilestone::findOrFail($request->milestone_id);
+        $milestone->update(['payment_at' => now()]);
+
+        return response()->json(['msg' => 'Done']);
+    }
+
+    public function milestoneFinish(Request $request)
+    {
+        $request->validate([
+            'milestone_id'      => 'required',
+        ]);
+        $milestone = ProposalMilestone::findOrFail($request->milestone_id);
+        $milestone->update(['finished_at' => now(), 'status' => 2]);
+
+        return response()->json(['msg' => 'Done']);
+    }
+
+    public function milestoneDone(Request $request)
+    {
+        $request->validate([
+            'milestone_id'      => 'required',
+        ]);
+        $milestone = ProposalMilestone::findOrFail($request->milestone_id);
+        $milestone->update(['status' => 3]);
+
+        return response()->json(['msg' => 'Done']);
+    }
+
+    public function milestoneHasProblem(Request $request)
+    {
+        $request->validate([
+            'milestone_id'      => 'required',
+        ]);
+        $milestone = ProposalMilestone::findOrFail($request->milestone_id);
+        $milestone->update(['status' => 4]);
+
+        return response()->json(['msg' => 'Done']);
+    }
+
+
 
 
 
