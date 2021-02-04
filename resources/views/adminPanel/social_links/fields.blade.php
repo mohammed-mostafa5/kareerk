@@ -1,46 +1,37 @@
 <!-- Name Field -->
 @if (isset($socialLink))
 
-    <div class="form-group col-sm-6">
-        {!! Form::label('name', $socialLink->name .':') !!}
-        {!! Form::text('link', null, ['class' => 'form-control']) !!}
-    </div>
-    
+<div class="form-group col-sm-6">
+    {!! Form::label('name', $socialLink->name .':') !!}
+    {!! Form::text('link', null, ['class' => 'form-control']) !!}
+</div>
+
 @else
 
-    {{-- <div class="form-group col-sm-6">
+{{-- <div class="form-group col-sm-6">
         {!! Form::label('name', __('models/socialLinks.fields.name').':') !!}
         {!! Form::select('name', config('optionsSelect.social'), null, ['class' => 'form-control']) !!}
     </div> --}}
 
-    <div class="form-group col-sm-6">
+{{-- <div class="form-group col-sm-6">
         {!! Form::label('icon', 'Icon') !!}
-        {{-- <button name="icon" class="btn btn-secondary" role="iconpicker"></button> --}}
         <button name="icon" class="btn btn-secondary ml-2 px-4" data-icon="fab fa-jsfiddle" role="iconpicker"></button>
-    </div>
+    </div> --}}
 
-    
-    <div class="form-group col-sm-6">
-        {!! Form::label('name', __('models/socialLinks.fields.name').':') !!}
-        {!! Form::text('name', null, ['class' => 'form-control']) !!}
-    </div>
 
-   
-    <!-- Link Field -->
-    <div class="form-group col-sm-6">
-        {!! Form::label('link', __('models/socialLinks.fields.link').':') !!}
-        {!! Form::text('link', null, ['class' => 'form-control']) !!}
-    </div>
+<div class="form-group col-sm-6">
+    {!! Form::label('name', __('models/socialLinks.fields.name').':') !!}
+    {!! Form::text('name', null, ['class' => 'form-control']) !!}
+</div>
+
+
+<!-- Link Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('link', __('models/socialLinks.fields.link').':') !!}
+    {!! Form::text('link', null, ['class' => 'form-control']) !!}
+</div>
 
 @endif
-
-
-<br>
-
-
-{{-- <div name="icon" data-rows="3" data-cols="6" role="iconpicker" id="icon-picker"></div> --}}
-<!-- Button tag -->
-
 
 <br>
 <!-- Status Field -->
@@ -62,7 +53,7 @@
     <a href="{{ route('adminPanel.socialLinks.index') }}" class="btn btn-default">@lang('crud.cancel')</a>
 </div>
 
-
+{{--
 <script>
     // Default options
 $('#icon-picker').iconpicker();
@@ -93,4 +84,4 @@ $('.search-control').on('change', function(e) {
     console.log($('.search-control').val());
 });
 
-</script>
+</script> --}}

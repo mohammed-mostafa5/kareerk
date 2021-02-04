@@ -61,8 +61,8 @@ class HomeController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
+            'email'     => 'required|email',
+            'password'  => 'required',
         ]);
         $freelancer = null;
         $client = null;
@@ -91,12 +91,12 @@ class HomeController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|min:3',
-            'phone' => 'required',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'name'       => 'required|string|min:3',
+            'phone'      => 'required',
+            'email'      => 'required|email|max:255|unique:users',
+            'password'   => 'required|string|min:6|confirmed',
             'country_id' => 'required',
-            'user_type' => 'required',
+            'user_type'  => 'required',
         ]);
         $freelancer = null;
         $client = null;
@@ -129,6 +129,13 @@ class HomeController extends Controller
     }
 
     ##########################################################################
+
+    public function pages($id)
+    {
+        $page = Page::with('paragraph', 'image')->find($id);
+
+        return response()->json(compact('page'));
+    }
 
     public function services()
     {
@@ -209,12 +216,12 @@ class HomeController extends Controller
         foreach ($educations as $education) {
             FreelancerEducation::create([
                 'freelancer_id' => $freelancer->id,
-                'school' => $education->school,
-                'study' => $education->study,
-                'degree' => $education->degree,
-                'from_date' => $education->from_date,
-                'to_date' => $education->to_date,
-                'description' => $education->description,
+                'school'        => $education->school,
+                'study'         => $education->study,
+                'degree'        => $education->degree,
+                'from_date'     => $education->from_date,
+                'to_date'       => $education->to_date,
+                'description'   => $education->description,
             ]);
         }
 
@@ -238,13 +245,13 @@ class HomeController extends Controller
 
             FreelancerEmployment::create([
                 'freelancer_id' => $freelancer->id,
-                'country_id' => $employment->country_id,
-                'city' => $employment->city,
-                'company' => $employment->company,
-                'title' => $employment->title,
-                'from_date' => $employment->from_date,
-                'to_date' => $toDate,
-                'description' => $employment->description,
+                'country_id'    => $employment->country_id,
+                'city'          => $employment->city,
+                'company'       => $employment->company,
+                'title'         => $employment->title,
+                'from_date'     => $employment->from_date,
+                'to_date'       => $toDate,
+                'description'   => $employment->description,
                 'still_working' => $employment->still_working,
             ]);
         }
@@ -284,8 +291,8 @@ class HomeController extends Controller
     {
         $freelancer = auth('api')->user();
         $request->validate([
-            'title' => 'required',
-            'overview' => 'required',
+            'title'     => 'required',
+            'overview'  => 'required',
         ]);
         $freelancer->userable->update(['step' => 7, 'title' => $request->title, 'overview' => $request->overview]);
         $freelancerData = $freelancer->userable->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
@@ -308,7 +315,7 @@ class HomeController extends Controller
     public function freelancerLocation(Request $request)
     {
         $request->validate([
-            'city' => 'required',
+            'city'    => 'required',
             'address' => 'required',
         ]);
 
@@ -473,17 +480,17 @@ class HomeController extends Controller
     public function jobTitle(Request $request)
     {
         $validated = $request->validate([
-            'job_id' => 'required',
-            'title' => 'required',
+            'job_id'     => 'required',
+            'title'      => 'required',
             'service_id' => 'required',
         ]);
 
         $job = Job::find($request->job_id);
         $status = $job->status < 1 ? 1 :  $job->status;
         $job->update([
-            'step' => 2,
-            'status' => $status,
-            'title' => $request->title,
+            'step'       => 2,
+            'status'     => $status,
+            'title'      => $request->title,
             'service_id' => $request->service_id
         ]);
 
@@ -496,10 +503,10 @@ class HomeController extends Controller
     public function jobDescription(Request $request)
     {
         $validated = $request->validate([
-            'job_id' => 'required',
-            'description' => 'required',
-            'file' => 'array',
-            'file.*' => 'nullable|mimes:jpeg,png,jpg,pdf,docx',
+            'job_id'        => 'required',
+            'description'   => 'required',
+            'file'          => 'array',
+            'file.*'        => 'nullable|mimes:jpeg,png,jpg,pdf,docx',
             'deleted_files' => 'nullable|array',
         ]);
         $job = Job::find($request->job_id);
@@ -526,7 +533,7 @@ class HomeController extends Controller
     public function jobExpertise(Request $request)
     {
         $validated = $request->validate([
-            'job_id' => 'required',
+            'job_id'          => 'required',
             'expertise_level' => 'required',
         ]);
         $job = Job::find($request->job_id);
@@ -542,8 +549,8 @@ class HomeController extends Controller
     public function jobVisibility(Request $request)
     {
         $validated = $request->validate([
-            'job_id' => 'required',
-            'visibility' => 'required',
+            'job_id'            => 'required',
+            'visibility'        => 'required',
             'freelancers_count' => 'required',
         ]);
         $job = Job::find($request->job_id);
@@ -558,18 +565,18 @@ class HomeController extends Controller
     public function jobBudget(Request $request)
     {
         $validated = $request->validate([
-            'job_id' => 'required',
-            'budget' => 'required',
-            'payment_type' => 'required',
+            'job_id'        => 'required',
+            'budget'        => 'required',
+            'payment_type'  => 'required',
             'expected_time' => 'required',
         ]);
         $job = Job::find($request->job_id);
         $status = $job->status < 2 ? 2 :  $job->status;
         $job->update([
-            'budget' => $request->budget,
-            'payment_type' => $request->payment_type,
+            'budget'        => $request->budget,
+            'payment_type'  => $request->payment_type,
             'expected_time' => $request->expected_time,
-            'status' => $status
+            'status'        => $status
         ]);
 
         $jobData = $job->load('client.user', 'files', 'skills', 'service.mainService');
@@ -609,7 +616,7 @@ class HomeController extends Controller
     public function jobInvitation(Request $request)
     {
         $request->validate([
-            'freelancer_id' => 'array',
+            'freelancer_id'   => 'array',
             'freelancer_id.*' => 'required',
         ]);
         $job = Job::find($request->job_id);
@@ -624,11 +631,11 @@ class HomeController extends Controller
 
         foreach (request('freelancer_id') as $freelancerId) {
             $notification = Notification::create([
-                'user_id' => $freelancerId,
-                'other_user_id' => $job->client_id,
-                'text' => 'New Job Invitation',
-                'type' => 'job',
-                'notifable_id' => $job->id,
+                'user_id'        => $freelancerId,
+                'other_user_id'  => $job->client_id,
+                'text'           => 'New Job Invitation',
+                'type'           => 'job',
+                'notifable_id'   => $job->id,
                 'notifable_type' => 'App\Models\Job',
             ]);
         }
@@ -672,11 +679,11 @@ class HomeController extends Controller
         $proposalData  = $proposal->first();
 
         $notification = Notification::create([
-            'user_id' => $proposalData->freelancer_id,
-            'other_user_id' => $job->client_id,
-            'text' => 'Accept Proposal',
-            'type' => 'job',
-            'notifable_id' => $job->id,
+            'user_id'        => $proposalData->freelancer_id,
+            'other_user_id'  => $job->client_id,
+            'text'           => 'Accept Proposal',
+            'type'           => 'job',
+            'notifable_id'   => $job->id,
             'notifable_type' => 'App\Models\Job',
         ]);
         event(new SendNotification($notification));
@@ -797,11 +804,11 @@ class HomeController extends Controller
             $chat = Chat::create(['created_by' => $authUserId]);
 
             $contact = $chat->contacts()->create([
-                'user_id' => $authUserId,
+                'user_id'       => $authUserId,
                 'other_user_id' => $otherUserId
             ]);
             $chat->contacts()->create([
-                'user_id' => $otherUserId,
+                'user_id'       => $otherUserId,
                 'other_user_id' => $authUserId
             ]);
         }
@@ -928,7 +935,18 @@ class HomeController extends Controller
             'milestone_id'      => 'required',
         ]);
         $milestone = ProposalMilestone::findOrFail($request->milestone_id);
-        $milestone->update(['finished_at' => now(), 'status' => 2]);
+        $milestone->update(['finished_at' => now()]);
+
+        return response()->json(['msg' => 'Done']);
+    }
+
+    public function milestoneAccept(Request $request)
+    {
+        $request->validate([
+            'milestone_id'      => 'required',
+        ]);
+        $milestone = ProposalMilestone::findOrFail($request->milestone_id);
+        $milestone->update(['status' => 2]);
 
         return response()->json(['msg' => 'Done']);
     }

@@ -3,11 +3,9 @@
         <thead>
             <tr>
                 <th>@lang('models/jobs.fields.service_id')</th>
-                <th>@lang('models/jobs.fields.name')</th>
+                <th>@lang('models/jobs.fields.title')</th>
                 <th>@lang('models/jobs.fields.visibility')</th>
-                <th>@lang('models/jobs.fields.freelancers_count')</th>
                 <th>@lang('models/jobs.fields.payment_type')</th>
-                <th>@lang('models/jobs.fields.budget')</th>
                 <th>@lang('models/jobs.fields.status')</th>
                 <th>@lang('crud.action')</th>
             </tr>
@@ -15,12 +13,10 @@
         <tbody>
             @foreach($jobs as $job)
             <tr>
-                <td>{{ $job->service_id }}</td>
-                <td>{{ $job->name }}</td>
-                <td>{{ $job->visibility }}</td>
-                <td>{{ $job->freelancers_count }}</td>
-                <td>{{ $job->payment_type }}</td>
-                <td>{{ $job->budget }}</td>
+                <td>{{ $job->service->name ?? '' }}</td>
+                <td>{{ $job->title }}</td>
+                <td>{{ $job->visibility == 1 ? 'Any One' : 'Invite Only' }}</td>
+                <td>{{ $job->payment_type == 1 ? 'Hourly' : 'Fixed' }}</td>
                 <td>{{ $job->status }}</td>
                 <td>
                     {!! Form::open(['route' => ['adminPanel.jobs.destroy', $job->id], 'method' => 'delete']) !!}

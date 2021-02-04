@@ -108,13 +108,13 @@
                     </a>
                 </li>
                 @endcan
-
+                {{--
                 @can('faqCategories view')
                 <li class="nav-item {{ Request::is('adminPanel/faqCategories*') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('adminPanel.faqCategories.index') }}">
-                        <i class="nav-icon icon-cursor"></i>
-                        <span>@lang('models/faqCategories.plural')</span>
-                    </a>
+                <a class="nav-link" href="{{ route('adminPanel.faqCategories.index') }}">
+                    <i class="nav-icon icon-cursor"></i>
+                    <span>@lang('models/faqCategories.plural')</span>
+                </a>
                 </li>
                 @endcan
 
@@ -125,7 +125,7 @@
                         <span>@lang('models/faqs.plural')</span>
                     </a>
                 </li>
-                @endcan
+                @endcan --}}
 
                 @can('information view')
                 <li class="nav-item {{ Request::is('adminPanel/information*') ? 'active' : '' }}">

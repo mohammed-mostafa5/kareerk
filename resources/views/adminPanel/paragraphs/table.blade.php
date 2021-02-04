@@ -17,7 +17,7 @@
             <tr>
                 {{-- {{dd($paragraph)}} --}}
                 <td>{{ $paragraph->id }}</td>
-                <td>{{ $paragraph->translateOrNew($locale)->text }}</td>
+                <td>{!! $paragraph->translateOrNew($locale)->text !!}</td>
                 <td>{{ $paragraph->page->name }}</td>
                 <td>
                     @if ($i == 1)

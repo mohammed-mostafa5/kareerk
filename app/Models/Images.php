@@ -85,6 +85,11 @@ class Images extends Model
     }
 
 
+    public function getPhotoAttribute($val)
+    {
+        return $val ? asset('uploads/images/original') . '/' . $val : null;
+    }
+
     // Relations
 
     public function page()

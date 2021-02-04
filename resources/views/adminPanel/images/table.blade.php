@@ -8,11 +8,11 @@
             </tr>
         </thead>
         <tbody>
-        @foreach($images as $images)
+            @foreach($images as $images)
             <tr>
                 <td>{{ $images->page->name }}</td>
                 <td>
-                <img src="{{ asset('uploads/images/original/'. $images->photo)}}" alt="{{$images->page->name}}">
+                    <img src="{{$images->photo}}" alt="{{$images->page->name}}">
                 </td>
                 <td>
                     {!! Form::open(['route' => ['adminPanel.images.destroy', $images->id], 'method' => 'delete']) !!}
@@ -24,7 +24,7 @@
                     {!! Form::close() !!}
                 </td>
             </tr>
-        @endforeach
+            @endforeach
         </tbody>
     </table>
 </div>
