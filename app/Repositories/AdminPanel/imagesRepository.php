@@ -2,14 +2,14 @@
 
 namespace App\Repositories\AdminPanel;
 
-use App\Models\images;
+use App\Models\Images;
 use App\Repositories\BaseRepository;
 
 /**
  * Class imagesRepository
  * @package App\Repositories\AdminPanel
  * @version September 27, 2020, 12:25 pm UTC
-*/
+ */
 
 class imagesRepository extends BaseRepository
 {

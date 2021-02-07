@@ -7,6 +7,5 @@
 <!-- Photo Field -->
 <div class="form-group show">
     {!! Form::label('photo', __('models/images.fields.photo').':') !!}
-    <img src="{{asset('uploads/images/original/'. $images->photo)}}" alt="{{$images->page->name}}">
+    <img src="{{$images->photo}}" alt="{{$images->page->name}}">
 </div>
-

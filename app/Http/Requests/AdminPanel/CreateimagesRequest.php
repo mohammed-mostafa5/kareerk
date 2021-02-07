@@ -3,7 +3,7 @@
 namespace App\Http\Requests\AdminPanel;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\images;
+use App\Models\Images;
 
 class CreateimagesRequest extends FormRequest
 {

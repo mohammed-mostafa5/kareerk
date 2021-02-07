@@ -6,7 +6,7 @@ use App\Http\Requests\AdminPanel\CreateimagesRequest;
 use App\Http\Requests\AdminPanel\UpdateimagesRequest;
 use App\Repositories\AdminPanel\imagesRepository;
 use App\Http\Controllers\AppBaseController;
-use App\Models\images;
+use App\Models\Images;
 use App\Models\Page;
 use Illuminate\Http\Request;
 use Flash;
