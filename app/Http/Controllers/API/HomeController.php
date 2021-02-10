@@ -144,6 +144,27 @@ class HomeController extends Controller
         return response()->json(compact('services'));
     }
 
+    public function landingPage()
+    {
+        $slider = Slider::active()->orderBy('in_order_to')->get();
+        $services = Service::active()->get();
+
+        return response()->json(compact('slider', 'services'));
+    }
+
+    public function landingPageSearch()
+    {
+        $servicesQuery = Service::query();
+
+        if (request()->filled('service')) {
+            $servicesQuery->whereTranslationLike('name', '%' . request('service') . '%');
+        }
+
+        $services = $servicesQuery->get();
+
+        return response()->json(compact('services'));
+    }
+
     public function freelancers()
     {
         $freelancers = User::where('userable_type', 'App\Models\Freelancer')->with('userable')->active()->get();
@@ -174,9 +195,16 @@ class HomeController extends Controller
 
     public function job($id)
     {
-        $job = Job::with('client.user', 'files', 'skills', 'service.mainService')->find($id);
+        $job = Job::with('client.user', 'files', 'skills', 'service.mainService', 'proposals.freelancer.user', 'proposals.milestones', 'proposals.files')->find($id);
 
         return response()->json(compact('job'));
+    }
+
+    public function proposal($id)
+    {
+        $proposal = JobProposal::with('freelancer.user', 'job', 'milestones', 'files')->find($id);
+
+        return response()->json(compact('proposal'));
     }
 
     public function freelancer($id)
@@ -607,6 +635,12 @@ class HomeController extends Controller
             });
         }
 
+        if (request()->filled('service_id')) {
+            $freelancersQuery->whereHas('services', function (Builder $query) {
+                $query->where('services.id', request('service_id'));
+            });
+        }
+
         $freelancers = $freelancersQuery->with('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages')->get();
 
         return response()->json(compact('freelancers'));
@@ -621,7 +655,7 @@ class HomeController extends Controller
         ]);
         $job = Job::find($request->job_id);
 
-        if ($job->visibility != 1) {
+        if ($job->visibility != 2) {
             return response()->json(['msg' => 'Job visibility must be invited only'], 420);
         }
 
@@ -655,7 +689,7 @@ class HomeController extends Controller
     public function clientUnpublishedJobs()
     {
         $jobs = Job::where('client_id', auth('api')->user()->userable_id)
-            ->where('status', '<', 3)
+            ->whereIn('status', [1, 2])
             ->with('client.user', 'files', 'skills', 'service.mainService')
             ->get();
 
@@ -689,6 +723,13 @@ class HomeController extends Controller
         event(new SendNotification($notification));
 
         return response()->json(compact('proposalData'));
+    }
+
+    public function clientProfile()
+    {
+        $jobs = Job::where('client_id', request('client_id'))->with('client.user', 'files', 'skills', 'service.mainService', 'proposals.freelancer')->get();
+
+        return response()->json(compact('jobs'));
     }
 
     ##########################################################################

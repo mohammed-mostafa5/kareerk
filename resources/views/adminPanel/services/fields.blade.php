@@ -23,11 +23,19 @@
     <!-- Parent Id Field -->
     <div class="form-group col-sm-6">
         {!! Form::label('parent_id', __('models/services.fields.parent').':') !!}
-        {!! Form::select('parent_id', $parents , isset($service->parent_id) ?? null, ['class' => 'form-control']) !!}
+        {!! Form::select('parent_id', $parents , isset($service->parent_id) ?? null, ['class' => 'form-control', 'placeholder' => 'Select Main Service']) !!}
     </div>
+
 
     <!-- Photo Field -->
     <div class="form-group col-sm-6">
+        @if (isset($service->photo))
+        <img src="{{$service->photo_path}}" alt="" width="200" class="image-thumbnail">
+
+        <div class="clearfix"></div>
+        <br>
+        @endif
+
         {!! Form::label('photo', __('models/services.fields.photo').':') !!}
         {!! Form::file('photo',['class' => 'form-control']) !!}
     </div>

@@ -130,17 +130,19 @@ class ServiceController extends AppBaseController
 
 
         // Define Currunt Photo Path
-        $photo = "uploads/images/original/$service->photo";
-        $photo_thumbnail = "uploads/images/thumbnail/$service->photo";
+        $photo = $service->photo_path;
+        // $photo_thumbnail = "uploads/images/thumbnail/$service->photo";
 
         $service = $this->serviceRepository->update($request->all(), $id);
-
-        // Deleting Current Photo
-        if (file_exists($photo) && $photo != $service->photo) {
-            unlink(public_path($photo));
-        }
-        if (file_exists($photo_thumbnail)  && $photo != $service->photo) {
-            unlink(public_path($photo_thumbnail));
+        // dd($service);
+        if ($request->photo) {
+            // Deleting Current Photo
+            if (file_exists($photo) && $photo != $service->photo) {
+                unlink(public_path($photo));
+            }
+            // if (file_exists($photo_thumbnail)  && $photo != $service->photo) {
+            //     unlink(public_path($photo_thumbnail));
+            // }
         }
 
         Flash::success(__('messages.updated', ['model' => __('models/services.singular')]));

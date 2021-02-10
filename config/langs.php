@@ -9,5 +9,5 @@ return [
     */
 
     'en' => 'English',
-    'ar' => 'Arabic'
+    // 'ar' => 'Arabic'
 ];

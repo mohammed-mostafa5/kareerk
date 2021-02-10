@@ -49,7 +49,7 @@ class Service extends Model
         $languages = array_keys(config('langs'));
 
         foreach ($languages as $language) {
-            $rules[$language . '.name'] = 'required|string|min:3|max:191';
+            $rules[$language . '.name'] = 'required|string|max:191';
         }
 
         $rules['status'] = 'required|in:0,1';

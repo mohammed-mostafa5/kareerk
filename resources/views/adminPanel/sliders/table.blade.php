@@ -2,7 +2,7 @@
     <table class="table table-striped" id="sliders-table">
         <thead>
             <tr>
-                <th>@lang('models/metas.fields.language')</th>
+                {{-- <th>@lang('models/metas.fields.language')</th> --}}
                 <th>@lang('models/sliders.fields.photo')</th>
                 <th>@lang('models/sliders.fields.title')</th>
                 {{-- <th>@lang('models/sliders.fields.description')</th> --}}
@@ -14,24 +14,16 @@
         </thead>
         <tbody>
             @foreach($sliders as $slider)
-            @php $i = 1; @endphp
-            @foreach ( config('langs') as $locale => $name)
             <tr>
-                <td>{{ $name }}</td>
+                {{-- <td>{{ $name }}</td> --}}
                 <td>
-                    @if ($i)
                     <img src="{{asset('uploads/images/thumbnail/' . $slider->photo)}}" alt="{{$slider->name}}" style="width:40px">
-                    @endif
                 </td>
-                <td>{{ $slider->translate($locale)->title }}</td>
+                <td>{{ $slider->translate('en')->title }}</td>
                 {{-- <td>{{ $slider->link }}</td> --}}
-                <td>{{$i ? $slider->status ? 'Active' : 'Inactive' : '' }}</td>
-                <td>{{ $i ? $slider->sort : '' }}</td>
-
-
+                <td>{{$slider->status ? 'Active' : 'Inactive' }}</td>
+                <td>{{$slider->in_order_to }}</td>
                 <td>
-                    @if ($i)
-
                     {!! Form::open(['route' => ['adminPanel.sliders.destroy', $slider->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>
                         @can('sliders view')
@@ -46,12 +38,8 @@
                         @endcan
                     </div>
                     {!! Form::close() !!}
-                    @endif
                 </td>
             </tr>
-
-            @php $i = 0; @endphp
-            @endforeach
 
             @endforeach
         </tbody>

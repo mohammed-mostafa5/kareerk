@@ -37,12 +37,15 @@ Route::get('categories', 'HomeController@categories');
 Route::get('products', 'HomeController@products');
 Route::get('products/{id}', 'HomeController@product');
 
+Route::get('landing-page', 'HomeController@landingPage');
+Route::get('landing-page-search', 'HomeController@landingPageSearch');
 Route::get('services', 'HomeController@services');
 Route::get('freelancers', 'HomeController@freelancers');
 Route::get('skills', 'HomeController@skills');
 Route::get('countries', 'HomeController@countries');
 Route::get('languages', 'HomeController@languages');
 Route::get('job/{id}', 'HomeController@job');
+Route::get('proposal/{id}', 'HomeController@proposal');
 Route::get('freelancer/{id}', 'HomeController@freelancer');
 // Authenticated Routes
 Route::group(['middleware' => ['auth:api']], function () {
@@ -105,6 +108,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('milestone-has-problem', 'HomeController@milestoneHasProblem');
 
 
+    Route::get('client-profile', 'HomeController@clientProfile');
 
 
 

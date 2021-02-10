@@ -62,15 +62,16 @@ class Slider extends Model
         $languages = array_keys(config('langs'));
 
         foreach ($languages as $language) {
-            $rules[$language . '.title'] = 'required';
-            $rules[$language . '.subtitle'] = 'required';
-            $rules[$language . '.button_text'] = 'required';
-            $rules[$language . '.content'] = 'required';
+            $rules[$language . '.title'] = 'nullable';
+            $rules[$language . '.subtitle'] = 'nullable';
+            $rules[$language . '.button_text'] = 'nullable';
+            $rules[$language . '.content'] = 'nullable';
         }
 
         $rules['status'] = 'required|in:0,1';
+        $rules['in_order_to'] = 'nullable';
         $rules['photo'] = 'required|image|mimes:jpeg,jpg,png';
-        $rules['link'] = 'required';
+        $rules['link'] = 'nullable';
 
         return $rules;
     }
@@ -79,7 +80,6 @@ class Slider extends Model
     {
         if ($file) {
             try {
-                //code...
                 $fileName = $this->createFileName($file);
 
                 $this->originalImage($file, $fileName);
@@ -88,7 +88,6 @@ class Slider extends Model
 
                 $this->attributes['photo'] = $fileName;
             } catch (\Throwable $th) {
-                //throw $th;
                 $this->attributes['photo'] = $file;
             }
         }
@@ -109,11 +108,6 @@ class Slider extends Model
     public function scopeActive($query)
     {
         return $query->where('status', 1);
-    }
-
-    public function scopeInOrderToWeb($query)
-    {
-        return $query->orderBy('in_order_to', 'desc');
     }
 
 

@@ -17,8 +17,8 @@ class CreateSlidersTable extends Migration
         Schema::create('sliders', function (Blueprint $table) {
             $table->increments('id');
             $table->string('photo');
-            $table->string('link');
-            $table->string('in_order_to');
+            $table->string('link')->nullable();
+            $table->unsignedInteger('in_order_to')->default(1);
             $table->string('status')
                 ->comment('Active, Inactive');
 
@@ -30,9 +30,9 @@ class CreateSlidersTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedInteger('slider_id');
             $table->string('locale', 2)->index();
-            $table->string('title');
-            $table->string('subtitle');
-            $table->string('button_text');
+            $table->string('title')->nullable();
+            $table->string('subtitle')->nullable();
+            $table->string('button_text')->nullable();
             $table->longText('content')->nullable();
 
             $table->unique(['slider_id', 'locale']);

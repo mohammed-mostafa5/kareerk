@@ -19,11 +19,11 @@
                     </div>
                     <div class="card-body">
                         @include('adminPanel.services.table')
-                        <div class="pull-right mr-3">
+                        {{-- <div class="pull-right mr-3">
 
                             @include('coreui-templates::common.paginate', ['records' => $services])
 
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
