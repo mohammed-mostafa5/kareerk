@@ -18,6 +18,7 @@ class CreateServicesTable extends Migration
             $table->increments('id');
             $table->integer('parent_id')->nullable();
             $table->string('photo')->nullable();
+            $table->string('icon')->nullable();
             $table->unsignedTinyInteger('status')->comment('0 => Inactive, 1 => Active');
             $table->timestamps();
             $table->softDeletes();

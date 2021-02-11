@@ -193,6 +193,73 @@
 </div> --}}
 
 
+{{--////////// Jobs ////////////--}}
+<div class="accordion nav-item" id="accordionJobs">
+    <div class="card bg-dark m-0">
+        <div class="card-header p-1" id="headingJobs">
+            <h2 class="mb-0">
+                <button class="btn btn-link text-decoration-none" type="button" data-toggle="collapse" data-target="#collapseJobs" aria-expanded="true" aria-controls="collapseJobs">
+                    <i class="nav-icon icon-docs mr-2"></i>
+                    <strong>Jobs</strong>
+                </button>
+            </h2>
+        </div>
+
+        <div id="collapseJobs" class="collapse " aria-labelledby="headingJobs" data-parent="#accordionJobs">
+            <div class="card-body bg-secondary p-0">
+
+
+
+                @can('jobs view')
+                <li class="nav-item {{ Request::is('adminPanel/jobs*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('adminPanel.jobs.index') }}">
+                        <i class="nav-icon icon-cursor"></i>
+                        <span>@lang('models/jobs.plural')</span>
+                    </a>
+                </li>
+                @endcan
+
+                @can('services view')
+                <li class="nav-item {{ Request::is('adminPanel/services*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('adminPanel.services.index') }}">
+                        <i class="nav-icon icon-cursor"></i>
+                        <span>@lang('models/services.plural')</span>
+                    </a>
+                </li>
+                @endcan
+                @can('skills view')
+                <li class="nav-item {{ Request::is('adminPanel/skills*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('adminPanel.skills.index') }}">
+                        <i class="nav-icon icon-cursor"></i>
+                        <span>@lang('models/skills.plural')</span>
+                    </a>
+                </li>
+                @endcan
+
+                @can('countries view')
+                <li class="nav-item {{ Request::is('adminPanel/countries*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('adminPanel.countries.index') }}">
+                        <i class="nav-icon icon-cursor"></i>
+                        <span>@lang('models/countries.plural')</span>
+                    </a>
+                </li>
+                @endcan
+                @can('languages view')
+                <li class="nav-item {{ Request::is('adminPanel/languages*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('adminPanel.languages.index') }}">
+                        <i class="nav-icon icon-cursor"></i>
+                        <span>@lang('models/languages.plural')</span>
+                    </a>
+                </li>
+                @endcan
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
 {{--////////// Contact ////////////--}}
 <div class="accordion nav-item" id="accordionContact">
     <div class="card bg-dark m-0">
@@ -243,47 +310,7 @@
 
 @endsection
 
-@can('services view')
-<li class="nav-item {{ Request::is('adminPanel/services*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('adminPanel.services.index') }}">
-        <i class="nav-icon icon-cursor"></i>
-        <span>@lang('models/services.plural')</span>
-    </a>
-</li>
-@endcan
-@can('skills view')
-<li class="nav-item {{ Request::is('adminPanel/skills*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('adminPanel.skills.index') }}">
-        <i class="nav-icon icon-cursor"></i>
-        <span>@lang('models/skills.plural')</span>
-    </a>
-</li>
-@endcan
 
-@can('countries view')
-<li class="nav-item {{ Request::is('adminPanel/countries*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('adminPanel.countries.index') }}">
-        <i class="nav-icon icon-cursor"></i>
-        <span>@lang('models/countries.plural')</span>
-    </a>
-</li>
-@endcan
-@can('languages view')
-<li class="nav-item {{ Request::is('adminPanel/languages*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('adminPanel.languages.index') }}">
-        <i class="nav-icon icon-cursor"></i>
-        <span>@lang('models/languages.plural')</span>
-    </a>
-</li>
-@endcan
-@can('jobs view')
-<li class="nav-item {{ Request::is('adminPanel/jobs*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('adminPanel.jobs.index') }}">
-        <i class="nav-icon icon-cursor"></i>
-        <span>@lang('models/jobs.plural')</span>
-    </a>
-</li>
-@endcan
 
 {{-- <li class="nav-item {{ Request::is('adminPanel/chats*') ? 'active' : '' }}">
 <a class="nav-link" href="{{ route('adminPanel.chats.index') }}">

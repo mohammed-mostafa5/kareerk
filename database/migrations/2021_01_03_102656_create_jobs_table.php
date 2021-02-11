@@ -90,7 +90,7 @@ class CreateJobsTable extends Migration
         Schema::create('proposal_milestones', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('proposal_id');
-            $table->string('description');
+            $table->text('description');
             $table->integer('duration');
             $table->unsignedTinyInteger('duration_type')->comment('1 => Hour, 2 => Day, 3 => Week, 4 => Month');
             $table->string('amount');

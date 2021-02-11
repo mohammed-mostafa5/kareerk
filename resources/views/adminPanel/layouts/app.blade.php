@@ -47,7 +47,7 @@
         <button class="navbar-toggler sidebar-toggler d-lg-none mr-auto" type="button" data-toggle="sidebar-show">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="{{ route('website.home') }}">
+        <a class="navbar-brand" href="#">
             @if ($settings->where('key', 'theme')->first()->value == 'wordpress')
             {{config('app.name')}}
             @else

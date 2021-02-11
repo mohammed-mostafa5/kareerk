@@ -31,9 +31,7 @@ class ProposalFiles extends Model
 
             $fileName = $this->createFileName($file);
 
-            $this->originalImage($file, $fileName);
-
-            $this->thumbImage($file, $fileName);
+            $this->saveFile($file, $fileName);
 
             $this->attributes['file'] = $fileName;
         }

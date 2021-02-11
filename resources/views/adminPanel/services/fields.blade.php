@@ -40,6 +40,12 @@
         {!! Form::file('photo',['class' => 'form-control']) !!}
     </div>
 
+    <!-- icon Field -->
+    <div class="form-group col-sm-6">
+        {!! Form::label('icon', 'Icon :') !!}
+        {!! Form::text('icon', null,['class' => 'form-control']) !!}
+    </div>
+
     <!-- Status Field -->
     <div class="form-group col-sm-12">
         {!! Form::label('status', __('models/services.fields.status').':') !!}

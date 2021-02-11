@@ -27,6 +27,7 @@ class Service extends Model
     public $fillable = [
         'parent_id',
         'photo',
+        'icon',
         'status'
     ];
 
@@ -54,6 +55,7 @@ class Service extends Model
 
         $rules['status'] = 'required|in:0,1';
         $rules['photo'] = '';
+        $rules['icon'] = '';
 
         return $rules;
     }
@@ -70,6 +72,7 @@ class Service extends Model
     {
         return $this->photo ? asset('uploads/images/original/' . $this->photo) : null;
     }
+
 
 
     #################################################################################
@@ -92,7 +95,6 @@ class Service extends Model
 
     public function setPhotoAttribute($file)
     {
-
         try {
             if ($file) {
 

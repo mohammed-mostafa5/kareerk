@@ -393,11 +393,13 @@ class HomeController extends Controller
             }
         }
 
-        foreach ($request->file as $file) {
-            $proposal->files()->create([
-                'proposal_id' => $proposal->id,
-                'file' => $file
-            ]);
+        if ($request->file) {
+            foreach ($request->file as $file) {
+                $proposal->files()->create([
+                    'proposal_id' => $proposal->id,
+                    'file' => $file
+                ]);
+            }
         }
 
         $proposalData = $proposal->load('milestones', 'files');
@@ -503,6 +505,7 @@ class HomeController extends Controller
         $jobData->load('client.user', 'files', 'skills', 'service.mainService');
         return response()->json(compact('jobData'));
     }
+
 
     // Job Step 1
     public function jobTitle(Request $request)
@@ -699,7 +702,7 @@ class HomeController extends Controller
     public function clientInvitations()
     {
         $client = Client::find(auth('api')->user()->userable_id);
-        $invitations = $client->invitations()->with('freelancer.services', 'freelancer.mainService', 'freelancer.skills', 'freelancer.education', 'freelancer.employment', 'freelancer.languages')->get();
+        $invitations = $client->invitations()->with('freelancer.user')->get();
 
         return response()->json(compact('invitations'));
     }
@@ -967,7 +970,7 @@ class HomeController extends Controller
         $milestone = ProposalMilestone::findOrFail($request->milestone_id);
         $milestone->update(['payment_at' => now()]);
 
-        return response()->json(['msg' => 'Done']);
+        return response()->json(compact('milestone'));
     }
 
     public function milestoneFinish(Request $request)
@@ -978,7 +981,7 @@ class HomeController extends Controller
         $milestone = ProposalMilestone::findOrFail($request->milestone_id);
         $milestone->update(['finished_at' => now()]);
 
-        return response()->json(['msg' => 'Done']);
+        return response()->json(compact('milestone'));
     }
 
     public function milestoneAccept(Request $request)
@@ -989,7 +992,7 @@ class HomeController extends Controller
         $milestone = ProposalMilestone::findOrFail($request->milestone_id);
         $milestone->update(['status' => 2]);
 
-        return response()->json(['msg' => 'Done']);
+        return response()->json(compact('milestone'));
     }
 
     public function milestoneDone(Request $request)
@@ -1000,7 +1003,7 @@ class HomeController extends Controller
         $milestone = ProposalMilestone::findOrFail($request->milestone_id);
         $milestone->update(['status' => 3]);
 
-        return response()->json(['msg' => 'Done']);
+        return response()->json(compact('milestone'));
     }
 
     public function milestoneHasProblem(Request $request)
@@ -1011,7 +1014,7 @@ class HomeController extends Controller
         $milestone = ProposalMilestone::findOrFail($request->milestone_id);
         $milestone->update(['status' => 4]);
 
-        return response()->json(['msg' => 'Done']);
+        return response()->json(compact('milestone'));
     }
 
 
