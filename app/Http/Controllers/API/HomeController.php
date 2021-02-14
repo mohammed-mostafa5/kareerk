@@ -36,15 +36,16 @@ use Illuminate\Http\Request;
 use App\Models\ProductReview;
 use App\Events\ProductDetails;
 use App\Models\ProductGallery;
+use Illuminate\Validation\Rule;
 use App\Events\SendNotification;
 use App\Mail\ProductReceivedMail;
+use App\Models\ProposalMilestone;
 use App\Mail\ProductDeliveredMail;
 use Illuminate\Support\Facades\DB;
 use App\Models\FreelancerEducation;
 use App\Helpers\HelperFunctionTrait;
 use App\Http\Controllers\Controller;
 use App\Models\FreelancerEmployment;
-use App\Models\ProposalMilestone;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Builder;
@@ -195,7 +196,23 @@ class HomeController extends Controller
 
     public function job($id)
     {
-        $job = Job::with('client.user', 'files', 'skills', 'service.mainService', 'proposals.freelancer.user', 'proposals.milestones', 'proposals.files')->find($id);
+
+        $job = Job::find($id);
+
+        $user = auth('api')->user();
+        $isOwner = $user->userable_type == 'App\\Models\\Client' && $job->client_id == $user->userable_id;
+
+        $job->load([
+            'client.user', 'files', 'skills', 'service.mainService', 'proposals' => function ($query)  use ($isOwner, $user) {
+                if (!$isOwner) {
+                    if ($user->userable_type == 'App\\Models\\Client') {
+                        $query->where('freelancer_id', null);
+                    } else {
+                        $query->where('freelancer_id', $user->userable_id);
+                    }
+                }
+            }, 'proposals.freelancer.user', 'proposals.milestones', 'proposals.files'
+        ]);
 
         return response()->json(compact('job'));
     }
@@ -209,7 +226,7 @@ class HomeController extends Controller
 
     public function freelancer($id)
     {
-        $freelancer = Freelancer::with('services', 'mainService', 'skills', 'education', 'employment', 'languages')->find($id);
+        $freelancer = Freelancer::with('user.country', 'services', 'mainService', 'skills', 'education', 'employment', 'languages')->find($id);
 
         return response()->json(compact('freelancer'));
     }
@@ -459,14 +476,15 @@ class HomeController extends Controller
         }
 
         $jobs = $jobsQuery->get();
+        $jobs->load('skills', 'service.mainService');
 
         return response()->json(compact('jobs'));
     }
 
-    public function freelancerJobs()
+    public function freelancerJobs($id)
     {
-        $jobs = Job::whereHas('proposals', function (Builder $query) {
-            $query->where('freelancer_id', auth('api')->user()->userable_id)
+        $jobs = Job::whereHas('proposals', function (Builder $query) use ($id) {
+            $query->where('freelancer_id', $id)
                 ->where('accepted', 1);
         })->get();
 
@@ -489,7 +507,7 @@ class HomeController extends Controller
     public function freelancerInvitations()
     {
         $freelancer = Freelancer::find(auth('api')->user()->userable_id);
-        $invitations = $freelancer->invitations()->with('job.files', 'job.skills', 'job.service.mainService')->get();
+        $invitations = $freelancer->invitations()->with('job.client.user', 'job.skills', 'job.service.mainService')->get();
 
         return response()->json(compact('invitations'));
     }
@@ -682,11 +700,12 @@ class HomeController extends Controller
         return response()->json(compact('jobData'));
     }
 
-    public function clientJobs()
+    public function clientJobs($id)
     {
-        $jobs = Job::where('client_id', auth('api')->user()->userable->id)->with('client.user', 'files', 'skills', 'service.mainService')->get();
+        $jobs = Job::where('client_id', $id)->with('client.user', 'files', 'skills', 'service.mainService')->get();
+        $user = Client::find($id)->user;
 
-        return response()->json(compact('jobs'));
+        return response()->json(compact('jobs', 'user'));
     }
 
     public function clientUnpublishedJobs()
@@ -702,7 +721,7 @@ class HomeController extends Controller
     public function clientInvitations()
     {
         $client = Client::find(auth('api')->user()->userable_id);
-        $invitations = $client->invitations()->with('freelancer.user')->get();
+        $invitations = $client->invitations()->with('freelancer.user', 'job')->get();
 
         return response()->json(compact('invitations'));
     }
@@ -726,13 +745,6 @@ class HomeController extends Controller
         event(new SendNotification($notification));
 
         return response()->json(compact('proposalData'));
-    }
-
-    public function clientProfile()
-    {
-        $jobs = Job::where('client_id', request('client_id'))->with('client.user', 'files', 'skills', 'service.mainService', 'proposals.freelancer')->get();
-
-        return response()->json(compact('jobs'));
     }
 
     ##########################################################################
@@ -771,7 +783,7 @@ class HomeController extends Controller
     {
         $request->validate([
             'chat_id' => 'required',
-            'text'    => 'nullable',
+            'text'    => Rule::requiredIf(!$request->file),
             'file'    => 'nullable|array',
             'file.*'  => 'nullable|image',
         ]);

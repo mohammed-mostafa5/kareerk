@@ -33,9 +33,9 @@ Route::post('send-contact', 'HomeController@sendContactMessage');
 Route::post('newsletter', 'HomeController@newsletter');
 
 // Products
-Route::get('categories', 'HomeController@categories');
-Route::get('products', 'HomeController@products');
-Route::get('products/{id}', 'HomeController@product');
+// Route::get('categories', 'HomeController@categories');
+// Route::get('products', 'HomeController@products');
+// Route::get('products/{id}', 'HomeController@product');
 
 Route::get('landing-page', 'HomeController@landingPage');
 Route::get('landing-page-search', 'HomeController@landingPageSearch');
@@ -44,9 +44,8 @@ Route::get('freelancers', 'HomeController@freelancers');
 Route::get('skills', 'HomeController@skills');
 Route::get('countries', 'HomeController@countries');
 Route::get('languages', 'HomeController@languages');
-Route::get('job/{id}', 'HomeController@job');
-Route::get('proposal/{id}', 'HomeController@proposal');
-Route::get('freelancer/{id}', 'HomeController@freelancer');
+
+
 // Authenticated Routes
 Route::group(['middleware' => ['auth:api']], function () {
 
@@ -64,7 +63,6 @@ Route::group(['middleware' => ['auth:api']], function () {
         Route::post('freelancer-finish-profile', 'HomeController@freelancerFinishProfile');
         Route::post('submit-proposal', 'HomeController@submitProposal');
         Route::get('freelancer-home', 'HomeController@freelancerHome');
-        Route::get('freelancer-jobs', 'HomeController@freelancerJobs');
         Route::get('freelancer-proposals', 'HomeController@freelancerProposals');
         Route::get('freelancer-invitations', 'HomeController@freelancerInvitations');
     });
@@ -80,7 +78,6 @@ Route::group(['middleware' => ['auth:api']], function () {
         Route::post('job-invitation', 'HomeController@jobInvitation');
         Route::get('freelancers-search', 'HomeController@freelancersSearch');
         Route::post('accept-proposal', 'HomeController@acceptProposal');
-        Route::get('client-jobs', 'HomeController@clientJobs');
         Route::get('client-unpublished-jobs', 'HomeController@clientUnpublishedJobs');
         Route::get('client-invitations', 'HomeController@clientInvitations');
     });
@@ -96,7 +93,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('clear-notifications', 'HomeController@clearNotifications');
     Route::get('notification-seen/{id}', 'HomeController@notificationSeen');
 
-
     // Milestones
     Route::post('add-milestone', 'HomeController@addMilestone');
     Route::post('update-milestone', 'HomeController@updateMilestone');
@@ -108,7 +104,12 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('milestone-has-problem', 'HomeController@milestoneHasProblem');
 
 
-    Route::get('client-profile', 'HomeController@clientProfile');
+    Route::get('job/{id}', 'HomeController@job');
+    Route::get('proposal/{id}', 'HomeController@proposal');
+    Route::get('freelancer/{id}', 'HomeController@freelancer');
+    Route::get('freelancer-jobs/{id}', 'HomeController@freelancerJobs');
+    Route::get('client-jobs/{id}', 'HomeController@clientJobs');
+    // Route::get('client-profile', 'HomeController@clientProfile');
 
 
 
