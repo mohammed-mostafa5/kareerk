@@ -40,6 +40,7 @@ class Job extends Model
         'description',
         'expertise_level',
         'visibility',
+        'available',
         'freelancers_count',
         'payment_type',
         'budget',

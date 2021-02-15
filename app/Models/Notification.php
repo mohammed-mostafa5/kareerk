@@ -32,4 +32,14 @@ class Notification extends Model
     {
         return $this->belongsTo(User::class, 'other_user_id', 'id');
     }
+
+    #############################################
+
+
+    public function getCreatedAtAttribute()
+    {
+        if (isset($this->attributes['created_at'])) {
+            return \Carbon\Carbon::parse($this->attributes['created_at'])->diffForHumans();
+        }
+    }
 }

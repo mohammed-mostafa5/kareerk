@@ -59,6 +59,7 @@ class HomeController extends Controller
         return ('test home');
     }
 
+    // Auth
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -87,7 +88,6 @@ class HomeController extends Controller
 
         return response()->json(compact('user', 'token', 'freelancer', 'client', 'chatContactsData'));
     }
-
 
     public function register(Request $request)
     {
@@ -232,6 +232,8 @@ class HomeController extends Controller
     }
 
     ##########################################################################
+
+    // Freelancer
 
     // Freelancer Step 1
     public function freelancerExpertise(Request $request)
@@ -391,11 +393,14 @@ class HomeController extends Controller
             'file'          => 'nullable|array',
             'file.*'        => 'nullable|mimes:jpeg,png,jpg,pdf,docx',
         ]);
-
+        $validated['freelancer_id'] = auth('api')->user()->userable_id;
         $job = Job::find($request->job_id);
+        $freelancers = $job->proposals()->pluck('freelancer_id')->toArray();
+        if (in_array(auth('api')->user()->userable_id, $freelancers)) {
+            return response()->json(['msg' => "You are already submit a proposal on this job"], 420);
+        }
         $milestones = json_decode($request->milestone);
 
-        $validated['freelancer_id'] = auth('api')->user()->userable_id;
 
         $proposal = $job->proposals()->create($validated);
         if ($milestones) {
@@ -514,6 +519,8 @@ class HomeController extends Controller
 
     ##########################################################################
 
+    // Client
+
     // Create Job
     public function createJob(Request $request)
     {
@@ -523,7 +530,6 @@ class HomeController extends Controller
         $jobData->load('client.user', 'files', 'skills', 'service.mainService');
         return response()->json(compact('jobData'));
     }
-
 
     // Job Step 1
     public function jobTitle(Request $request)
@@ -667,7 +673,6 @@ class HomeController extends Controller
         return response()->json(compact('freelancers'));
     }
 
-
     public function jobInvitation(Request $request)
     {
         $request->validate([
@@ -696,6 +701,16 @@ class HomeController extends Controller
         }
 
         event(new SendNotification($notification));
+
+        return response()->json(compact('jobData'));
+    }
+
+    public function jobAvailability()
+    {
+        $job = Job::findOrFail(request('job_id'));
+        $job->update(['available' => request('available')]);
+
+        $jobData = $job->load('client.user', 'files', 'skills', 'service.mainService');
 
         return response()->json(compact('jobData'));
     }
@@ -914,6 +929,7 @@ class HomeController extends Controller
         return response()->json(['msg' => 'ok']);
     }
 
+    ##########################################################################
 
     // Milestones Handle
     public function addMilestone(Request $request)
@@ -935,6 +951,8 @@ class HomeController extends Controller
             'amount'            => $request->amount,
             'expected_start'    => $request->expected_start,
         ]);
+
+        $milestone = ProposalMilestone::find($milestone->id);
 
         return response()->json(compact('milestone'));
     }

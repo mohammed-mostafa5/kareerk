@@ -32,11 +32,6 @@ Route::get('metas', 'HomeController@metas');
 Route::post('send-contact', 'HomeController@sendContactMessage');
 Route::post('newsletter', 'HomeController@newsletter');
 
-// Products
-// Route::get('categories', 'HomeController@categories');
-// Route::get('products', 'HomeController@products');
-// Route::get('products/{id}', 'HomeController@product');
-
 Route::get('landing-page', 'HomeController@landingPage');
 Route::get('landing-page-search', 'HomeController@landingPageSearch');
 Route::get('services', 'HomeController@services');
@@ -73,6 +68,7 @@ Route::group(['middleware' => ['auth:api']], function () {
         Route::post('job-description', 'HomeController@jobDescription');
         Route::post('job-expertise', 'HomeController@jobExpertise');
         Route::post('job-visibility', 'HomeController@jobVisibility');
+        Route::post('job-availability', 'HomeController@jobAvailability');
         Route::post('job-budget', 'HomeController@jobBudget');
         Route::post('job-publish', 'HomeController@jobPublish');
         Route::post('job-invitation', 'HomeController@jobInvitation');
@@ -109,7 +105,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('freelancer/{id}', 'HomeController@freelancer');
     Route::get('freelancer-jobs/{id}', 'HomeController@freelancerJobs');
     Route::get('client-jobs/{id}', 'HomeController@clientJobs');
-    // Route::get('client-profile', 'HomeController@clientProfile');
 
 
 
