@@ -25,7 +25,7 @@ Route::post('forgotPassword', '\App\Http\Controllers\Auth\ForgotPasswordControll
 // Pages
 Route::get('home', 'HomeController@home');
 Route::get('reviews', 'HomeController@reviews');
-Route::get('faqs', 'HomeController@faqs');
+// Route::get('faqs', 'HomeController@faqs');
 Route::get('informations', 'HomeController@informations');
 Route::get('pages/{id}', 'HomeController@pages');
 Route::get('metas', 'HomeController@metas');
@@ -33,7 +33,7 @@ Route::post('send-contact', 'HomeController@sendContactMessage');
 Route::post('newsletter', 'HomeController@newsletter');
 
 Route::get('landing-page', 'HomeController@landingPage');
-Route::get('landing-page-search', 'HomeController@landingPageSearch');
+// Route::get('landing-page-search', 'HomeController@landingPageSearch');
 Route::get('services', 'HomeController@services');
 Route::get('freelancers', 'HomeController@freelancers');
 Route::get('skills', 'HomeController@skills');

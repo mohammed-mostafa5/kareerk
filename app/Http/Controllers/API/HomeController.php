@@ -59,7 +59,7 @@ class HomeController extends Controller
         return ('test home');
     }
 
-    // Auth
+    // Authentication
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -153,18 +153,18 @@ class HomeController extends Controller
         return response()->json(compact('slider', 'services'));
     }
 
-    public function landingPageSearch()
-    {
-        $servicesQuery = Service::query();
+    // public function landingPageSearch()
+    // {
+    //     $servicesQuery = Service::query();
 
-        if (request()->filled('service')) {
-            $servicesQuery->whereTranslationLike('name', '%' . request('service') . '%');
-        }
+    //     if (request()->filled('service')) {
+    //         $servicesQuery->whereTranslationLike('name', '%' . request('service') . '%');
+    //     }
 
-        $services = $servicesQuery->get();
+    //     $services = $servicesQuery->get();
 
-        return response()->json(compact('services'));
-    }
+    //     return response()->json(compact('services'));
+    // }
 
     public function freelancers()
     {
