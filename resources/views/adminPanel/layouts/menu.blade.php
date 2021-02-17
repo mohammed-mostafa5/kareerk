@@ -199,7 +199,7 @@
         <div class="card-header p-1" id="headingJobs">
             <h2 class="mb-0">
                 <button class="btn btn-link text-decoration-none" type="button" data-toggle="collapse" data-target="#collapseJobs" aria-expanded="true" aria-controls="collapseJobs">
-                    <i class="nav-icon icon-docs mr-2"></i>
+                    <i class="nav-icon icon-briefcase mr-2"></i>
                     <strong>Jobs</strong>
                 </button>
             </h2>

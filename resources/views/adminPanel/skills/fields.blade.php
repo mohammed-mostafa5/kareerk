@@ -22,9 +22,17 @@
 
     <!-- Service Id Field -->
     <div class="form-group col-sm-6">
-        {!! Form::label('service_id', __('models/skills.fields.service_id').':') !!}
+        {!! Form::label('service_id', __('models/skills.fields.service').':') !!}
         {!! Form::select('service_id', $services, isset($skill->service_id) ?? null, ['class' => 'form-control']) !!}
     </div>
+
+
+    <!-- Parent Id Field -->
+    <div class="form-group col-sm-6">
+        {!! Form::label('parent_id', __('models/services.fields.parent').':') !!}
+        {!! Form::select('parent_id', $parents , isset($skill->parent_id) ?? null, ['class' => 'form-control', 'placeholder' => 'Select Main Skill']) !!}
+    </div>
+
 
     <!-- Status Field -->
     <div class="form-group col-sm-12">

@@ -24,7 +24,7 @@ Route::post('forgotPassword', '\App\Http\Controllers\Auth\ForgotPasswordControll
 
 // Pages
 Route::get('home', 'HomeController@home');
-Route::get('reviews', 'HomeController@reviews');
+// Route::get('reviews', 'HomeController@reviews');
 // Route::get('faqs', 'HomeController@faqs');
 Route::get('informations', 'HomeController@informations');
 Route::get('pages/{id}', 'HomeController@pages');

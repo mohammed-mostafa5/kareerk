@@ -59,7 +59,10 @@ class HomeController extends Controller
         return ('test home');
     }
 
+    ##########################################################################
+
     // Authentication
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -131,19 +134,7 @@ class HomeController extends Controller
 
     ##########################################################################
 
-    public function pages($id)
-    {
-        $page = Page::with('paragraph', 'image')->find($id);
-
-        return response()->json(compact('page'));
-    }
-
-    public function services()
-    {
-        $services = Service::parent()->with('children')->active()->get();
-
-        return response()->json(compact('services'));
-    }
+    // Pages
 
     public function landingPage()
     {
@@ -151,6 +142,73 @@ class HomeController extends Controller
         $services = Service::active()->get();
 
         return response()->json(compact('slider', 'services'));
+    }
+
+    public function pages($id)
+    {
+        $page = Page::with('paragraph', 'image')->find($id);
+
+        return response()->json(compact('page'));
+    }
+
+    public function informations()
+    {
+        $informations = Information::get();
+
+        $phone = $informations->where('id', 1)->first()->value;
+        $phone2 = $informations->where('id', 2)->first()->value;
+        $email = $informations->where('id', 3)->first()->value;
+        $address = $informations->where('id', 4)->first()->value;
+
+        $social = SocialLink::get();
+
+        $facebook = $social->where('id', 1)->first()->link;
+        $twitter = $social->where('id', 2)->first()->link;
+        $instagram = $social->where('id', 3)->first()->link;
+        $linkedIn = $social->where('id', 4)->first()->link;
+
+        return response()->json(compact('phone', 'phone2', 'email', 'address', 'facebook', 'twitter', 'instagram', 'linkedIn'));
+    }
+
+    public function sendContactMessage(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|min:3|max:191',
+            'email' => 'required|email|min:3|max:191',
+            'phone' => 'required',
+            'message' => 'required|string|min:3',
+        ]);
+        Contact::create($validated);
+
+        return response()->json(['msg' => 'success']);
+    }
+
+    public function newsletter(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email|min:3|max:191|unique:newsletters,email',
+        ]);
+        Newsletter::create($validated);
+
+        return response()->json(['msg' => 'success']);
+    }
+
+    public function metas()
+    {
+        $metas = Meta::get();
+
+        return response()->json(compact('metas'));
+    }
+
+    ##########################################################################
+
+    // General
+
+    public function services()
+    {
+        $services = Service::parent()->with('children')->active()->get();
+
+        return response()->json(compact('services'));
     }
 
     // public function landingPageSearch()
@@ -242,13 +300,15 @@ class HomeController extends Controller
             'main_service_id' => 'required',
             'expertise_level' => 'required',
         ]);
-        $freelancer = auth('api')->user();
+        $freelancer = auth('api')->user()->userable;
 
-        $freelancer->userable->update($validated);
-        $freelancer->userable->services()->sync($request->service_id);
-        $freelancer->userable->skills()->sync($request->skill_id);
-        $freelancer->userable->update(['step' => 2]);
-        $freelancerData = $freelancer->userable->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        $freelancer->update($validated);
+        $freelancer->services()->sync($request->service_id);
+        $freelancer->skills()->sync($request->skill_id);
+        if ($freelancer->step != 9) {
+            $freelancer->update(['step' => 2]);
+        }
+        $freelancerData = $freelancer->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -271,8 +331,9 @@ class HomeController extends Controller
                 'description'   => $education->description,
             ]);
         }
-
-        $freelancer->update(['step' => 3]);
+        if ($freelancer->step != 9) {
+            $freelancer->update(['step' => 3]);
+        }
         $freelancerData = $freelancer->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
@@ -302,8 +363,9 @@ class HomeController extends Controller
                 'still_working' => $employment->still_working,
             ]);
         }
-
-        $freelancer->update(['step' => 4]);
+        if ($freelancer->step != 9) {
+            $freelancer->update(['step' => 4]);
+        }
         $freelancerData = $freelancer->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
@@ -315,8 +377,9 @@ class HomeController extends Controller
         $languages = json_decode($request->languages, true);
 
         $freelancer->languages()->sync($languages);
-
-        $freelancer->update(['step' => 5]);
+        if ($freelancer->step != 9) {
+            $freelancer->update(['step' => 5]);
+        }
         $freelancerData = $freelancer->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
@@ -328,7 +391,9 @@ class HomeController extends Controller
         $request->validate([
             'hourly_rate' => 'required',
         ]);
-        $freelancer->userable->update(['step' => 6, 'hourly_rate' => $request->hourly_rate]);
+        $step = $freelancer->step == 9 ? 9 : 6;
+
+        $freelancer->userable->update(['step' => $step, 'hourly_rate' => $request->hourly_rate]);
         $freelancerData = $freelancer->userable->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
@@ -341,7 +406,10 @@ class HomeController extends Controller
             'title'     => 'required',
             'overview'  => 'required',
         ]);
-        $freelancer->userable->update(['step' => 7, 'title' => $request->title, 'overview' => $request->overview]);
+
+        $step = $freelancer->step == 9 ? 9 : 7;
+
+        $freelancer->userable->update(['step' => $step, 'title' => $request->title, 'overview' => $request->overview]);
         $freelancerData = $freelancer->userable->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
@@ -353,7 +421,10 @@ class HomeController extends Controller
         $request->validate([
             'photo' => 'required',
         ]);
-        $freelancer->userable->update(['step' => 7, 'photo' => $request->photo]);
+
+        $step = $freelancer->step == 9 ? 9 : 8;
+
+        $freelancer->userable->update(['step' => $step, 'photo' => $request->photo]);
         $freelancerData = $freelancer->userable->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
@@ -369,7 +440,7 @@ class HomeController extends Controller
         $freelancer = auth('api')->user()->userable;
 
         $status = $freelancer->status < 1 ? 1 :  $freelancer->status;
-        $freelancer->update(['step' => 8, 'status' => $status, 'city' => $request->city, 'address' => $request->address]);
+        $freelancer->update(['step' => 9, 'status' => $status, 'city' => $request->city, 'address' => $request->address]);
         $freelancerData = $freelancer->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
@@ -765,6 +836,7 @@ class HomeController extends Controller
     ##########################################################################
 
     // Chat
+
     public function userChatContacts($flag = false)
     {
         $this->handleChatContact();
@@ -890,6 +962,7 @@ class HomeController extends Controller
     ##########################################################################
 
     // Notifications
+
     public function notifications()
     {
         $userId = auth('api')->id();
@@ -932,6 +1005,7 @@ class HomeController extends Controller
     ##########################################################################
 
     // Milestones Handle
+
     public function addMilestone(Request $request)
     {
         $request->validate([

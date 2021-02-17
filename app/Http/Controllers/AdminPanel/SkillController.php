@@ -7,6 +7,7 @@ use App\Http\Requests\AdminPanel\UpdateSkillRequest;
 use App\Repositories\AdminPanel\SkillRepository;
 use App\Http\Controllers\AppBaseController;
 use App\Models\Service;
+use App\Models\Skill;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
@@ -97,13 +98,14 @@ class SkillController extends AppBaseController
         $skill = $this->skillRepository->find($id);
         $services = Service::active()->get()->pluck('name', 'id');
 
+        $parents = Skill::parent()->get()->pluck('name', 'id');
         if (empty($skill)) {
             Flash::error(__('messages.not_found', ['model' => __('models/skills.singular')]));
 
             return redirect(route('adminPanel.skills.index'));
         }
 
-        return view('adminPanel.skills.edit', compact('services', 'skill'));
+        return view('adminPanel.skills.edit', compact('services', 'skill', 'parents'));
     }
 
     /**
