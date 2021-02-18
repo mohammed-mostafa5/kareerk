@@ -39,6 +39,13 @@
         table td img {
             width: 100px;
         }
+
+        main.main {
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+            background-blend-mode: overlay;
+        }
     </style>
 </head>
 
@@ -106,7 +113,7 @@
 
     <div class="app-body">
         @include('adminPanel.layouts.sidebar')
-        <main class="main">
+        <main class="main" style="background-image: url({{asset('logo.png')}});">
             @yield('content')
         </main>
     </div>

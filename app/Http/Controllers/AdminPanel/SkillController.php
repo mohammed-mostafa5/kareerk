@@ -45,7 +45,9 @@ class SkillController extends AppBaseController
     public function create()
     {
         $services = Service::active()->get()->pluck('name', 'id');
-        return view('adminPanel.skills.create', compact('services'));
+        $parents = Skill::parent()->get()->pluck('name', 'id');
+
+        return view('adminPanel.skills.create', compact('services', 'parents'));
     }
 
     /**
