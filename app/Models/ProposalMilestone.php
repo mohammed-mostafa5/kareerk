@@ -21,4 +21,18 @@ class ProposalMilestone extends Model
         'payment_at',
         'finished_at',
     ];
+
+
+
+    // Relations
+
+    /**
+     * Get the prpposal that owns the ProposalMilestone
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function proposal()
+    {
+        return $this->belongsTo(JobProposal::class, 'proposal_id', 'id');
+    }
 }

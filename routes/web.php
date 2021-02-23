@@ -135,6 +135,8 @@ Route::group(['prefix' => 'adminPanel', 'namespace' => 'AdminPanel', 'as' => 'ad
         Route::resource('languages', 'LanguageController');
         Route::resource('jobs', 'JobController');
 
+        Route::resource('milestones', 'MilestoneController')->only(['index', 'show']);
+
         // //Settings
         Route::get('customSettings', 'CustomSettingController@settings')->name('customSettings.show');
         Route::patch('customSettings/{id}', 'CustomSettingController@update')->name('customSettings.update');

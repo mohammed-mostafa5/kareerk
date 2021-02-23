@@ -78,7 +78,7 @@ class Freelancer extends Model
 
     public function user()
     {
-        return $this->morphOne('App\Models\User', 'userable');
+        return $this->morphOne(User::class, 'userable');
     }
 
     public function services()

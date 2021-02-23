@@ -43,6 +43,9 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::post('logout', 'HomeController@logout');
 
+    Route::post('update-personal-information', 'HomeController@updatePersonalInformation');
+    Route::post('update-password', 'HomeController@updatePassword');
+
     Route::group(['middleware' => 'checkUserType:Freelancer'], function () {
         Route::post('freelancer-expertise', 'HomeController@freelancerExpertise');
         Route::post('freelancer-education', 'HomeController@freelancerEducation');
@@ -95,7 +98,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('milestone-accept', 'HomeController@milestoneAccept');
     Route::post('milestone-done', 'HomeController@milestoneDone');
     Route::post('milestone-has-problem', 'HomeController@milestoneHasProblem');
-
 
     Route::get('job/{id}', 'HomeController@job');
     Route::get('proposal/{id}', 'HomeController@proposal');

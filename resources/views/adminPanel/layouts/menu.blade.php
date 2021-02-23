@@ -208,13 +208,20 @@
         <div id="collapseJobs" class="collapse " aria-labelledby="headingJobs" data-parent="#accordionJobs">
             <div class="card-body bg-secondary p-0">
 
-
-
                 @can('jobs view')
                 <li class="nav-item {{ Request::is('adminPanel/jobs*') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('adminPanel.jobs.index') }}">
                         <i class="nav-icon icon-cursor"></i>
                         <span>@lang('models/jobs.plural')</span>
+                    </a>
+                </li>
+                @endcan
+
+                @can('milestones view')
+                <li class="nav-item {{ Request::is('adminPanel/milestones*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('adminPanel.milestones.index') }}">
+                        <i class="nav-icon icon-cursor"></i>
+                        <span>@lang('models/milestones.plural')</span>
                     </a>
                 </li>
                 @endcan

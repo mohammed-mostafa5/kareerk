@@ -116,6 +116,36 @@ class HomeController extends Controller
         return response()->json(compact('user', 'token', 'freelancer', 'client'));
     }
 
+    public function updatePersonalInformation(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|min:3|max:191',
+            'email' => 'required|email',
+            'phone' => 'required|numeric',
+            "country_id" => "required",
+        ]);
+
+        $user = auth('api')->user();
+
+        $user->update($data);
+
+        return response()->json(compact('user'));
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $user = auth('api')->user();
+        $password = $request->validate(['password' => 'required|string|min:6|confirmed']);
+        if (Hash::check(request('old_password'), $user->password)) {
+
+            $user->update($password);
+
+            return response()->json(['msg',  'success']);
+        }
+
+        return response()->json(['msg',  'Wrong old password']);
+    }
+
     public function logout()
     {
         auth('api')->logout();
@@ -202,19 +232,6 @@ class HomeController extends Controller
         return response()->json(compact('services'));
     }
 
-    // public function landingPageSearch()
-    // {
-    //     $servicesQuery = Service::query();
-
-    //     if (request()->filled('service')) {
-    //         $servicesQuery->whereTranslationLike('name', '%' . request('service') . '%');
-    //     }
-
-    //     $services = $servicesQuery->get();
-
-    //     return response()->json(compact('services'));
-    // }
-
     public function freelancers()
     {
         $freelancers = User::where('userable_type', 'App\Models\Freelancer')->with('userable')->active()->get();
@@ -224,7 +241,9 @@ class HomeController extends Controller
 
     public function skills()
     {
-        $skills = Skill::parent()->with('children')->active()->get();
+        $skills = Skill::parent()->whereHas('service.mainService', function (Builder $query) {
+            $query->where('services.id', request('main_service_id'));
+        })->with('children')->active()->get();
 
         return response()->json(compact('skills'));
     }
@@ -378,21 +397,22 @@ class HomeController extends Controller
     // Freelancer Step 5
     public function freelancerHourlyRate(Request $request)
     {
-        $freelancer = auth('api')->user();
+        $freelancer = auth('api')->user()->userable;
         $request->validate([
             'hourly_rate' => 'required',
         ]);
+        // dd($freelancer->step);
         $step = $freelancer->step == 9 ? 9 : 6;
 
-        $freelancer->userable->update(['step' => $step, 'hourly_rate' => $request->hourly_rate]);
-        $freelancerData = $freelancer->userable->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        $freelancer->update(['step' => $step, 'hourly_rate' => $request->hourly_rate]);
+        $freelancerData = $freelancer->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
     // Freelancer Step 6
     public function freelancerTitleOverview(Request $request)
     {
-        $freelancer = auth('api')->user();
+        $freelancer = auth('api')->user()->userable;
         $request->validate([
             'title'     => 'required',
             'overview'  => 'required',
@@ -400,23 +420,23 @@ class HomeController extends Controller
 
         $step = $freelancer->step == 9 ? 9 : 7;
 
-        $freelancer->userable->update(['step' => $step, 'title' => $request->title, 'overview' => $request->overview]);
-        $freelancerData = $freelancer->userable->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        $freelancer->update(['step' => $step, 'title' => $request->title, 'overview' => $request->overview]);
+        $freelancerData = $freelancer->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
     // Freelancer Step 7
     public function freelancerProfilePhoto(Request $request)
     {
-        $freelancer = auth('api')->user();
+        $freelancer = auth('api')->user()->userable;
         $request->validate([
             'photo' => 'required',
         ]);
 
         $step = $freelancer->step == 9 ? 9 : 8;
 
-        $freelancer->userable->update(['step' => $step, 'photo' => $request->photo]);
-        $freelancerData = $freelancer->userable->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
+        $freelancer->update(['step' => $step, 'photo' => $request->photo]);
+        $freelancerData = $freelancer->load('services', 'mainService', 'skills', 'education', 'employment', 'languages');
         return response()->json(compact('freelancerData'));
     }
 
@@ -495,9 +515,9 @@ class HomeController extends Controller
         }
 
         $notification = Notification::create([
-            'user_id'        => $proposal->job->client_id,
-            'other_user_id'  => $proposal->freelancer_id,
-            'text'           => 'New Job Proposal',
+            'user_id'        => $proposal->job->client->user->id,
+            'other_user_id'  => $proposal->freelancer->user->id,
+            'text'           => $proposal->freelancer->user->name . ' Submit a new Proposal on your job',
             'type'           => 'job',
             'notifable_id'   => $job->id,
             'notifable_type' => 'App\Models\Job',
@@ -542,7 +562,7 @@ class HomeController extends Controller
             $jobsQuery->where('payment_type', request('payment_type'));
         }
 
-        $jobs = $jobsQuery->get();
+        $jobs = $jobsQuery->latest()->get();
         $jobs->load('skills', 'service.mainService');
 
         return response()->json(compact('jobs'));
@@ -553,7 +573,7 @@ class HomeController extends Controller
         $jobs = Job::whereHas('proposals', function (Builder $query) use ($id) {
             $query->where('freelancer_id', $id)
                 ->where('accepted', 1);
-        })->get();
+        })->latest()->get();
 
         $jobs->load('proposals', 'files', 'skills', 'service.mainService');
 
@@ -564,7 +584,7 @@ class HomeController extends Controller
     {
         $jobs = Job::whereHas('proposals', function (Builder $query) {
             $query->where('freelancer_id', auth('api')->user()->userable_id);
-        })->get();
+        })->latest()->get();
 
         $jobs->load('proposals', 'files', 'skills', 'service.mainService');
 
@@ -574,7 +594,7 @@ class HomeController extends Controller
     public function freelancerInvitations()
     {
         $freelancer = Freelancer::find(auth('api')->user()->userable_id);
-        $invitations = $freelancer->invitations()->with('job.client.user', 'job.skills', 'job.service.mainService')->get();
+        $invitations = $freelancer->invitations()->with('job.client.user', 'job.skills', 'job.service.mainService')->latest()->get();
 
         return response()->json(compact('invitations'));
     }
@@ -730,7 +750,9 @@ class HomeController extends Controller
             });
         }
 
-        $freelancers = $freelancersQuery->with('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages')->get();
+        $invitedFreelancers = Invitation::where('job_id', request('job_id'))->pluck('freelancer_id');
+
+        $freelancers = $freelancersQuery->whereNotIn('id', $invitedFreelancers)->with('user', 'services', 'mainService', 'skills', 'education', 'employment', 'languages')->get();
 
         return response()->json(compact('freelancers'));
     }
@@ -749,13 +771,15 @@ class HomeController extends Controller
 
         $job->invitations()->syncWithoutDetaching(request('freelancer_id'));
 
-        $jobData = $job->with('invitations')->get();
+        $jobData = $job->with('invitations')->latest()->get();
 
-        foreach (request('freelancer_id') as $freelancerId) {
+        $freelancerUsersId = User::whereIn('userable_id', request('freelancer_id'))->where('userable_type', 'App\Models\Freelancer')->pluck('id');
+
+        foreach ($freelancerUsersId as $userId) {
             $notification = Notification::create([
-                'user_id'        => $freelancerId,
-                'other_user_id'  => $job->client_id,
-                'text'           => 'New Job Invitation',
+                'user_id'        => $userId,
+                'other_user_id'  => $job->client->user->id,
+                'text'           => $job->client->user->name . ' Invited you to his job',
                 'type'           => 'job',
                 'notifable_id'   => $job->id,
                 'notifable_type' => 'App\Models\Job',
@@ -779,7 +803,7 @@ class HomeController extends Controller
 
     public function clientJobs($id)
     {
-        $jobs = Job::where('client_id', $id)->with('client.user', 'files', 'skills', 'service.mainService')->get();
+        $jobs = Job::where('client_id', $id)->where('status', 3)->with('client.user', 'files', 'skills', 'service.mainService')->latest()->get();
         $user = Client::find($id)->user;
 
         return response()->json(compact('jobs', 'user'));
@@ -790,6 +814,7 @@ class HomeController extends Controller
         $jobs = Job::where('client_id', auth('api')->user()->userable_id)
             ->whereIn('status', [1, 2])
             ->with('client.user', 'files', 'skills', 'service.mainService')
+            ->latest()
             ->get();
 
         return response()->json(compact('jobs'));
@@ -798,7 +823,7 @@ class HomeController extends Controller
     public function clientInvitations()
     {
         $client = Client::find(auth('api')->user()->userable_id);
-        $invitations = $client->invitations()->with('freelancer.user', 'job')->get();
+        $invitations = $client->invitations()->with('freelancer.user', 'freelancer.mainService', 'job')->latest()->get();
 
         return response()->json(compact('invitations'));
     }
@@ -812,9 +837,9 @@ class HomeController extends Controller
         $proposalData  = $proposal->first();
 
         $notification = Notification::create([
-            'user_id'        => $proposalData->freelancer_id,
-            'other_user_id'  => $job->client_id,
-            'text'           => 'Accept Proposal',
+            'user_id'        => $proposalData->freelancer->user->id,
+            'other_user_id'  => $job->client->user->id,
+            'text'           => $job->client->user->name . 'Accepted your Proposal',
             'type'           => 'job',
             'notifable_id'   => $job->id,
             'notifable_type' => 'App\Models\Job',
@@ -958,7 +983,7 @@ class HomeController extends Controller
     {
         $userId = auth('api')->id();
 
-        $notifications = Notification::where('user_id', $userId)->with('otherUser', 'notifable')->get();
+        $notifications = Notification::where('user_id', $userId)->with('otherUser', 'notifable')->latest()->get();
         $unseenCount = $notifications->where('user_id', $userId)->where('seen', 0)->count();
 
         return response()->json(compact('notifications', 'unseenCount'));
@@ -1019,6 +1044,17 @@ class HomeController extends Controller
 
         $milestone = ProposalMilestone::find($milestone->id);
 
+        $notification = Notification::create([
+            'user_id'        => $milestone->proposal->job->client->user->id,
+            'other_user_id'  => $milestone->proposal->freelancer->user->id,
+            'text'           => $milestone->proposal->freelancer->user->name . ' added a new Milestone in your job',
+            'type'           => 'job',
+            'notifable_id'   => $milestone->proposal->job->id,
+            'notifable_type' => 'App\Models\Job',
+        ]);
+        event(new SendNotification($notification));
+
+
         return response()->json(compact('milestone'));
     }
 
@@ -1065,6 +1101,17 @@ class HomeController extends Controller
         $milestone = ProposalMilestone::findOrFail($request->milestone_id);
         $milestone->update(['payment_at' => now()]);
 
+        $notification = Notification::create([
+            'user_id'        => $milestone->proposal->freelancer->user->id,
+            'other_user_id'  => $milestone->proposal->job->client->user->id,
+            'text'           => $milestone->proposal->job->client->user->name . ' make a payment on your milestone',
+            'type'           => 'job',
+            'notifable_id'   => $milestone->proposal->job->id,
+            'notifable_type' => 'App\Models\Job',
+        ]);
+        event(new SendNotification($notification));
+
+
         return response()->json(compact('milestone'));
     }
 
@@ -1075,6 +1122,16 @@ class HomeController extends Controller
         ]);
         $milestone = ProposalMilestone::findOrFail($request->milestone_id);
         $milestone->update(['finished_at' => now()]);
+
+        $notification = Notification::create([
+            'user_id'        => $milestone->proposal->job->client->user->id,
+            'other_user_id'  => $milestone->proposal->freelancer->user->id,
+            'text'           => $milestone->proposal->freelancer->user->name . ' finished a Milestone in your job',
+            'type'           => 'job',
+            'notifable_id'   => $milestone->proposal->job->id,
+            'notifable_type' => 'App\Models\Job',
+        ]);
+        event(new SendNotification($notification));
 
         return response()->json(compact('milestone'));
     }
@@ -1087,6 +1144,16 @@ class HomeController extends Controller
         $milestone = ProposalMilestone::findOrFail($request->milestone_id);
         $milestone->update(['status' => 2]);
 
+        $notification = Notification::create([
+            'user_id'        => $milestone->proposal->freelancer->user->id,
+            'other_user_id'  => $milestone->proposal->job->client->user->id,
+            'text'           => $milestone->proposal->job->client->user->name . ' accepted your milestone',
+            'type'           => 'job',
+            'notifable_id'   => $milestone->proposal->job->id,
+            'notifable_type' => 'App\Models\Job',
+        ]);
+        event(new SendNotification($notification));
+
         return response()->json(compact('milestone'));
     }
 
@@ -1098,6 +1165,16 @@ class HomeController extends Controller
         $milestone = ProposalMilestone::findOrFail($request->milestone_id);
         $milestone->update(['status' => 3]);
 
+        $notification = Notification::create([
+            'user_id'        => $milestone->proposal->freelancer->user->id,
+            'other_user_id'  => $milestone->proposal->job->client->user->id,
+            'text'           => $milestone->proposal->job->client->user->name . ' done your milestone',
+            'type'           => 'job',
+            'notifable_id'   => $milestone->proposal->job->id,
+            'notifable_type' => 'App\Models\Job',
+        ]);
+        event(new SendNotification($notification));
+
         return response()->json(compact('milestone'));
     }
 
@@ -1108,6 +1185,16 @@ class HomeController extends Controller
         ]);
         $milestone = ProposalMilestone::findOrFail($request->milestone_id);
         $milestone->update(['status' => 4]);
+
+        $notification = Notification::create([
+            'user_id'        => $milestone->proposal->freelancer->user->id,
+            'other_user_id'  => $milestone->proposal->job->client->user->id,
+            'text'           => $milestone->proposal->job->client->user->name . ' faced a problem in your milestone',
+            'type'           => 'job',
+            'notifable_id'   => $milestone->proposal->job->id,
+            'notifable_type' => 'App\Models\Job',
+        ]);
+        event(new SendNotification($notification));
 
         return response()->json(compact('milestone'));
     }
