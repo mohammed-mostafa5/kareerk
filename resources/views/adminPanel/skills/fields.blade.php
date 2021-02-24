@@ -27,13 +27,6 @@
     </div>
 
 
-    <!-- Parent Id Field -->
-    <div class="form-group col-sm-6">
-        {!! Form::label('parent_id', __('models/services.fields.parent').':') !!}
-        {!! Form::select('parent_id', $parents , isset($skill->parent_id) ?? null, ['class' => 'form-control', 'placeholder' => 'Select Main Skill']) !!}
-    </div>
-
-
     <!-- Status Field -->
     <div class="form-group col-sm-12">
         {!! Form::label('status', __('models/skills.fields.status').':') !!}

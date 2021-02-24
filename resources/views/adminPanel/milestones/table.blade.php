@@ -2,7 +2,11 @@
     <table class="table table-striped" id="milestones-table">
         <thead>
             <tr>
-                <th>@lang('models/milestones.fields.duration')</th>
+                <th>@lang('models/milestones.fields.id')</th>
+                <th>@lang('models/milestones.fields.title')</th>
+                <th>@lang('models/milestones.fields.job')</th>
+                <th>@lang('models/milestones.fields.freelancer')</th>
+                <th>@lang('models/milestones.fields.client')</th>
                 <th>@lang('models/milestones.fields.amount')</th>
                 <th>@lang('models/milestones.fields.status')</th>
                 <th>@lang('models/milestones.fields.admin_status')</th>
@@ -12,13 +16,28 @@
         <tbody>
             @foreach($milestones as $milestone)
             <tr>
-                <td>{{ $milestone->duration}}
-                    @switch($milestone->duration_type)
-                    @case(1) Hours @break
-                    @case(2) Days @break
-                    @case(3) Months @break
-                    @default
-                    @endswitch
+                <td>{{ $milestone->id }}</td>
+                <td>{{ $milestone->title }}</td>
+                <td>
+                    @if ($milestone->proposal)
+                    <a href="{{route('adminPanel.jobs.show',  $milestone->proposal->job->id)}}">
+                        {{ Str::limit($milestone->proposal->job->title, 50) ?? ''}}
+                    </a>
+                    @endif
+                </td>
+                <td>
+                    @if ($milestone->proposal)
+                    <a href="{{route('adminPanel.freelancers.show',  $milestone->proposal->freelancer->user->id)}}">
+                        {{ $milestone->proposal->freelancer->user->name ?? ''}}
+                    </a>
+                    @endif
+                </td>
+                <td>
+                    @if ($milestone->proposal)
+                    <a href="{{route('adminPanel.clients.show',  $milestone->proposal->job->client->user->id)}}">
+                        {{ $milestone->proposal->job->client->user->name ?? ''}}
+                    </a>
+                    @endif
                 </td>
                 <td>{{ $milestone->amount }}</td>
                 <td>
@@ -35,6 +54,10 @@
                     @case(1) New @break
                     @case(2) Under review @break
                     @case(3) Solved @break
+                    @case(4) Not Solved @break
+                    @case(5) Payment Done @break
+                    @case(6) Client Refunded @break
+
                     @default
                     @endswitch
                 </td>
@@ -42,23 +65,22 @@
                     @can('milestones view')
                     <a href="{{ route('adminPanel.milestones.show', [$milestone->id]) }}" class='btn btn-ghost-success d-inline'><i class="fa fa-eye"></i></a>
                     @endcan
-                    @if ($milestone->admin_status == 1)
-                    {!! Form::open(['route' => ['adminPanel.milestones.underReview', $milestone->id], 'method' => 'patch', 'class' => 'd-inline']) !!}
-                    @can('milestones under_review')
-                    {!! Form::button('Under review', ['type' => 'submit', 'class' => 'btn btn-primary btn-sm']) !!}
-                    @endcan
-                    {!! Form::close() !!}
-                    @endif
-                    @if ($milestone->admin_status == 2 && $milestone->status == 4)
-                    {!! Form::open(['route' => ['adminPanel.milestones.done', $milestone->id], 'method' => 'patch', 'class' => 'd-inline']) !!}
-                    @can('milestones done')
-                    {!! Form::button('Done', ['type' => 'submit', 'class' => 'btn btn-success btn-sm']) !!}
-                    @endcan
-                    {!! Form::close() !!}
-                    @endif
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
 </div>
+@section('scripts')
+<script>
+    $(document).ready(function() {
+
+    table.destroy();
+
+    table = $('#milestones-table').DataTable( {
+            "order": [[ 0, "desc" ]]
+        } );
+} );
+</script>
+
+@endsection

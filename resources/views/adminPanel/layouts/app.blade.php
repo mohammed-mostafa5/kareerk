@@ -165,7 +165,7 @@
 
 <script type="text/javascript" language="javascript">
     $(document).ready( function () {
-        $('.table').DataTable( {
+        table = $('.table').DataTable( {
 
         } );
 

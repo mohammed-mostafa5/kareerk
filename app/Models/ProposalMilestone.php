@@ -14,6 +14,7 @@ class ProposalMilestone extends Model
         'proposal_id',
         'status',
         'admin_status',
+        'title',
         'description',
         'duration',
         'duration_type',

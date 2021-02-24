@@ -34,7 +34,17 @@ class MilestoneController extends AppBaseController
         return view('adminPanel.milestones.show')->with('milestone', $milestone);
     }
 
-    public function done($id)
+
+    public function underReview($id)
+    {
+        $milestone = ProposalMilestone::find($id);
+
+        $milestone->update(['admin_status' => 2]);
+
+        return back();
+    }
+
+    public function solved($id)
     {
         $milestone = ProposalMilestone::find($id);
 
@@ -43,11 +53,29 @@ class MilestoneController extends AppBaseController
         return back();
     }
 
-    public function underReview($id)
+    public function notSolved($id)
     {
         $milestone = ProposalMilestone::find($id);
 
-        $milestone->update(['admin_status' => 2]);
+        $milestone->update(['admin_status' => 4]);
+
+        return back();
+    }
+
+    public function pay($id)
+    {
+        $milestone = ProposalMilestone::find($id);
+
+        $milestone->update(['admin_status' => 5]);
+
+        return back();
+    }
+
+    public function refund($id)
+    {
+        $milestone = ProposalMilestone::find($id);
+
+        $milestone->update(['admin_status' => 6]);
 
         return back();
     }

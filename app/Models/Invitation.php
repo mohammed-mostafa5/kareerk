@@ -17,10 +17,6 @@ class Invitation extends Model
         'proposaled',
     ];
 
-    // protected $casts = [
-    //     'id' => 'integer',
-    //     'freelancer_id' => 'integer',
-    // ];
 
     // Relations
     public function job()
@@ -31,5 +27,16 @@ class Invitation extends Model
     public function freelancer()
     {
         return $this->belongsTo(Freelancer::class, 'freelancer_id', 'id');
+    }
+
+
+    #############################################
+
+
+    public function getCreatedAtAttribute()
+    {
+        if (isset($this->attributes['created_at'])) {
+            return \Carbon\Carbon::parse($this->attributes['created_at'])->diffForHumans();
+        }
     }
 }

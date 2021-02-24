@@ -5,7 +5,6 @@
                 <th>@lang('models/skills.fields.service')</th>
                 <th>@lang('models/skills.fields.name')</th>
                 <th>@lang('models/skills.fields.status')</th>
-                <th>@lang('models/skills.fields.type')</th>
                 <th>@lang('crud.action')</th>
             </tr>
         </thead>
@@ -15,7 +14,6 @@
                 <td>{{ $skill->service->name }}</td>
                 <td>{{ $skill->name }}</td>
                 <td>{{ $skill->status }}</td>
-                <td>{{ $skill->parent_id ? 'Child': 'Parent' }}</td>
                 <td>
                     {!! Form::open(['route' => ['adminPanel.skills.destroy', $skill->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>

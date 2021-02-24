@@ -90,12 +90,14 @@ class CreateJobsTable extends Migration
         Schema::create('proposal_milestones', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('proposal_id');
+            $table->string('title');
             $table->text('description');
             $table->integer('duration');
             $table->unsignedTinyInteger('duration_type')->comment('1 => Hour, 2 => Day, 3 => Month');
             $table->string('amount');
             $table->unsignedTinyInteger('status')->default(1)->comment('1 => New, 2 => Finished, 3 => Done, 4 => Refused/Problem');
-            $table->unsignedTinyInteger('admin_status')->default(1)->comment('1 => New, 2 => Under review, 3 => Solved');
+            $table->unsignedTinyInteger('admin_status')->default(1)
+                ->comment('1 => New, 2 => Under review, 3 => Solved, 4 =>  Not Solved, 5 => Payment Done, 6 => Client Refunded');
             $table->dateTime('expected_start');
             $table->dateTime('payment_at')->nullable();
             $table->dateTime('finished_at')->nullable();

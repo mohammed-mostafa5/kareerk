@@ -239,13 +239,13 @@ class HomeController extends Controller
         return response()->json(compact('freelancers'));
     }
 
-    public function skills()
+    public function skills(Request $request)
     {
-        // $skills = Skill::parent()->whereHas('service.mainService', function (Builder $query) {
-        //     $query->where('services.id', request('main_service_id'));
-        // })->with('children')->active()->get();
-
-        $serviceSkills = Service::active()->where('id', request('main_service_id'))->with('children.skills')->get();
+        $request->validate([
+            'main_service_id' => 'required',
+        ]);
+        $mainService = Service::find(request('main_service_id'));
+        $serviceSkills = $mainService->children()->with('skills')->get();
 
         return response()->json(compact('serviceSkills'));
     }

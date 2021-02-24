@@ -45,7 +45,7 @@ class SkillController extends AppBaseController
     public function create()
     {
         $services = Service::active()->get()->pluck('name', 'id');
-        $parents = Skill::parent()->get()->pluck('name', 'id');
+        $parents = Skill::get()->pluck('name', 'id');
 
         return view('adminPanel.skills.create', compact('services', 'parents'));
     }
@@ -100,7 +100,7 @@ class SkillController extends AppBaseController
         $skill = $this->skillRepository->find($id);
         $services = Service::active()->get()->pluck('name', 'id');
 
-        $parents = Skill::parent()->get()->pluck('name', 'id');
+        $parents = Skill::get()->pluck('name', 'id');
         if (empty($skill)) {
             Flash::error(__('messages.not_found', ['model' => __('models/skills.singular')]));
 

@@ -136,7 +136,10 @@ Route::group(['prefix' => 'adminPanel', 'namespace' => 'AdminPanel', 'as' => 'ad
         Route::resource('jobs', 'JobController');
 
         Route::resource('milestones', 'MilestoneController')->only(['index', 'show']);
-        Route::patch('milestones/done/{id}', 'MilestoneController@done')->name('milestones.done');
+        Route::patch('milestones/solved/{id}', 'MilestoneController@solved')->name('milestones.solved');
+        Route::patch('milestones/not-solved/{id}', 'MilestoneController@notSolved')->name('milestones.notSolved');
+        Route::patch('milestones/pay/{id}', 'MilestoneController@pay')->name('milestones.pay');
+        Route::patch('milestones/refund/{id}', 'MilestoneController@refund')->name('milestones.refund');
         Route::patch('milestones/under-review/{id}', 'MilestoneController@underReview')->name('milestones.underReview');
 
         // //Settings
