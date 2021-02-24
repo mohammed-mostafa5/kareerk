@@ -13,21 +13,7 @@ use Response;
 
 class MilestoneController extends AppBaseController
 {
-    /** @var  JobRepository */
-    private $jobRepository;
 
-    public function __construct(JobRepository $jobRepo)
-    {
-        $this->jobRepository = $jobRepo;
-    }
-
-    /**
-     * Display a listing of the Job.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
     public function index(Request $request)
     {
         $milestones = ProposalMilestone::whereIn('status', [3, 4])->get();
@@ -35,122 +21,34 @@ class MilestoneController extends AppBaseController
         return view('adminPanel.milestones.index', compact('milestones'));
     }
 
-    /**
-     * Show the form for creating a new Job.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        return view('adminPanel.jobs.create');
-    }
-
-    /**
-     * Store a newly created Job in storage.
-     *
-     * @param CreateJobRequest $request
-     *
-     * @return Response
-     */
-    public function store(CreateJobRequest $request)
-    {
-        $input = $request->all();
-
-        $job = $this->jobRepository->create($input);
-
-        Flash::success(__('messages.saved', ['model' => __('models/jobs.singular')]));
-
-        return redirect(route('adminPanel.jobs.index'));
-    }
-
-    /**
-     * Display the specified Job.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
     public function show($id)
     {
-        $job = $this->jobRepository->find($id);
+        $milestone = ProposalMilestone::find($id);
 
-        if (empty($job)) {
-            Flash::error(__('messages.not_found', ['model' => __('models/jobs.singular')]));
+        if (empty($milestone)) {
+            Flash::error(__('messages.not_found', ['model' => __('models/milestones.singular')]));
 
-            return redirect(route('adminPanel.jobs.index'));
+            return redirect(route('adminPanel.milestones.index'));
         }
 
-        return view('adminPanel.jobs.show')->with('job', $job);
+        return view('adminPanel.milestones.show')->with('milestone', $milestone);
     }
 
-    /**
-     * Show the form for editing the specified Job.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
-    public function edit($id)
+    public function done($id)
     {
-        $job = $this->jobRepository->find($id);
+        $milestone = ProposalMilestone::find($id);
 
-        if (empty($job)) {
-            Flash::error(__('messages.not_found', ['model' => __('models/jobs.singular')]));
+        $milestone->update(['status' => 3, 'admin_status' => 3]);
 
-            return redirect(route('adminPanel.jobs.index'));
-        }
-
-        return view('adminPanel.jobs.edit')->with('job', $job);
+        return back();
     }
 
-    /**
-     * Update the specified Job in storage.
-     *
-     * @param int $id
-     * @param UpdateJobRequest $request
-     *
-     * @return Response
-     */
-    public function update($id, UpdateJobRequest $request)
+    public function underReview($id)
     {
-        $job = $this->jobRepository->find($id);
+        $milestone = ProposalMilestone::find($id);
 
-        if (empty($job)) {
-            Flash::error(__('messages.not_found', ['model' => __('models/jobs.singular')]));
+        $milestone->update(['admin_status' => 2]);
 
-            return redirect(route('adminPanel.jobs.index'));
-        }
-
-        $job = $this->jobRepository->update($request->all(), $id);
-
-        Flash::success(__('messages.updated', ['model' => __('models/jobs.singular')]));
-
-        return redirect(route('adminPanel.jobs.index'));
-    }
-
-    /**
-     * Remove the specified Job from storage.
-     *
-     * @param int $id
-     *
-     * @throws \Exception
-     *
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        $job = $this->jobRepository->find($id);
-
-        if (empty($job)) {
-            Flash::error(__('messages.not_found', ['model' => __('models/jobs.singular')]));
-
-            return redirect(route('adminPanel.jobs.index'));
-        }
-
-        $this->jobRepository->delete($id);
-
-        Flash::success(__('messages.deleted', ['model' => __('models/jobs.singular')]));
-
-        return redirect(route('adminPanel.jobs.index'));
+        return back();
     }
 }

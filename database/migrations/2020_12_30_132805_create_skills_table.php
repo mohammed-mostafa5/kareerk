@@ -17,7 +17,6 @@ class CreateSkillsTable extends Migration
         Schema::create('skills', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('service_id');
-            $table->integer('parent_id')->nullable();
             $table->unsignedTinyInteger('status')->comment('0 => Inactive, 1 => Active');
             $table->timestamps();
             $table->softDeletes();

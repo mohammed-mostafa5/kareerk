@@ -2,50 +2,63 @@
     <table class="table table-striped" id="milestones-table">
         <thead>
             <tr>
-                <th>@lang('models/milestones.fields.service_id')</th>
                 <th>@lang('models/milestones.fields.duration')</th>
-                <th>@lang('models/milestones.fields.visibility')</th>
-                <th>@lang('models/milestones.fields.payment_type')</th>
+                <th>@lang('models/milestones.fields.amount')</th>
                 <th>@lang('models/milestones.fields.status')</th>
+                <th>@lang('models/milestones.fields.admin_status')</th>
                 <th>@lang('crud.action')</th>
             </tr>
         </thead>
         <tbody>
             @foreach($milestones as $milestone)
             <tr>
-                <td>{{ $milestone->service->name ?? '' }}</td>
-                <td>{{ $milestone->duration }}
+                <td>{{ $milestone->duration}}
                     @switch($milestone->duration_type)
-                    @case(1)
-
-                    @break
-                    @case(2)
-
-                    @break
+                    @case(1) Hours @break
+                    @case(2) Days @break
+                    @case(3) Months @break
                     @default
-
                     @endswitch
                 </td>
-                <td>{{ $milestone->visibility == 1 ? 'Any One' : 'Invite Only' }}</td>
-                <td>{{ $milestone->payment_type == 1 ? 'Hourly' : 'Fixed' }}</td>
-                <td>{{ $milestone->status }}</td>
+                <td>{{ $milestone->amount }}</td>
                 <td>
-                    {{-- {!! Form::open(['route' => ['adminPanel.milestones.destroy', $milestone->id], 'method' => 'delete']) !!}
-                    <div class='btn-group'>
-                        @can('milestones view')
-                        <a href="{{ route('adminPanel.milestones.show', [$milestone->id]) }}" class='btn btn-ghost-success'><i class="fa fa-eye"></i></a>
+                    @switch($milestone->status)
+                    @case(1) New @break
+                    @case(2) Finished @break
+                    @case(3) Done @break
+                    @case(4) Refused/Problem @break
+                    @default
+                    @endswitch
+                </td>
+                <td>
+                    @switch($milestone->admin_status)
+                    @case(1) New @break
+                    @case(2) Under review @break
+                    @case(3) Solved @break
+                    @default
+                    @endswitch
+                </td>
+                <td>
+                    @can('milestones view')
+                    <a href="{{ route('adminPanel.milestones.show', [$milestone->id]) }}" class='btn btn-ghost-success d-inline'><i class="fa fa-eye"></i></a>
                     @endcan
-                    @can('milestones edit')
-                    <a href="{{ route('adminPanel.milestones.edit', [$milestone->id]) }}" class='btn btn-ghost-info'><i class="fa fa-edit"></i></a>
+                    @if ($milestone->admin_status == 1)
+                    {!! Form::open(['route' => ['adminPanel.milestones.underReview', $milestone->id], 'method' => 'patch', 'class' => 'd-inline']) !!}
+                    @can('milestones under_review')
+                    {!! Form::button('Under review', ['type' => 'submit', 'class' => 'btn btn-primary btn-sm']) !!}
                     @endcan
-                    @can('milestones destroy')
-                    {!! Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-ghost-danger', 'onclick' => 'return confirm("'.__('crud.are_you_sure').'")']) !!}
+                    {!! Form::close() !!}
+                    @endif
+                    @if ($milestone->admin_status == 2 && $milestone->status == 4)
+                    {!! Form::open(['route' => ['adminPanel.milestones.done', $milestone->id], 'method' => 'patch', 'class' => 'd-inline']) !!}
+                    @can('milestones done')
+                    {!! Form::button('Done', ['type' => 'submit', 'class' => 'btn btn-success btn-sm']) !!}
                     @endcan
-</div>
-{!! Form::close() !!} --}}
-</td>
-</tr>
-@endforeach
-</tbody>
-</table>
+                    {!! Form::close() !!}
+                    @endif
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>

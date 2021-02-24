@@ -136,6 +136,8 @@ Route::group(['prefix' => 'adminPanel', 'namespace' => 'AdminPanel', 'as' => 'ad
         Route::resource('jobs', 'JobController');
 
         Route::resource('milestones', 'MilestoneController')->only(['index', 'show']);
+        Route::patch('milestones/done/{id}', 'MilestoneController@done')->name('milestones.done');
+        Route::patch('milestones/under-review/{id}', 'MilestoneController@underReview')->name('milestones.underReview');
 
         // //Settings
         Route::get('customSettings', 'CustomSettingController@settings')->name('customSettings.show');

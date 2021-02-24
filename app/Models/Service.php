@@ -89,6 +89,11 @@ class Service extends Model
         return $this->hasMany('App\Models\Service', 'parent_id', 'id');
     }
 
+    public function skills()
+    {
+        return $this->hasMany(Skill::class, 'service_id', 'id');
+    }
+
     #################################################################################
     ################################# Functions #####################################
     #################################################################################

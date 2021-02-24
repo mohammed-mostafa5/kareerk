@@ -13,6 +13,7 @@ class ProposalMilestone extends Model
     public $fillable = [
         'proposal_id',
         'status',
+        'admin_status',
         'description',
         'duration',
         'duration_type',

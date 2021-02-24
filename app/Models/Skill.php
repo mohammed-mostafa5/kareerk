@@ -88,18 +88,18 @@ class Skill extends Model
         return $query->where('status', 1);
     }
 
-    public function scopeParent($query)
-    {
-        return $query->where('parent_id', null);
-    }
+    // public function scopeParent($query)
+    // {
+    //     return $query->where('parent_id', null);
+    // }
 
-    public function scopeChild($query)
-    {
-        return $query->where('parent_id', '!=', null);
-    }
+    // public function scopeChild($query)
+    // {
+    //     return $query->where('parent_id', '!=', null);
+    // }
 
-    public function children()
-    {
-        return $this->hasMany('App\Models\Skill', 'parent_id', 'id');
-    }
+    // public function children()
+    // {
+    //     return $this->hasMany('App\Models\Skill', 'parent_id', 'id');
+    // }
 }

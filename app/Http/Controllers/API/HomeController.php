@@ -140,10 +140,10 @@ class HomeController extends Controller
 
             $user->update($password);
 
-            return response()->json(['msg',  'success']);
+            return response()->json(['msg' =>  'success']);
         }
 
-        return response()->json(['msg',  'Wrong old password']);
+        return response()->json(['msg' =>  'Wrong old password'], 420);
     }
 
     public function logout()
@@ -241,11 +241,13 @@ class HomeController extends Controller
 
     public function skills()
     {
-        $skills = Skill::parent()->whereHas('service.mainService', function (Builder $query) {
-            $query->where('services.id', request('main_service_id'));
-        })->with('children')->active()->get();
+        // $skills = Skill::parent()->whereHas('service.mainService', function (Builder $query) {
+        //     $query->where('services.id', request('main_service_id'));
+        // })->with('children')->active()->get();
 
-        return response()->json(compact('skills'));
+        $serviceSkills = Service::active()->where('id', request('main_service_id'))->with('children.skills')->get();
+
+        return response()->json(compact('serviceSkills'));
     }
 
     public function countries()
@@ -787,6 +789,16 @@ class HomeController extends Controller
         }
 
         event(new SendNotification($notification));
+
+        return response()->json(compact('jobData'));
+    }
+
+    public function jobSwitchVisibility()
+    {
+        $job = Job::findOrFail(request('job_id'));
+        $job->update(['visibility' => request('visibility')]);
+
+        $jobData = $job->load('client.user', 'files', 'skills', 'service.mainService');
 
         return response()->json(compact('jobData'));
     }

@@ -3,7 +3,7 @@
 @section('content')
 <ol class="breadcrumb">
     <li class="breadcrumb-item">
-        <a href="{{ route('adminPanel.jobs.index') }}">@lang('models/jobs.singular')</a>
+        <a href="{{ route('adminPanel.milestones.index') }}">@lang('models/milestones.singular')</a>
     </li>
     <li class="breadcrumb-item active">@lang('crud.detail')</li>
 </ol>
@@ -15,10 +15,10 @@
                 <div class="card">
                     <div class="card-header">
                         <strong>@lang('crud.detail')</strong>
-                        <a href="{{ route('adminPanel.jobs.index') }}" class="btn btn-ghost-light">Back</a>
+                        <a href="{{ route('adminPanel.milestones.index') }}" class="btn btn-ghost-light">Back</a>
                     </div>
                     <div class="card-body">
-                        @include('adminPanel.jobs.show_fields')
+                        @include('adminPanel.milestones.show_fields')
                     </div>
                 </div>
             </div>
