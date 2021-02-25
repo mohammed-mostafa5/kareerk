@@ -36,6 +36,7 @@ use App\Models\ProposalMilestone;
 use App\Models\FreelancerEducation;
 use App\Helpers\HelperFunctionTrait;
 use App\Http\Controllers\Controller;
+use App\Models\Blog;
 use App\Models\FreelancerEmployment;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -221,6 +222,21 @@ class HomeController extends Controller
         return response()->json(compact('metas'));
     }
 
+
+    public function blogs()
+    {
+        $blogs = Blog::latest()->get();
+
+        return response()->json(compact('blogs'));
+    }
+
+    public function blog($id)
+    {
+        $blog = Blog::findOrFail($id);
+
+        return response()->json(compact('blog'));
+    }
+
     ##########################################################################
 
     // General
@@ -230,6 +246,13 @@ class HomeController extends Controller
         $services = Service::parent()->with('children')->active()->get();
 
         return response()->json(compact('services'));
+    }
+
+    public function service($id)
+    {
+        $service = Service::findOrFail($id);
+
+        return response()->json(compact('service'));
     }
 
     public function freelancers()
@@ -1038,6 +1061,7 @@ class HomeController extends Controller
     {
         $request->validate([
             'proposal_id'       => 'required',
+            'title'             => 'required',
             'description'       => 'required',
             'duration'          => 'required',
             'duration_type'     => 'required',
@@ -1047,6 +1071,7 @@ class HomeController extends Controller
 
         $milestone = ProposalMilestone::create([
             'proposal_id'       => $request->proposal_id,
+            'title'             => $request->title,
             'description'       => $request->description,
             'duration'          => $request->duration,
             'duration_type'     => $request->duration_type,
@@ -1075,6 +1100,7 @@ class HomeController extends Controller
         $request->validate([
             'milestone_id'      => 'required',
             'proposal_id'       => 'required',
+            'title'             => 'required',
             'description'       => 'required',
             'duration'          => 'required',
             'duration_type'     => 'required',
@@ -1084,6 +1110,7 @@ class HomeController extends Controller
         $milestone = ProposalMilestone::findOrFail($request->milestone_id);
         $milestone->update([
             'proposal_id'       => $request->proposal_id,
+            'title'             => $request->title,
             'description'       => $request->description,
             'duration'          => $request->duration,
             'duration_type'     => $request->duration_type,

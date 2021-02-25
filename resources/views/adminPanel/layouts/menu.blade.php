@@ -337,3 +337,9 @@
         <span>@lang('models/chatContacts.plural')</span>
     </a>
 </li> --}}
+<li class="nav-item {{ Request::is('adminPanel/blogs*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('adminPanel.blogs.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>@lang('models/blogs.plural')</span>
+    </a>
+</li>

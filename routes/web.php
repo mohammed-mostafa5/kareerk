@@ -110,12 +110,6 @@ Route::group(['prefix' => 'adminPanel', 'namespace' => 'AdminPanel', 'as' => 'ad
         // Categories CURD
         Route::resource('categories', 'CategoryController');
 
-        // Product CURD
-        Route::resource('products', 'ProductController')->only(['index', 'show', 'edit', 'update']);
-        Route::get('balance-mail/{id}', 'ProductController@balanceMail')->name('products.balanceMail');
-        Route::patch('products/approve/{id}', 'ProductController@approve')->name('product.approve');
-        Route::delete('photo/{image}', 'ProductController@destroyImage')->name('products.destroyImage');
-
         Route::resource('faqCategories', 'FaqCategoryController');
         Route::resource('faqs', 'FaqController');
 
@@ -142,6 +136,9 @@ Route::group(['prefix' => 'adminPanel', 'namespace' => 'AdminPanel', 'as' => 'ad
         Route::patch('milestones/refund/{id}', 'MilestoneController@refund')->name('milestones.refund');
         Route::patch('milestones/under-review/{id}', 'MilestoneController@underReview')->name('milestones.underReview');
 
+        Route::resource('blogs', 'BlogController');
+
+
         // //Settings
         Route::get('customSettings', 'CustomSettingController@settings')->name('customSettings.show');
         Route::patch('customSettings/{id}', 'CustomSettingController@update')->name('customSettings.update');
@@ -153,16 +150,16 @@ Route::group(['prefix' => 'adminPanel', 'namespace' => 'AdminPanel', 'as' => 'ad
 ///////////////////////////////////////////////////////////////////////////
 
 
-Route::group(['prefix' => 'adminPanel'], function () {
-    Route::resource('chats', 'ChatController', ["as" => 'adminPanel']);
-});
+// Route::group(['prefix' => 'adminPanel'], function () {
+//     Route::resource('chats', 'ChatController', ["as" => 'adminPanel']);
+// });
 
 
-Route::group(['prefix' => 'adminPanel'], function () {
-    Route::resource('messages', 'MessageController', ["as" => 'adminPanel']);
-});
+// Route::group(['prefix' => 'adminPanel'], function () {
+//     Route::resource('messages', 'MessageController', ["as" => 'adminPanel']);
+// });
 
 
-Route::group(['prefix' => 'adminPanel'], function () {
-    Route::resource('chatContacts', 'ChatContactController', ["as" => 'adminPanel']);
-});
+// Route::group(['prefix' => 'adminPanel'], function () {
+//     Route::resource('chatContacts', 'ChatContactController', ["as" => 'adminPanel']);
+// });

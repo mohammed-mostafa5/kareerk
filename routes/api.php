@@ -27,11 +27,14 @@ Route::get('home', 'HomeController@home');
 Route::get('informations', 'HomeController@informations');
 Route::get('pages/{id}', 'HomeController@pages');
 Route::get('metas', 'HomeController@metas');
+Route::get('blogs', 'HomeController@blogs');
+Route::get('blog/{id}', 'HomeController@blog');
 Route::post('send-contact', 'HomeController@sendContactMessage');
 Route::post('newsletter', 'HomeController@newsletter');
 
 Route::get('landing-page', 'HomeController@landingPage');
 Route::get('services', 'HomeController@services');
+Route::get('service/{id}', 'HomeController@service');
 Route::get('freelancers', 'HomeController@freelancers');
 Route::get('skills', 'HomeController@skills');
 Route::get('countries', 'HomeController@countries');
