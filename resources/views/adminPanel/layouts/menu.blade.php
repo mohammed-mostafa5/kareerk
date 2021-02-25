@@ -118,6 +118,25 @@
                 </li>
                 @endcan
 
+                @can('careers view')
+                <li class="nav-item {{ Request::is('adminPanel/careers*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('adminPanel.careers.index') }}">
+                        <i class="nav-icon icon-cursor"></i>
+                        <span>@lang('models/careers.plural')</span>
+                    </a>
+                </li>
+                @endcan
+
+                @can('careerRequests view')
+                <li class="nav-item {{ Request::is('adminPanel/careerRequests*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('adminPanel.careerRequests.index') }}">
+                        <i class="nav-icon icon-cursor"></i>
+                        <span>@lang('models/careerRequests.plural')</span>
+                    </a>
+                </li>
+                @endcan
+
+
                 @can('information view')
                 <li class="nav-item {{ Request::is('adminPanel/information*') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('adminPanel.information.index') }}">
@@ -328,21 +347,3 @@
         <span>@lang('models/chatContacts.plural')</span>
     </a>
 </li> --}}
-<li class="nav-item {{ Request::is('adminPanel/blogs*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('adminPanel.blogs.index') }}">
-        <i class="nav-icon icon-cursor"></i>
-        <span>@lang('models/blogs.plural')</span>
-    </a>
-</li>
-<li class="nav-item {{ Request::is('adminPanel/careers*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('adminPanel.careers.index') }}">
-        <i class="nav-icon icon-cursor"></i>
-        <span>@lang('models/careers.plural')</span>
-    </a>
-</li>
-<li class="nav-item {{ Request::is('adminPanel/careerRequests*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('adminPanel.careerRequests.index') }}">
-        <i class="nav-icon icon-cursor"></i>
-        <span>@lang('models/careerRequests.plural')</span>
-    </a>
-</li>
