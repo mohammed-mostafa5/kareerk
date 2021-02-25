@@ -30,7 +30,7 @@ class Blog extends Model
     ];
 
 
-    public $translatedAttributes =  ['name', 'description'];
+    public $translatedAttributes =  ['title', 'description'];
 
     public static function rules()
     {

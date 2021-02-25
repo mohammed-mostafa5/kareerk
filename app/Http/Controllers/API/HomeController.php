@@ -37,6 +37,8 @@ use App\Models\FreelancerEducation;
 use App\Helpers\HelperFunctionTrait;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
+use App\Models\Career;
+use App\Models\CareerRequest;
 use App\Models\FreelancerEmployment;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -222,7 +224,6 @@ class HomeController extends Controller
         return response()->json(compact('metas'));
     }
 
-
     public function blogs()
     {
         $blogs = Blog::latest()->get();
@@ -235,6 +236,36 @@ class HomeController extends Controller
         $blog = Blog::findOrFail($id);
 
         return response()->json(compact('blog'));
+    }
+
+    public function careers()
+    {
+        $careers = Career::get();
+
+        return response()->json(compact('careers'));
+    }
+
+    public function career($id)
+    {
+        $career = Career::findOrFail($id);
+
+        return response()->json(compact('career'));
+    }
+
+
+    public function sendCareerRequest(Request $request)
+    {
+        $validated = $request->validate([
+            'career_id'     => 'required',
+            'name'          => 'required|string|min:3|max:191',
+            'email'         => 'required|email|min:3|max:191',
+            'phone'         => 'required',
+            'cover_letter'  => 'required|string|min:3',
+            'cv'            => 'required|mimes:pdf',
+        ]);
+        CareerRequest::create($validated);
+
+        return response()->json(['msg' => 'success']);
     }
 
     ##########################################################################

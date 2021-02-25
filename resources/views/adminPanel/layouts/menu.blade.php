@@ -334,3 +334,15 @@
         <span>@lang('models/blogs.plural')</span>
     </a>
 </li>
+<li class="nav-item {{ Request::is('adminPanel/careers*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('adminPanel.careers.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>@lang('models/careers.plural')</span>
+    </a>
+</li>
+<li class="nav-item {{ Request::is('adminPanel/careerRequests*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('adminPanel.careerRequests.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>@lang('models/careerRequests.plural')</span>
+    </a>
+</li>

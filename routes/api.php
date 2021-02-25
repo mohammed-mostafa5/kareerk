@@ -27,8 +27,14 @@ Route::get('home', 'HomeController@home');
 Route::get('informations', 'HomeController@informations');
 Route::get('pages/{id}', 'HomeController@pages');
 Route::get('metas', 'HomeController@metas');
+
 Route::get('blogs', 'HomeController@blogs');
 Route::get('blog/{id}', 'HomeController@blog');
+
+Route::get('careers', 'HomeController@careers');
+Route::get('career/{id}', 'HomeController@career');
+Route::post('send-career-request', 'HomeController@sendCareerRequest');
+
 Route::post('send-contact', 'HomeController@sendContactMessage');
 Route::post('newsletter', 'HomeController@newsletter');
 
