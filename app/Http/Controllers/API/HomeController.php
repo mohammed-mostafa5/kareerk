@@ -160,7 +160,7 @@ class HomeController extends Controller
     public function landingPage()
     {
         $slider = Slider::active()->orderBy('in_order_to')->get();
-        $services = Service::active()->get();
+        $services = Service::active()->where('in_home', 1)->get();
 
         return response()->json(compact('slider', 'services'));
     }
