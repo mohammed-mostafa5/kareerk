@@ -28,7 +28,8 @@ class Service extends Model
         'parent_id',
         'photo',
         'icon',
-        'status'
+        'status',
+        'in_home'
     ];
 
     /**
@@ -43,7 +44,7 @@ class Service extends Model
         'status' => 'integer'
     ];
 
-    public $translatedAttributes =  ['name'];
+    public $translatedAttributes =  ['name', 'description'];
 
     public static function rules()
     {
@@ -51,6 +52,7 @@ class Service extends Model
 
         foreach ($languages as $language) {
             $rules[$language . '.name'] = 'required|string|max:191';
+            $rules[$language . '.description'] = 'required|string';
         }
 
         $rules['status'] = 'required|in:0,1';

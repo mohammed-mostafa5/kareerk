@@ -17,6 +17,18 @@
             {!! Form::text($locale . '[name]', isset($service)? $service->translate($locale)->name : '' , ['class' =>
             'form-control', 'placeholder' => $name . ' name']) !!}
         </div>
+        <!-- description Field -->
+        <div class="form-group col-sm-12">
+            {!! Form::label('description', __('models/services.fields.description').':') !!}
+            {!! Form::textarea($locale . '[description]', isset($service)? $service->translate($locale)->description : '' , ['class' =>
+            'form-control', 'placeholder' => $name . ' description']) !!}
+        </div>
+        <script type="text/javascript">
+            CKEDITOR.replace("{{ $locale . '[description]' }}", {
+                filebrowserUploadUrl: "{{route('adminPanel.ckeditor.upload', ['_token' => csrf_token() ])}}",
+                filebrowserUploadMethod: 'form'
+            });
+        </script>
     </div>
     @endforeach
 
@@ -56,6 +68,19 @@
 
         <label class="radio-inline">
             {!! Form::radio('status', "0", null) !!} inactive
+        </label>
+    </div>
+
+    <!-- in_home Field -->
+    <div class="form-group col-sm-12">
+        {!! Form::label('in_home', __('models/services.fields.in_home').':') !!}
+
+        <label class="radio-inline">
+            {!! Form::radio('in_home', "1", 'yes') !!} Yes
+        </label>
+
+        <label class="radio-inline">
+            {!! Form::radio('in_home', "0", null) !!} No
         </label>
     </div>
 

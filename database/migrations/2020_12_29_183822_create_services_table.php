@@ -20,6 +20,7 @@ class CreateServicesTable extends Migration
             $table->string('photo')->nullable();
             $table->string('icon')->nullable();
             $table->unsignedTinyInteger('status')->comment('0 => Inactive, 1 => Active');
+            $table->unsignedTinyInteger('in_home')->comment('0 => No, 1 => Yes');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -30,6 +31,7 @@ class CreateServicesTable extends Migration
             $table->integer('service_id')->unsigned();
             $table->string('locale', 2)->index();
             $table->string('name');
+            $table->text('description');
 
             $table->unique(['service_id', 'locale']);
 
