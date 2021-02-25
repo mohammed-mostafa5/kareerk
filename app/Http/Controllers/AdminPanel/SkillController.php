@@ -44,7 +44,7 @@ class SkillController extends AppBaseController
      */
     public function create()
     {
-        $services = Service::active()->get()->pluck('name', 'id');
+        $services = Service::child()->active()->get()->pluck('name', 'id');
         $parents = Skill::get()->pluck('name', 'id');
 
         return view('adminPanel.skills.create', compact('services', 'parents'));
@@ -98,7 +98,7 @@ class SkillController extends AppBaseController
     public function edit($id)
     {
         $skill = $this->skillRepository->find($id);
-        $services = Service::active()->get()->pluck('name', 'id');
+        $services = Service::child()->active()->get()->pluck('name', 'id');
 
         $parents = Skill::get()->pluck('name', 'id');
         if (empty($skill)) {
