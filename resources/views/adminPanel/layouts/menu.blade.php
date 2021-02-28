@@ -30,14 +30,6 @@
                 </li>
                 @endcan
 
-                {{-- @can('users view')
-                <li class="nav-item {{ Request::is('adminPanel/users*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('adminPanel.users.index') }}">
-                    <i class="nav-icon icon-user"></i>
-                    <span>@lang('models/users.plural')</span>
-                </a>
-                </li>
-                @endcan --}}
                 @can('clients view')
                 <li class="nav-item {{ Request::is('adminPanel/clients*') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('adminPanel.clients.index') }}">
@@ -54,13 +46,6 @@
                     </a>
                 </li>
                 @endcan
-
-                {{-- <li class="nav-item {{ Request::is('adminPanel/transactions*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('adminPanel.users.transactions') }}">
-                    <i class="nav-icon icon-user"></i>
-                    <span>@lang('models/transactions.plural')</span>
-                </a>
-                </li> --}}
 
             </div>
         </div>
@@ -160,48 +145,6 @@
         </div>
     </div>
 </div>
-
-
-{{--////////// Products ////////////--}}
-{{-- <div class="accordion nav-item" id="accordionProducts">
-    <div class="card bg-dark m-0">
-        <div class="card-header p-1" id="headingProducts">
-            <h2 class="mb-0">
-                <button class="btn btn-link text-decoration-none" type="button" data-toggle="collapse" data-target="#collapseProducts" aria-expanded="true" aria-controls="collapseProducts">
-                    <i class="nav-icon icon-basket mr-2"></i>
-                    <strong>Shop</strong>
-                </button>
-            </h2>
-        </div>
-
-        <div id="collapseProducts" class="collapse " aria-labelledby="headingProducts" data-parent="#accordionProducts">
-            <div class="card-body bg-secondary p-0">
-
-                <li class="nav-item {{ Request::is('adminPanel/categories*') ? 'active' : '' }}">
-<a class="nav-link" href="{{ route('adminPanel.categories.index') }}">
-    <i class="nav-icon icon-cursor"></i>
-    <span>@lang('models/categories.plural')</span>
-</a>
-</li>
-
-<li class="nav-item {{ Request::is('adminPanel/products*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('adminPanel.products.index') }}">
-        <i class="nav-icon icon-cursor"></i>
-        <span>@lang('models/products.plural')</span>
-    </a>
-</li>
-
-<li class="nav-item {{ Request::is('adminPanel/reviews*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('adminPanel.reviews.index') }}">
-        <i class="nav-icon icon-cursor"></i>
-        <span>@lang('models/reviews.plural')</span>
-    </a>
-</li>
-</div>
-</div>
-</div>
-</div> --}}
-
 
 {{--////////// Jobs ////////////--}}
 <div class="accordion nav-item" id="accordionJobs">
@@ -326,24 +269,3 @@
 </script>
 
 @endsection
-
-
-
-{{-- <li class="nav-item {{ Request::is('adminPanel/chats*') ? 'active' : '' }}">
-<a class="nav-link" href="{{ route('adminPanel.chats.index') }}">
-    <i class="nav-icon icon-cursor"></i>
-    <span>@lang('models/chats.plural')</span>
-</a>
-</li>
-<li class="nav-item {{ Request::is('adminPanel/messages*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('adminPanel.messages.index') }}">
-        <i class="nav-icon icon-cursor"></i>
-        <span>@lang('models/messages.plural')</span>
-    </a>
-</li>
-<li class="nav-item {{ Request::is('adminPanel/chatContacts*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('adminPanel.chatContacts.index') }}">
-        <i class="nav-icon icon-cursor"></i>
-        <span>@lang('models/chatContacts.plural')</span>
-    </a>
-</li> --}}
