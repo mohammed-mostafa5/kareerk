@@ -98,6 +98,7 @@ class CreateJobsTable extends Migration
             $table->unsignedTinyInteger('status')->default(1)->comment('1 => New, 2 => Finished, 3 => Done, 4 => Refused/Problem');
             $table->unsignedTinyInteger('admin_status')->default(1)
                 ->comment('1 => New, 2 => Under review, 3 => Solved, 4 =>  Not Solved, 5 => Payment Done, 6 => Client Refunded');
+            $table->text('problem_description')->nullable();
             $table->dateTime('expected_start');
             $table->dateTime('payment_at')->nullable();
             $table->dateTime('finished_at')->nullable();

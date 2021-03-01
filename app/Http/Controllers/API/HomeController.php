@@ -159,10 +159,11 @@ class HomeController extends Controller
 
     public function chargeBalance(Request $request)
     {
-        $user = auth('api')->user();
         $validated = $request->validate([
             'value' => 'required'
         ]);
+
+        $user = auth('api')->user();
 
         $validated['user_id'] = $user->id;
         $validated['action'] = 1;
@@ -825,6 +826,21 @@ class HomeController extends Controller
         $status = $job->status < 3 ? 3 :  $job->status;
         $job->update(['status' => $status]);
 
+        $jobFees = SiteOption::first()->job_fees;
+        $user = $job->client->user;
+
+        if ($user->balance < $jobFees) {
+            return response()->json(['msg' => 'Your balance not enough to publish this job, please recharge your balance and try again.'], 420);
+        };
+
+        $user->decrement('balance', $jobFees);
+
+        $user->transactions()->create([
+            'user_id' => $user->id,
+            'value' => -$jobFees,
+            'action' => 2,
+        ]);
+
         $jobData = $job->load('client.user', 'files', 'skills', 'service.mainService');
 
         return response()->json(compact('jobData'));
@@ -1209,12 +1225,34 @@ class HomeController extends Controller
             'milestone_id'      => 'required',
         ]);
         $milestone = ProposalMilestone::findOrFail($request->milestone_id);
+
+        $user = auth('api')->user();
+        $milestonePercentage = SiteOption::first()->milestone_percentage;
+        $milestoneFees = $milestone->amount / 100  * $milestonePercentage;
+
+        if ($user->balance < $milestoneFees  + $milestone->amount) {
+            return response()->json(['msg' => 'Your balance not enough to pay for this milestone, please recharge your balance and try again.'], 420);
+        };
+
+        $user->decrement('balance', $milestoneFees  + $milestone->amount);
+
+        $user->transactions()->create([
+            'user_id' => $user->id,
+            'value' => -$milestoneFees,
+            'action' => 3,
+        ]);
+        $user->transactions()->create([
+            'user_id' => $user->id,
+            'value' => -$milestone->amount,
+            'action' => 4,
+        ]);
+
         $milestone->update(['payment_at' => now()]);
 
         $notification = Notification::create([
             'user_id'        => $milestone->proposal->freelancer->user->id,
             'other_user_id'  => $milestone->proposal->job->client->user->id,
-            'text'           => $milestone->proposal->job->client->user->name . ' make a payment on your milestone',
+            'text'           => $milestone->proposal->job->client->user->name . ' made a payment on your milestone',
             'type'           => 'job',
             'notifable_id'   => $milestone->proposal->job->id,
             'notifable_type' => 'App\Models\Job',
@@ -1291,10 +1329,11 @@ class HomeController extends Controller
     public function milestoneHasProblem(Request $request)
     {
         $request->validate([
-            'milestone_id'      => 'required',
+            'milestone_id'             => 'required',
+            'problem_description'      => 'required',
         ]);
         $milestone = ProposalMilestone::findOrFail($request->milestone_id);
-        $milestone->update(['status' => 4]);
+        $milestone->update(['status' => 4, 'problem_description' => $request->problem_description]);
 
         $notification = Notification::create([
             'user_id'        => $milestone->proposal->freelancer->user->id,

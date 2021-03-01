@@ -19,6 +19,7 @@ class ProposalMilestone extends Model
         'duration',
         'duration_type',
         'amount',
+        'problem_description',
         'expected_start',
         'payment_at',
         'finished_at',

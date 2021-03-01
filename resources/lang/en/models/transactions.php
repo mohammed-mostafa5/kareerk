@@ -9,5 +9,6 @@ return array(
         'user' => 'User',
         'value' => 'Value',
         'action' => 'Action',
+        'created_at' => 'Created At',
     ),
 );

@@ -42,6 +42,7 @@ Route::get('landing-page', 'HomeController@landingPage');
 Route::get('services', 'HomeController@services');
 Route::get('service/{id}', 'HomeController@service');
 Route::get('freelancers', 'HomeController@freelancers');
+Route::get('freelancer/{id}', 'HomeController@freelancer');
 Route::get('skills', 'HomeController@skills');
 Route::get('countries', 'HomeController@countries');
 Route::get('languages', 'HomeController@languages');
@@ -54,6 +55,9 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::post('update-personal-information', 'HomeController@updatePersonalInformation');
     Route::post('update-password', 'HomeController@updatePassword');
+
+    Route::post('charge-balance', 'HomeController@chargeBalance');
+    Route::get('transactions', 'HomeController@transactions');
 
     Route::group(['middleware' => 'checkUserType:Freelancer'], function () {
         Route::post('freelancer-expertise', 'HomeController@freelancerExpertise');
@@ -111,7 +115,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::get('job/{id}', 'HomeController@job');
     Route::get('proposal/{id}', 'HomeController@proposal');
-    Route::get('freelancer/{id}', 'HomeController@freelancer');
+
     Route::get('freelancer-jobs/{id}', 'HomeController@freelancerJobs');
     Route::get('client-jobs/{id}', 'HomeController@clientJobs');
     Route::get('site-options', 'HomeController@siteOptions');

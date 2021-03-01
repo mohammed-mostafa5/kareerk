@@ -47,10 +47,16 @@ class UserTransactions extends Model
                 return 'Charge Balance';
                 break;
             case 2:
-                return 'Take Deposit';
+                return 'Job Fee';
                 break;
             case 3:
-                return 'Return Deposit';
+                return 'Milestone Fee';
+                break;
+            case 4:
+                return 'Milestone Amount';
+                break;
+            case 5:
+                return 'Featured Fee';
                 break;
 
             default:

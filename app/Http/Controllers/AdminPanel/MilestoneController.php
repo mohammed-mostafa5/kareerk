@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\AdminPanel;
 
-use App\Http\Requests\AdminPanel\CreateJobRequest;
-use App\Http\Requests\AdminPanel\UpdateJobRequest;
-use App\Repositories\AdminPanel\JobRepository;
-use App\Http\Controllers\AppBaseController;
-use App\Models\ProposalMilestone;
-use Illuminate\Http\Request;
 use Flash;
 use Response;
+use App\Models\SiteOption;
+use Illuminate\Http\Request;
+use App\Models\ProposalMilestone;
+use App\Http\Controllers\AppBaseController;
+use App\Repositories\AdminPanel\JobRepository;
+use App\Http\Requests\AdminPanel\CreateJobRequest;
+use App\Http\Requests\AdminPanel\UpdateJobRequest;
 
 class MilestoneController extends AppBaseController
 {
@@ -65,6 +66,27 @@ class MilestoneController extends AppBaseController
     public function pay($id)
     {
         $milestone = ProposalMilestone::find($id);
+        $user = $milestone->proposal->freelancer->user;
+
+        $milestonePercentage = SiteOption::first()->milestone_percentage;
+        $milestoneFees = $milestone->amount / 100  * $milestonePercentage;
+        // dd($milestone->amount);
+
+        $user->increment('balance', $milestone->amount);
+
+        $user->transactions()->create([
+            'user_id' => $user->id,
+            'value'   => $milestone->amount,
+            'action'  => 4,
+        ]);
+
+        $user->decrement('balance', $milestoneFees);
+
+        $user->transactions()->create([
+            'user_id' => $user->id,
+            'value'   => -$milestoneFees,
+            'action'  => 3,
+        ]);
 
         $milestone->update(['admin_status' => 5]);
 
