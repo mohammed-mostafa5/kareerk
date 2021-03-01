@@ -40,6 +40,7 @@ use App\Models\Blog;
 use App\Models\Career;
 use App\Models\CareerRequest;
 use App\Models\FreelancerEmployment;
+use App\Models\SiteOption;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Builder;
@@ -156,6 +157,36 @@ class HomeController extends Controller
         return response()->json(['msg' => __('lang.logoutMsg')]);
     }
 
+    public function chargeBalance(Request $request)
+    {
+        $user = auth('api')->user();
+        $validated = $request->validate([
+            'value' => 'required'
+        ]);
+
+        $validated['user_id'] = $user->id;
+        $validated['action'] = 1;
+
+        $transaction = $user->transactions()->create($validated);
+
+        $user->increment('balance', $validated['value']);
+        $userBalance = $user->balance;
+        return response()->json(compact('transaction', 'userBalance', 'user'));
+    }
+
+    public function transactions(Request $request)
+    {
+        $user = auth('api')->user();
+        $transactionsQuery = $user->transactions();
+
+        if ($request->filled('type')) {
+            $transactionsQuery->where('action', $request->type);
+        }
+        $transactions = $transactionsQuery->paginate(10);
+
+        return response()->json(compact('transactions'));
+    }
+
     ##########################################################################
 
     // Pages
@@ -252,7 +283,6 @@ class HomeController extends Controller
         return response()->json(compact('career'));
     }
 
-
     public function sendCareerRequest(Request $request)
     {
         $validated = $request->validate([
@@ -266,6 +296,16 @@ class HomeController extends Controller
         CareerRequest::create($validated);
 
         return response()->json(['msg' => 'success']);
+    }
+
+
+    public function siteOptions()
+    {
+        $jobFees = SiteOption::first()->job_fees;
+        $featuredFees = SiteOption::first()->featured_fees;
+        $milestonePercentage = SiteOption::first()->milestone_percentage;
+
+        return response()->json(compact('jobFees', 'featuredFees', 'milestonePercentage'));
     }
 
     ##########################################################################

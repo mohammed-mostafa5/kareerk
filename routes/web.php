@@ -141,6 +141,8 @@ Route::group(['prefix' => 'adminPanel', 'namespace' => 'AdminPanel', 'as' => 'ad
         Route::resource('careers', 'CareerController');
         Route::resource('careerRequests', 'CareerRequestController');
 
+        Route::resource('siteOptions', 'SiteOptionController')->only(['edit', 'update']);
+
         // //Settings
         Route::get('customSettings', 'CustomSettingController@settings')->name('customSettings.show');
         Route::patch('customSettings/{id}', 'CustomSettingController@update')->name('customSettings.update');

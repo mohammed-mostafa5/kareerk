@@ -114,4 +114,5 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('freelancer/{id}', 'HomeController@freelancer');
     Route::get('freelancer-jobs/{id}', 'HomeController@freelancerJobs');
     Route::get('client-jobs/{id}', 'HomeController@clientJobs');
+    Route::get('site-options', 'HomeController@siteOptions');
 });
