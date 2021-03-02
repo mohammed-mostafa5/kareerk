@@ -232,9 +232,28 @@ class HomeController extends Controller
     public function landingPageSearch()
     {
         $freelancersQuery = Freelancer::query();
-        if (request()->filled('search')) {
-            $freelancersQuery->join('skills', 'skills.name', 'like', '%' . request('search') . '%')->get();
+        if (request()->filled('skill_id')) {
+            $freelancersQuery->whereHas('skills', function ($query) {
+                $query->where('skill_id', request('skill_id'));
+            });
         }
+        if (request()->filled('name')) {
+
+            $skills = Skill::whereTranslationLike('name', '%' . request('name') . '%')->pluck('id')->toArray();
+            $services = Service::whereTranslationLike('name', '%' . request('name') . '%')->pluck('id')->toArray();
+            $users = User::where('name', 'like', '%' . request('name') . '%')->pluck('id')->toArray();
+
+            $freelancersQuery->whereHas('skills', function ($query) use ($skills) {
+                $query->whereIn('skill_id', $skills);
+            })->orWhereHas('services', function ($query) use ($services) {
+                $query->whereIn('service_id', $services);
+            })->orWhereIn('main_service_id', $services)
+                ->orWhereHas('user', function ($query) use ($users) {
+                    $query->whereIn('id', $users);
+                });
+        }
+
+        $freelancers = $freelancersQuery->get();
 
         return response()->json(compact('freelancers'));
     }
@@ -747,7 +766,7 @@ class HomeController extends Controller
     public function featuredHistory()
     {
         $user = auth('api')->user();
-        $featuredHistory = FeaturedFreelancer::where('freelancer_id', $user->userable_id)->get();
+        $featuredHistory = FeaturedFreelancer::where('freelancer_id', $user->userable_id)->paginate(10);
 
         $freelancer = $user->userable;
 
