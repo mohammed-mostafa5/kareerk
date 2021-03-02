@@ -115,4 +115,17 @@ class Freelancer extends Model
     {
         return $this->hasMany(Invitation::class, 'freelancer_id', 'id');
     }
+
+
+    ######################################################################
+
+    protected $appends = ['is_featured'];
+
+    public function getIsFeaturedAttribute()
+    {
+        if (in_array($this->attributes['id'], FeaturedFreelancer::get()->pluck('freelancer_id')->toArray())) {
+            return $this->attributes['is_featured'] = 1;
+        }
+        return $this->attributes['is_featured'] = 0;
+    }
 }

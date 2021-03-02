@@ -94,6 +94,7 @@ Route::group(['prefix' => 'adminPanel', 'namespace' => 'AdminPanel', 'as' => 'ad
         // User CURD
         Route::resource('users', 'UserController')->only(['index', 'show', 'update']);
         Route::get('transactions', 'UserController@transactions')->name('users.transactions');
+        Route::resource('featuredFreelancers', 'FeaturedFreelancerController')->only(['index']);
 
         // Informations CURD
         Route::resource('information', 'InformationController');

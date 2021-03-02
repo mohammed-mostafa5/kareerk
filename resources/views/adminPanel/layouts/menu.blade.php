@@ -57,6 +57,15 @@
                 </li>
                 @endcan
 
+                @can('featuredFreelancers view')
+                <li class="nav-item {{ Request::is('adminPanel/featuredFreelancers*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('adminPanel.featuredFreelancers.index') }}">
+                        <i class="nav-icon icon-cursor"></i>
+                        <span>@lang('models/featuredFreelancers.plural')</span>
+                    </a>
+                </li>
+                @endcan
+
             </div>
         </div>
     </div>

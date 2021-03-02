@@ -39,6 +39,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\Career;
 use App\Models\CareerRequest;
+use App\Models\FeaturedFreelancer;
 use App\Models\FreelancerEmployment;
 use App\Models\SiteOption;
 use Illuminate\Support\Facades\Hash;
@@ -175,6 +176,33 @@ class HomeController extends Controller
         return response()->json(compact('transaction', 'userBalance', 'user'));
     }
 
+    public function featuredSubscribe(Request $request)
+    {
+        $user = auth('api')->user();
+        $featuredFees  = SiteOption::first()->featured_fees;
+
+        if ($user->balance < $featuredFees) {
+            return response()->json(['msg' => 'Your balance not enough to Subscribe as a Featured Freelancer, please recharge your balance and try again.'], 420);
+        };
+
+        $user->decrement('balance', $featuredFees);
+
+        $user->transactions()->create([
+            'user_id' => $user->id,
+            'value'   => -$featuredFees,
+            'action'  => 5,
+        ]);
+
+        $featured = FeaturedFreelancer::create([
+            'freelancer_id' => $user->userable->id,
+            'start_at'      => now(),
+            'end_at'        => now()->addMonth(),
+            'value'         => $featuredFees
+        ]);
+
+        return response()->json(compact('featured'));
+    }
+
     public function transactions(Request $request)
     {
         $user = auth('api')->user();
@@ -196,8 +224,19 @@ class HomeController extends Controller
     {
         $slider = Slider::active()->orderBy('in_order_to')->get();
         $services = Service::active()->where('in_home', 1)->get();
+        $featured = FeaturedFreelancer::with('freelancer.user', 'freelancer.mainService', 'freelancer.skills')->get();
 
-        return response()->json(compact('slider', 'services'));
+        return response()->json(compact('slider', 'services', 'featured'));
+    }
+
+    public function landingPageSearch()
+    {
+        $freelancersQuery = Freelancer::query();
+        if (request()->filled('search')) {
+            $freelancersQuery->join('skills', 'skills.name', 'like', '%' . request('search') . '%')->get();
+        }
+
+        return response()->json(compact('freelancers'));
     }
 
     public function pages($id)
@@ -324,7 +363,16 @@ class HomeController extends Controller
     {
         $service = Service::findOrFail($id);
 
-        return response()->json(compact('service'));
+        if ($service->parent_id == null) {
+            $skills = Skill::whereHas('service', function ($query) use ($id) {
+                $query->where('parent_id', $id);
+            })->get();
+        } else {
+            $skills = $service->skills;
+        }
+
+
+        return response()->json(compact('service', 'skills'));
     }
 
     public function freelancers()
@@ -696,6 +744,15 @@ class HomeController extends Controller
         return response()->json(compact('invitations'));
     }
 
+    public function featuredHistory()
+    {
+        $user = auth('api')->user();
+        $featuredHistory = FeaturedFreelancer::where('freelancer_id', $user->userable_id)->get();
+
+        $freelancer = $user->userable;
+
+        return response()->json(compact('freelancer', 'featuredHistory'));
+    }
     ##########################################################################
 
     // Client

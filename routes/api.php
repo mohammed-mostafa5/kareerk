@@ -39,6 +39,7 @@ Route::post('send-contact', 'HomeController@sendContactMessage');
 Route::post('newsletter', 'HomeController@newsletter');
 
 Route::get('landing-page', 'HomeController@landingPage');
+Route::get('landing-page-search', 'HomeController@landingPageSearch');
 Route::get('services', 'HomeController@services');
 Route::get('service/{id}', 'HomeController@service');
 Route::get('freelancers', 'HomeController@freelancers');
@@ -73,6 +74,8 @@ Route::group(['middleware' => ['auth:api']], function () {
         Route::get('freelancer-home', 'HomeController@freelancerHome');
         Route::get('freelancer-proposals', 'HomeController@freelancerProposals');
         Route::get('freelancer-invitations', 'HomeController@freelancerInvitations');
+        Route::post('featured-subscribe', 'HomeController@featuredSubscribe');
+        Route::get('featured-history', 'HomeController@featuredHistory');
     });
 
     Route::group(['middleware' => 'checkUserType:Client'], function () {
