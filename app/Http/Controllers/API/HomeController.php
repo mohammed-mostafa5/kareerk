@@ -253,7 +253,7 @@ class HomeController extends Controller
                 });
         }
 
-        $freelancers = $freelancersQuery->get();
+        $freelancers = $freelancersQuery->with('user.country', 'services', 'mainService', 'skills', 'education', 'employment', 'languages')->get();
 
         return response()->json(compact('freelancers'));
     }
