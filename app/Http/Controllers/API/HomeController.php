@@ -200,6 +200,8 @@ class HomeController extends Controller
             'value'         => $featuredFees
         ]);
 
+        $featured->load('freelancer');
+
         return response()->json(compact('featured'));
     }
 
@@ -767,7 +769,7 @@ class HomeController extends Controller
     public function featuredHistory()
     {
         $user = auth('api')->user();
-        $featuredHistory = FeaturedFreelancer::where('freelancer_id', $user->userable_id)->paginate(10);
+        $featuredHistory = FeaturedFreelancer::where('freelancer_id', $user->userable_id)->latest('id')->paginate(10);
 
         $freelancer = $user->userable;
 
