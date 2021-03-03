@@ -105,6 +105,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('delete-notification/{id}', 'HomeController@deleteNotification');
     Route::get('clear-notifications', 'HomeController@clearNotifications');
     Route::get('notification-seen/{id}', 'HomeController@notificationSeen');
+    Route::get('reset-notifications-count', 'HomeController@resetNotificationsCount');
 
     // Milestones
     Route::post('add-milestone', 'HomeController@addMilestone');

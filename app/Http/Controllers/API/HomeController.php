@@ -248,6 +248,7 @@ class HomeController extends Controller
             })->orWhereHas('services', function ($query) use ($services) {
                 $query->whereIn('service_id', $services);
             })->orWhereIn('main_service_id', $services)
+                ->orWhere('title', 'like', '%' . request('name') . '%')
                 ->orWhereHas('user', function ($query) use ($users) {
                     $query->whereIn('id', $users);
                 });
@@ -1179,12 +1180,13 @@ class HomeController extends Controller
 
     public function notifications()
     {
-        $userId = auth('api')->id();
+        $user = auth('api')->user();
 
-        $notifications = Notification::where('user_id', $userId)->with('otherUser', 'notifable')->latest()->get();
-        $unseenCount = $notifications->where('user_id', $userId)->where('seen', 0)->count();
+        $notifications = Notification::where('user_id', $user->id)->with('otherUser', 'notifable')->latest()->get();
+        $unseenCount = $notifications->where('user_id', $user->id)->where('seen', 0)->count();
+        $count = $user->notification_count;
 
-        return response()->json(compact('notifications', 'unseenCount'));
+        return response()->json(compact('notifications', 'count', 'unseenCount'));
     }
 
     public function deleteNotification($id)
@@ -1212,6 +1214,14 @@ class HomeController extends Controller
         if ($notification && $notification->user_id == auth('api')->id()) {
             $notification->update(['seen' => 1]);
         }
+
+        return response()->json(['msg' => 'ok']);
+    }
+
+
+    public function resetNotificationsCount()
+    {
+        auth('api')->user()->update(['notification_count' => 0]);
 
         return response()->json(['msg' => 'ok']);
     }
