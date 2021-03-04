@@ -249,7 +249,15 @@ class HomeController extends Controller
         ]);
         $validated['reviewer_id'] = auth('api')->user()->userable_id;
 
-        $review = UserReview::updateOrCreate($validated);
+        $review = UserReview::updateOrCreate([
+            'job_id' => request('job_id'),
+            'reviewer_id' => auth('api')->user()->userable_id,
+            'user_id' => request('user_id'),
+
+        ], [
+            'rate' => request('rate'),
+            'review' => request('review'),
+        ]);
 
         $review->load('reviewer', 'user');
 
@@ -493,7 +501,7 @@ class HomeController extends Controller
 
     public function proposal($id)
     {
-        $proposal = JobProposal::with('freelancer.user', 'job', 'milestones', 'files')->find($id);
+        $proposal = JobProposal::with('freelancer.user', 'client.user', 'job', 'milestones', 'files')->find($id);
 
         return response()->json(compact('proposal'));
     }

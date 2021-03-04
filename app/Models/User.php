@@ -134,11 +134,17 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
         return $this->belongsTo(Country::class);
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(UserReview::class);
+    }
 
 
     #################################################################################
     ############################## Accessors & Mutators #############################
     #################################################################################
+
+    protected $appends = ['rating_avg'];
 
     public function setPasswordAttribute($value)
     {
@@ -150,6 +156,11 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     public function getStatusAttribute()
     {
         return $this->attributes['status'] ? 'Active' : 'Inactive';
+    }
+
+    public function getRatingAvgAttribute()
+    {
+        return $this->reviews()->avg('rate');
     }
 
     #################################################################################
