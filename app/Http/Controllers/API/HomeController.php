@@ -42,6 +42,7 @@ use App\Models\CareerRequest;
 use App\Models\FeaturedFreelancer;
 use App\Models\FreelancerEmployment;
 use App\Models\SiteOption;
+use App\Models\UserReview;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Builder;
@@ -158,6 +159,11 @@ class HomeController extends Controller
         return response()->json(['msg' => __('lang.logoutMsg')]);
     }
 
+
+
+    ##########################################################################
+
+    // User
     public function chargeBalance(Request $request)
     {
         $validated = $request->validate([
@@ -218,6 +224,39 @@ class HomeController extends Controller
         return response()->json(compact('transactions'));
     }
 
+    public function userJobReview()
+    {
+        request()->validate([
+            'job_id' => 'required',
+            'user_id' => 'required',
+        ]);
+
+        $review = UserReview::where('job_id', request('job_id'))
+            ->where('reviewer_id', auth('api')->id())
+            ->where('user_id', request('user_id'))
+            ->first();
+
+        return response()->json(compact('review'));
+    }
+
+    public function submitReview()
+    {
+        $validated = request()->validate([
+            'job_id' => 'required',
+            'user_id' => 'required',
+            'rate' => 'required',
+            'review' => 'required',
+        ]);
+        $validated['reviewer_id'] = auth('api')->user()->userable_id;
+
+        $review = UserReview::updateOrCreate($validated);
+
+        $review->load('reviewer', 'user');
+
+        return response()->json(compact('review'));
+    }
+
+
     ##########################################################################
 
     // Pages
@@ -239,18 +278,18 @@ class HomeController extends Controller
                 $query->where('skill_id', request('skill_id'));
             });
         }
-        if (request()->filled('name')) {
+        if (request()->filled('search')) {
 
-            $skills = Skill::whereTranslationLike('name', '%' . request('name') . '%')->pluck('id')->toArray();
-            $services = Service::whereTranslationLike('name', '%' . request('name') . '%')->pluck('id')->toArray();
-            $users = User::where('name', 'like', '%' . request('name') . '%')->pluck('id')->toArray();
+            $skills = Skill::whereTranslationLike('name', '%' . request('search') . '%')->pluck('id')->toArray();
+            $services = Service::whereTranslationLike('name', '%' . request('search') . '%')->pluck('id')->toArray();
+            $users = User::where('name', 'like', '%' . request('search') . '%')->pluck('id')->toArray();
 
             $freelancersQuery->whereHas('skills', function ($query) use ($skills) {
                 $query->whereIn('skill_id', $skills);
             })->orWhereHas('services', function ($query) use ($services) {
                 $query->whereIn('service_id', $services);
             })->orWhereIn('main_service_id', $services)
-                ->orWhere('title', 'like', '%' . request('name') . '%')
+                ->orWhere('title', 'like', '%' . request('search') . '%')
                 ->orWhereHas('user', function ($query) use ($users) {
                     $query->whereIn('id', $users);
                 });
@@ -462,8 +501,21 @@ class HomeController extends Controller
     public function freelancer($id)
     {
         $freelancer = Freelancer::with('user.country', 'services', 'mainService', 'skills', 'education', 'employment', 'languages')->find($id);
+        $userId = $freelancer->user->id;
 
-        return response()->json(compact('freelancer'));
+        $reviews  = UserReview::where('user_id', $userId)->with('job')->get();
+
+        return response()->json(compact('freelancer', 'reviews'));
+    }
+
+    public function client($id)
+    {
+        $client = Client::with('user.country')->find($id);
+        $userId = $client->user->id;
+
+        $reviews  = UserReview::where('user_id', $userId)->with('reviewer')->get();
+
+        return response()->json(compact('client', 'reviews'));
     }
 
     ##########################################################################

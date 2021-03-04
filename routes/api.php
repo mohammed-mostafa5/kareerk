@@ -44,9 +44,11 @@ Route::get('services', 'HomeController@services');
 Route::get('service/{id}', 'HomeController@service');
 Route::get('freelancers', 'HomeController@freelancers');
 Route::get('freelancer/{id}', 'HomeController@freelancer');
+Route::get('client/{id}', 'HomeController@client');
 Route::get('skills', 'HomeController@skills');
 Route::get('countries', 'HomeController@countries');
 Route::get('languages', 'HomeController@languages');
+
 
 
 // Authenticated Routes
@@ -59,6 +61,9 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::post('charge-balance', 'HomeController@chargeBalance');
     Route::get('transactions', 'HomeController@transactions');
+
+    Route::get('user-job-review', 'HomeController@userJobReview');
+    Route::post('submit-review', 'HomeController@submitReview');
 
     Route::group(['middleware' => 'checkUserType:Freelancer'], function () {
         Route::post('freelancer-expertise', 'HomeController@freelancerExpertise');
