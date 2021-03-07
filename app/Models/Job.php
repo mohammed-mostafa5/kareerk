@@ -28,10 +28,7 @@ class Job extends Model
 
     public $table = 'jobs';
 
-
     protected $dates = ['deleted_at'];
-
-
 
     public $fillable = [
         'service_id',
@@ -46,42 +43,14 @@ class Job extends Model
         'budget',
         'expected_time',
         'step',
-        'status'
+        'status',
+        'progress_status',
+        'completed_at',
     ];
 
-    /**
-     * The attributes that should be casted to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'service_id' => 'integer',
-        'title' => 'string',
-        'description' => 'string',
-        'expertise_level' => 'integer',
-        'visibility' => 'integer',
-        'freelancers_count' => 'integer',
-        'payment_type' => 'integer',
-        'budget' => 'integer',
-        'expected_time' => 'string',
-        'step' => 'integer',
-        'status' => 'integer'
-    ];
-
-    /**
-     * Validation rules
-     *
-     * @var array
-     */
     public static $rules = [];
 
-
-
-
-    #################################################################################
     ################################### Relations ###################################
-    #################################################################################
 
     public function client()
     {
@@ -117,10 +86,7 @@ class Job extends Model
         return $this->morphOne(Notification::class, 'notifable');
     }
 
-
-    #################################################################################
     ################################### Scopes #####################################
-    #################################################################################
 
     public function scopeOpen($query)
     {
@@ -130,5 +96,22 @@ class Job extends Model
     public function scopePublic($query)
     {
         return $query->where('visibility', 1);
+    }
+
+    ################################### Appends #####################################
+
+    protected $appends = ['complete_availability'];
+
+    public function getCompleteAvailabilityAttribute()
+    {
+        $proposals = $this->proposals;
+
+        foreach ($proposals as $proposal) {
+            $milestones = $proposal->milestones()->where('payment_at', '!=', null)->whereNotIn('status', [3, 4])->get();
+        }
+        if ($milestones->count() > 0) {
+            return false;
+        }
+        return true;
     }
 }

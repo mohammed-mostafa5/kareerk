@@ -18,7 +18,7 @@ class CreateUserReviewsTable extends Migration
             $table->unsignedInteger('job_id');
             $table->unsignedBigInteger('reviewer_id')->comment('The user who is doing the review');
             $table->unsignedBigInteger('user_id')->comment('User who is being reviewed');
-            $table->unsignedInteger('rate');
+            $table->string('rate');
             $table->text('review');
 
             $table->timestamps();

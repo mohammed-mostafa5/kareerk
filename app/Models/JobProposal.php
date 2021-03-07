@@ -15,7 +15,7 @@ class JobProposal extends Model
         'cover_letter',
     ];
 
-    // Relations
+    ################################### Relations #####################################
 
     public function milestones()
     {
@@ -35,5 +35,18 @@ class JobProposal extends Model
     public function freelancer()
     {
         return $this->belongsTo(Freelancer::class);
+    }
+
+    ################################### Appends #####################################
+
+    protected $appends = ['rate_availability'];
+
+    public function getRateAvailabilityAttribute()
+    {
+        $milestone = $this->milestones->whereIn('status', [3, 4])->first();
+        if ($milestone) {
+            return true;
+        }
+        return false;
     }
 }

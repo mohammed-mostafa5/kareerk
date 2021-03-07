@@ -247,11 +247,11 @@ class HomeController extends Controller
             'rate' => 'required',
             'review' => 'required',
         ]);
-        $validated['reviewer_id'] = auth('api')->user()->userable_id;
+        $validated['reviewer_id'] = auth('api')->id();
 
         $review = UserReview::updateOrCreate([
             'job_id' => request('job_id'),
-            'reviewer_id' => auth('api')->user()->userable_id,
+            'reviewer_id' => auth('api')->id(),
             'user_id' => request('user_id'),
 
         ], [
@@ -501,7 +501,7 @@ class HomeController extends Controller
 
     public function proposal($id)
     {
-        $proposal = JobProposal::with('freelancer.user', 'client.user', 'job', 'milestones', 'files')->find($id);
+        $proposal = JobProposal::with('freelancer.user', 'job.client.user', 'milestones', 'files')->find($id);
 
         return response()->json(compact('proposal'));
     }
@@ -521,7 +521,7 @@ class HomeController extends Controller
         $client = Client::with('user.country')->find($id);
         $userId = $client->user->id;
 
-        $reviews  = UserReview::where('user_id', $userId)->with('reviewer')->get();
+        $reviews  = UserReview::where('user_id', $userId)->with('job', 'reviewer.userable')->get();
 
         return response()->json(compact('client', 'reviews'));
     }
@@ -1108,6 +1108,20 @@ class HomeController extends Controller
         event(new SendNotification($notification));
 
         return response()->json(compact('proposalData'));
+    }
+
+    public function completeJob()
+    {
+        request()->validate([
+            'job_id' => 'required'
+        ]);
+
+        $job = Job::find(request('job_id'));
+        $job->update(['progress_status' => 2, 'completed_at' => now()]);
+
+        $jobData = $job->load('client.user', 'files', 'skills', 'service.mainService');
+
+        return response()->json(compact('jobData'));
     }
 
     ##########################################################################

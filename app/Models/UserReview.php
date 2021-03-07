@@ -14,6 +14,10 @@ class UserReview extends Model
         'review',
     ];
 
+    protected $casts = [
+        'rate' => 'float',
+    ];
+
     // Relations
 
     public function job()

@@ -28,6 +28,8 @@ class CreateJobsTable extends Migration
             $table->unsignedTinyInteger('expected_time')->nullable();
             $table->unsignedTinyInteger('step')->default(1);
             $table->unsignedTinyInteger('status')->default(0);
+            $table->unsignedTinyInteger('progress_status')->default(1);
+            $table->dateTime('completed_at')->nullable();
             $table->unsignedTinyInteger('available')->default(1);
             $table->timestamps();
             $table->softDeletes();
