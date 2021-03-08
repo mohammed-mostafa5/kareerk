@@ -105,13 +105,14 @@ class Job extends Model
     public function getCompleteAvailabilityAttribute()
     {
         $proposals = $this->proposals;
+        $milestones = null;
 
         foreach ($proposals as $proposal) {
             $milestones = $proposal->milestones()->where('payment_at', '!=', null)->whereNotIn('status', [3, 4])->get();
         }
-        if ($milestones->count() > 0) {
-            return false;
+        if ($milestones && $milestones->count() < 1) {
+            return true;
         }
-        return true;
+        return false;
     }
 }

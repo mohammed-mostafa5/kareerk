@@ -792,7 +792,9 @@ class HomeController extends Controller
         $jobs = $jobsQuery->latest()->get();
         $jobs->load('skills', 'service.mainService');
 
-        return response()->json(compact('jobs'));
+        $topJobs = $jobsQuery->withCount('proposals')->orderBy('proposals_count')->take(3)->get();
+
+        return response()->json(compact('jobs', 'topJobs'));
     }
 
     public function freelancerJobs($id)
