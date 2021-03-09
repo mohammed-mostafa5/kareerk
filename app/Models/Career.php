@@ -25,7 +25,7 @@ class Career extends Model
 
     public $fillable = ['id'];
 
-    public $translatedAttributes =  ['title', 'description'];
+    public $translatedAttributes =  ['title', 'description', 'brief'];
 
     public static function rules()
     {

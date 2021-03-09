@@ -8,6 +8,7 @@ return array(
         'id' => 'ID',
         'title' => 'Title',
         'description' => 'Description',
+        'brief' => 'Brief',
         'created_at' => 'Created At',
         'updated_at' => 'Updated At',
     ),

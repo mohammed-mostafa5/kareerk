@@ -29,6 +29,18 @@
                 filebrowserUploadMethod: 'form'
             });
         </script>
+        <!-- brief Field -->
+        <div class="form-group col-sm-12">
+            {!! Form::label('brief', __('models/careers.fields.brief').':') !!}
+            {!! Form::textarea($locale . '[brief]', isset($career)? $career->translate($locale)->brief : '' , ['class' =>
+            'form-control', 'placeholder' => $name . ' brief']) !!}
+        </div>
+        <script type="text/javascript">
+            CKEDITOR.replace("{{ $locale . '[brief]' }}", {
+                filebrowserUploadUrl: "{{route('adminPanel.ckeditor.upload', ['_token' => csrf_token() ])}}",
+                filebrowserUploadMethod: 'form'
+            });
+        </script>
     </div>
     @endforeach
 

@@ -26,6 +26,7 @@ class CreateCareersTable extends Migration
             $table->string('locale', 2)->index();
             $table->string('title');
             $table->text('description');
+            $table->text('brief');
 
             $table->unique(['career_id', 'locale']);
 

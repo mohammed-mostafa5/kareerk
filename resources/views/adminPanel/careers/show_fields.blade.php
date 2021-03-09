@@ -10,10 +10,17 @@
     {!! Form::label('title', $name . ' ' . __('models/careers.fields.title').':') !!}
     <span>{{ $career->translate($locale)->title }}</span>
 </div>
+
 <!-- name Field -->
 <div class="form-group show">
     {!! Form::label('description', $name . ' ' . __('models/careers.fields.description').':') !!}
     <span>{!! $career->translate($locale)->description !!}</span>
+</div>
+
+<!-- name Field -->
+<div class="form-group show">
+    {!! Form::label('brief', $name . ' ' . __('models/careers.fields.brief').':') !!}
+    <span>{!! $career->translate($locale)->brief !!}</span>
 </div>
 
 @endforeach
