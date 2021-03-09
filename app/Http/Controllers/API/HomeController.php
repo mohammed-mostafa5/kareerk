@@ -271,7 +271,6 @@ class HomeController extends Controller
         $slider = Slider::active()->orderBy('in_order_to')->get();
         $services = Service::active()->where('in_home', 1)->get();
         $featured = FeaturedFreelancer::with('freelancer.user', 'freelancer.mainService', 'freelancer.skills')->get();
-        // $freelancers = User::with('userable')->where('userable_type', "App\\Models\\Freelancer")->get();
         $freelancers = Freelancer::with('user')->get();
         $topRated = $freelancers->sortByDesc('user.rating_avg')->values()->all();
 
