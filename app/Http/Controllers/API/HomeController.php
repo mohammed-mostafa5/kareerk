@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\Faq;
 use App\Models\Job;
 use App\Models\Chat;
 use App\Models\Meta;
@@ -24,7 +23,6 @@ use App\Models\SocialLink;
 use App\Events\SendMessage;
 use App\Helpers\MailsTrait;
 use App\Models\ChatContact;
-use App\Models\FaqCategory;
 use App\Models\Information;
 use App\Models\JobProposal;
 use App\Models\MessageFiles;
@@ -264,7 +262,6 @@ class HomeController extends Controller
         return response()->json(compact('review'));
     }
 
-
     ##########################################################################
 
     // Pages
@@ -274,8 +271,11 @@ class HomeController extends Controller
         $slider = Slider::active()->orderBy('in_order_to')->get();
         $services = Service::active()->where('in_home', 1)->get();
         $featured = FeaturedFreelancer::with('freelancer.user', 'freelancer.mainService', 'freelancer.skills')->get();
+        // $freelancers = User::with('userable')->where('userable_type', "App\\Models\\Freelancer")->get();
+        $freelancers = Freelancer::with('user')->get();
+        $topRated = $freelancers->sortByDesc('user.rating_avg')->values()->all();
 
-        return response()->json(compact('slider', 'services', 'featured'));
+        return response()->json(compact('slider', 'services', 'featured', 'topRated'));
     }
 
     public function landingPageSearch()
