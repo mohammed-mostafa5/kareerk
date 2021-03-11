@@ -96,6 +96,11 @@ class Service extends Model
         return $this->hasMany(Skill::class, 'service_id', 'id');
     }
 
+    public function jobs()
+    {
+        return $this->hasMany(Job::class);
+    }
+
     #################################################################################
     ################################# Functions #####################################
     #################################################################################
@@ -105,16 +110,13 @@ class Service extends Model
         try {
             if ($file) {
 
-                if ($file) {
+                $fileName = $this->createFileName($file);
 
-                    $fileName = $this->createFileName($file);
+                $this->originalImage($file, $fileName);
 
-                    $this->originalImage($file, $fileName);
+                $this->thumbImage($file, $fileName, 182, 182);
 
-                    $this->thumbImage($file, $fileName, 182, 182);
-
-                    $this->attributes['photo'] = $fileName;
-                }
+                $this->attributes['photo'] = $fileName;
             }
         } catch (\Throwable $th) {
             $this->attributes['photo'] = $file;

@@ -271,8 +271,8 @@ class HomeController extends Controller
         $slider = Slider::active()->orderBy('in_order_to')->get();
         $services = Service::active()->where('in_home', 1)->get();
         $featured = FeaturedFreelancer::with('freelancer.user', 'freelancer.mainService', 'freelancer.skills')->get();
-        $freelancers = Freelancer::with('user')->get();
-        $topRated = $freelancers->sortByDesc('user.rating_avg')->values()->all();
+        $freelancers = Freelancer::with('user', 'mainService', 'skills')->get();
+        $topRated = $freelancers->where('user.rating_avg', '>', 3)->sortByDesc('user.rating_avg')->values()->all();
 
         return response()->json(compact('slider', 'services', 'featured', 'topRated'));
     }
@@ -439,8 +439,20 @@ class HomeController extends Controller
             $skills = $service->skills;
         }
 
+        $skillsCount = $skills->count();
 
-        return response()->json(compact('service', 'skills'));
+        $freelancers = Freelancer::where('main_service_id', $id)->with('user')->get();
+        $serviceAvg = $freelancers->sum('user.rating_avg') / $freelancers->count();
+
+        $serviceJobs = $service->jobs;
+        $acceptedMilestonesCount = 0;
+        foreach ($serviceJobs as $job) {
+            foreach ($job->proposals as $proposal) {
+                $acceptedMilestonesCount += $proposal->milestones->whereIn('status', [3, 4])->count();
+            }
+        }
+
+        return response()->json(compact('service', 'skills', 'skillsCount', 'serviceAvg', 'acceptedMilestonesCount'));
     }
 
     public function freelancers()
@@ -495,11 +507,14 @@ class HomeController extends Controller
             }, 'proposals.freelancer.user', 'proposals.milestones', 'proposals.files'
         ]);
 
-        return response()->json(compact('job'));
+        $acceptedProposals = $job->proposals()->with('freelancer.user')->where('accepted', 1)->get();
+
+        return response()->json(compact('job', 'acceptedProposals'));
     }
 
     public function proposal($id)
     {
+
         $proposal = JobProposal::with('freelancer.user', 'job.client.user', 'milestones', 'files')->find($id);
 
         return response()->json(compact('proposal'));

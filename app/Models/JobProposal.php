@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class JobProposal extends Model
 {
@@ -49,4 +50,9 @@ class JobProposal extends Model
         }
         return false;
     }
+
+    // public function getIsAuthorizedAttribute()
+    // {
+    //     return in_array(auth('api')->id(), [$this->freelancer->user->id, $this->job->client->user->id]);
+    // }
 }
