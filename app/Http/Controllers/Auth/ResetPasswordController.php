@@ -26,5 +26,5 @@ class ResetPasswordController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = 'https://mazadii.net/signin';
+    protected $redirectTo = 'https://kareerk-web.bluenileboat.com/auth/signin';
 }

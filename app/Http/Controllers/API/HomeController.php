@@ -34,6 +34,7 @@ use App\Models\ProposalMilestone;
 use App\Models\FreelancerEducation;
 use App\Helpers\HelperFunctionTrait;
 use App\Http\Controllers\Controller;
+use App\Mail\TestMail;
 use App\Models\Blog;
 use App\Models\Career;
 use App\Models\CareerRequest;
@@ -51,6 +52,7 @@ class HomeController extends Controller
 
     public function test()
     {
+        Mail::to('mm@mm.com')->send(new TestMail);
         return ('test home');
     }
 
@@ -442,7 +444,7 @@ class HomeController extends Controller
         $skillsCount = $skills->count();
 
         $freelancers = Freelancer::where('main_service_id', $id)->with('user')->get();
-        $serviceAvg = $freelancers->sum('user.rating_avg') / $freelancers->count();
+        $serviceAvg = $freelancers->count() > 0 ? $freelancers->sum('user.rating_avg') / $freelancers->count() : 0;
 
         $serviceJobs = $service->jobs;
         $acceptedMilestonesCount = 0;
@@ -514,8 +516,11 @@ class HomeController extends Controller
 
     public function proposal($id)
     {
-
-        $proposal = JobProposal::with('freelancer.user', 'job.client.user', 'milestones', 'files')->find($id);
+        $findProposal = JobProposal::find($id);
+        if (!in_array(auth('api')->id(), [$findProposal->freelancer->user->id, $findProposal->job->client->user->id])) {
+            return response()->json(['msg' => 'You are not Authorized to view this proposal'], 420);
+        }
+        $proposal = $findProposal->load('freelancer.user', 'job.client.user', 'milestones', 'files');
 
         return response()->json(compact('proposal'));
     }

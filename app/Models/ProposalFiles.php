@@ -24,7 +24,6 @@ class ProposalFiles extends Model
     public static $rules = [];
 
 
-
     public function setFileAttribute($file)
     {
         if ($file) {
@@ -37,11 +36,9 @@ class ProposalFiles extends Model
         }
     }
 
-
-
     public function getFileAttribute($val)
     {
 
-        return $val ? asset('uploads/images/original') . '/' . $val : null;
+        return $val ? asset('uploads/files') . '/' . $val : null;
     }
 }
