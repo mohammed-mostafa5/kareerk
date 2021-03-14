@@ -68,11 +68,16 @@ class Service extends Model
     #################################################################################
 
 
-    protected $appends = ['photo_path'];
+    protected $appends = ['photo_path', 'thumbnail_path'];
 
     public function getPhotoPathAttribute()
     {
         return $this->photo ? asset('uploads/images/original/' . $this->photo) : null;
+    }
+
+    public function getThumbnailPathAttribute()
+    {
+        return $this->photo ? asset('uploads/images/thumbnail/' . $this->photo) : null;
     }
 
 
