@@ -23,6 +23,11 @@
 </div>
 <!-- name Field -->
 <div class="form-group show">
+    {!! Form::label('brief', $name . ' ' . __('models/blogs.fields.brief').':') !!}
+    <span>{!! $blog->translate($locale)->brief !!}</span>
+</div>
+<!-- name Field -->
+<div class="form-group show">
     {!! Form::label('description', $name . ' ' . __('models/blogs.fields.description').':') !!}
     <span>{!! $blog->translate($locale)->description !!}</span>
 </div>

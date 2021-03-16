@@ -46,4 +46,17 @@ class SendNotification implements ShouldBroadcast
     {
         return 'send-notification';
     }
+
+
+    // public function broadcastWith()
+    // {
+    //     return [
+    //         'user_id'        => $this->notification->user_id,
+    //         'other_user_id'  => $this->notification->other_user_id,
+    //         'text'           => $this->notification->text,
+    //         'type'           => $this->notification->type,
+    //         'notifable_id'   => $this->notification->notifable_id,
+    //         'notifable_type' => $this->notification->notifable_type,
+    //     ];
+    // }
 }

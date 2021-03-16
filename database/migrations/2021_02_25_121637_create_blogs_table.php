@@ -27,6 +27,7 @@ class CreateBlogsTable extends Migration
             $table->integer('blog_id')->unsigned();
             $table->string('locale', 2)->index();
             $table->string('title');
+            $table->text('brief');
             $table->text('description');
 
             $table->unique(['blog_id', 'locale']);

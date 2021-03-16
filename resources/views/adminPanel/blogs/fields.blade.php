@@ -17,6 +17,12 @@
             {!! Form::text($locale . '[title]', isset($blog)? $blog->translate($locale)->title : '' , ['class' =>
             'form-control', 'placeholder' => $name . ' title']) !!}
         </div>
+        <!-- brief Field -->
+        <div class="form-group col-sm-12">
+            {!! Form::label('brief', __('models/blogs.fields.brief').':') !!}
+            {!! Form::textarea($locale . '[brief]', isset($blog)? $blog->translate($locale)->brief : '' , ['class' =>
+            'form-control', 'placeholder' => $name . ' brief']) !!}
+        </div>
         <!-- description Field -->
         <div class="form-group col-sm-12">
             {!! Form::label('description', __('models/blogs.fields.description').':') !!}

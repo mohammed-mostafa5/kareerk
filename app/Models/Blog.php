@@ -30,7 +30,7 @@ class Blog extends Model
     ];
 
 
-    public $translatedAttributes =  ['title', 'description'];
+    public $translatedAttributes =  ['title', 'description', 'brief'];
 
     public static function rules()
     {
@@ -39,6 +39,7 @@ class Blog extends Model
         foreach ($languages as $language) {
             $rules[$language . '.title'] = 'required|string|max:191';
             $rules[$language . '.description'] = 'required|string';
+            $rules[$language . '.brief'] = 'required|string';
         }
 
         $rules['photo'] = 'required';
