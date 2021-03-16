@@ -53,11 +53,16 @@ class Blog extends Model
     #################################################################################
 
 
-    protected $appends = ['photo_path'];
+    protected $appends = ['photo_path', 'thumbnail_path'];
 
     public function getPhotoPathAttribute()
     {
         return $this->photo ? asset('uploads/images/original/' . $this->photo) : null;
+    }
+
+    public function getThumbnailPathAttribute()
+    {
+        return $this->photo ? asset('uploads/images/thumbnail/' . $this->photo) : null;
     }
 
 
@@ -76,7 +81,7 @@ class Blog extends Model
 
                     $this->originalImage($file, $fileName);
 
-                    $this->thumbImage($file, $fileName, 182, 182);
+                    $this->thumbImage($file, $fileName, 650, 365);
 
                     $this->attributes['photo'] = $fileName;
                 }
