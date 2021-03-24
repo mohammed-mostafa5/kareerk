@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class UserApproveMail extends Mailable
+class ClientWelcomeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -30,6 +30,6 @@ class UserApproveMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.user_approve');
+        return $this->markdown('emails.client_welcome');
     }
 }

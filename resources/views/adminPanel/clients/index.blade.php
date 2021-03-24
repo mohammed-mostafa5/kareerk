@@ -14,7 +14,7 @@
                         <i class="fa fa-align-justify"></i>
                         @lang('models/clients.plural')
                         {{-- @can('clients create')
-                        <a class="pull-right" href="{{ route('adminPanel.clients.create') }}"><i class="fa fa-plus-square fa-lg"></i></a>
+                        <a class="pull-right" href="{{ route('adminPanel.clients.create') }}"><i class="fa fa-plus-square fa-lg"></i> Create</a>
                         @endcan --}}
                     </div>
                     <div class="card-body">

@@ -14,7 +14,7 @@
                         <i class="fa fa-align-justify"></i>
                         @lang('models/countries.plural')
                         @can('countries create')
-                        <a class="pull-right" href="{{ route('adminPanel.countries.create') }}"><i class="fa fa-plus-square fa-lg"></i></a>
+                        <a class="pull-right" href="{{ route('adminPanel.countries.create') }}"><i class="fa fa-plus-square fa-lg"></i> Create</a>
                         @endcan
                     </div>
                     <div class="card-body">

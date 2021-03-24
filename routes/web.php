@@ -125,6 +125,8 @@ Route::group(['prefix' => 'adminPanel', 'namespace' => 'AdminPanel', 'as' => 'ad
 
         Route::resource('freelancers', 'FreelancerController');
         Route::patch('freelancers/approve/{id}', 'FreelancerController@approve')->name('freelancers.approve');
+        Route::patch('users/deactivate/{id}', 'UserController@deactivate')->name('users.deactivate');
+        Route::patch('users/activate/{id}', 'UserController@activate')->name('users.activate');
 
         Route::resource('countries', 'CountryController');
         Route::resource('languages', 'LanguageController');

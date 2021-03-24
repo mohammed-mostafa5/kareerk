@@ -18,7 +18,7 @@
                         <i class="fa fa-align-justify"></i>
                         @lang('models/paragraphs.plural')
                         @can('paragraphs create')
-                        <a class="pull-right" href="{{ route('adminPanel.pages.paragraphs.create', $page->id) }}"><i class="fa fa-plus-square fa-lg"></i></a>
+                        <a class="pull-right" href="{{ route('adminPanel.pages.paragraphs.create', $page->id) }}"><i class="fa fa-plus-square fa-lg"></i> Create</a>
                         @endcan
                     </div>
                     <div class="card-body">

@@ -238,7 +238,7 @@ return [
     'payment_method' => 'Payment method',
     ###### End Appointments #######
 
-    'notActive' => 'You Are Not Active',
+    'notActive' => 'Your account has been suspended feel free to contact us to get more information.',
     'notApproved' => 'You Are Not Approved',
     'highestValueMsg' => 'The value is lower than or equal last value',
     'minBidMsg' => 'Your value is lower than Minimum Bid Price',

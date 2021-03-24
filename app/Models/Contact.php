@@ -30,6 +30,7 @@ class Contact extends Model
         'name',
         'email',
         'phone',
+        'subject',
         'message'
     ];
 
@@ -55,6 +56,7 @@ class Contact extends Model
         'name' => 'required|string|min:3|max:191',
         'email' => 'required|email|min:3|max:191',
         'phone' => 'required',
+        'subject' => 'required|string|min:3|max:191',
         'message' => 'required|string|min:3',
     ];
 }

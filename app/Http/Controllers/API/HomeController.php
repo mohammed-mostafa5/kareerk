@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Job;
+use App\Models\Blog;
 use App\Models\Chat;
 use App\Models\Meta;
 use App\Models\Page;
 use App\Models\User;
 use App\Models\Skill;
+use App\Mail\TestMail;
+use App\Models\Career;
 use App\Models\Client;
 use App\Models\Slider;
 use App\Models\Contact;
@@ -19,7 +22,9 @@ use App\Models\Language;
 use App\Models\Freelancer;
 use App\Models\Invitation;
 use App\Models\Newsletter;
+use App\Models\SiteOption;
 use App\Models\SocialLink;
+use App\Models\UserReview;
 use App\Events\SendMessage;
 use App\Helpers\MailsTrait;
 use App\Models\ChatContact;
@@ -28,20 +33,20 @@ use App\Models\JobProposal;
 use App\Models\MessageFiles;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Models\CareerRequest;
+use App\Mail\ClientWelcomeMail;
 use Illuminate\Validation\Rule;
 use App\Events\SendNotification;
 use App\Models\ProposalMilestone;
+use App\Models\FeaturedFreelancer;
+use App\Mail\FreelancerWelcomeMail;
 use App\Models\FreelancerEducation;
 use App\Helpers\HelperFunctionTrait;
 use App\Http\Controllers\Controller;
-use App\Mail\TestMail;
-use App\Models\Blog;
-use App\Models\Career;
-use App\Models\CareerRequest;
-use App\Models\FeaturedFreelancer;
+use App\Mail\ChargeConfirmationMail;
+use App\Mail\FeaturedConfirmationMail;
+use App\Mail\JobPublishConfirmationMail;
 use App\Models\FreelancerEmployment;
-use App\Models\SiteOption;
-use App\Models\UserReview;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Builder;
@@ -115,8 +120,10 @@ class HomeController extends Controller
 
         if ($user->userable_type == 'App\Models\Freelancer') {
             $freelancer = Freelancer::with('services', 'mainService', 'skills', 'education', 'employment', 'languages')->find($user->userable_id);
+            Mail::to($freelancer->user->email)->send(new FreelancerWelcomeMail($freelancer));
         } else {
             $client = Client::find($user->userable_id);
+            Mail::to($client->user->email)->send(new ClientWelcomeMail($client));
         }
         $token = auth('api')->login($user);
         return response()->json(compact('user', 'token', 'freelancer', 'client'));
@@ -179,6 +186,9 @@ class HomeController extends Controller
 
         $user->increment('balance', $validated['value']);
         $userBalance = $user->balance;
+
+        Mail::to($user->email)->send(new ChargeConfirmationMail($user, $validated['value']));
+
         return response()->json(compact('transaction', 'userBalance', 'user'));
     }
 
@@ -207,6 +217,8 @@ class HomeController extends Controller
         ]);
 
         $featured->load('freelancer');
+
+        Mail::to($user->email)->send(new FeaturedConfirmationMail($user, $featuredFees));
 
         return response()->json(compact('featured'));
     }
@@ -347,10 +359,11 @@ class HomeController extends Controller
     public function sendContactMessage(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|min:3|max:191',
-            'email' => 'required|email|min:3|max:191',
-            'phone' => 'required',
-            'message' => 'required|string|min:3',
+            'name'      => 'required|string|min:3|max:191',
+            'email'     => 'required|email|min:3|max:191',
+            'phone'     => 'required',
+            'subject'   => 'required|string|min:3|max:191',
+            'message'   => 'required|string|min:3',
         ]);
         Contact::create($validated);
 
@@ -410,7 +423,7 @@ class HomeController extends Controller
             'email'         => 'required|email|min:3|max:191',
             'phone'         => 'required',
             'cover_letter'  => 'required|string|min:3',
-            'cv'            => 'required|mimes:pdf',
+            'cv'            => 'required|mimes:pdf,docx',
         ]);
         CareerRequest::create($validated);
 
@@ -1016,7 +1029,11 @@ class HomeController extends Controller
             'action' => 2,
         ]);
 
+        Mail::to($user->email)->send(new JobPublishConfirmationMail($user, $jobFees));
+
         $jobData = $job->load('client.user', 'files', 'skills', 'service.mainService');
+
+
 
         return response()->json(compact('jobData'));
     }

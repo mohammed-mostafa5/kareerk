@@ -3,7 +3,9 @@
     <img src="{{asset('logo.png')}}" alt="{{ config('app.name') }}">
 </a>
 <hr>
-Congratulations, You are approved from admin and you can <b><a href="{{ config('app.url') }}/auth/signin">Login</a></b> to {{ config('app.name') }} now.
+Congratulations, Your wallet charged successfuly with {{ $amount }}$.
+
+<strong>Your New Balance: </strong> {{$user->balance}}$
 
 <br>
 <br>

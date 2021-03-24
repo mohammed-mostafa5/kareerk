@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\AdminPanel;
 
-use App\Http\Requests\AdminPanel\CreateFreelancerRequest;
-use App\Http\Requests\AdminPanel\UpdateFreelancerRequest;
-use App\Repositories\AdminPanel\FreelancerRepository;
-use App\Http\Controllers\AppBaseController;
-use App\Models\Freelancer;
-use Illuminate\Http\Request;
 use Flash;
 use Response;
+use App\Models\Freelancer;
+use Illuminate\Http\Request;
+use App\Mail\UserApproveMail;
+use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\AppBaseController;
+use App\Repositories\AdminPanel\FreelancerRepository;
+use App\Http\Requests\AdminPanel\CreateFreelancerRequest;
+use App\Http\Requests\AdminPanel\UpdateFreelancerRequest;
 
 class FreelancerController extends AppBaseController
 {
@@ -161,7 +163,7 @@ class FreelancerController extends AppBaseController
         $freelancer = Freelancer::find($id);
         $freelancer->update(['status' => 3]);
 
-        // Mail::to($user->email)->send(new UserApproveMail($user));
+        Mail::to($freelancer->user->email)->send(new UserApproveMail($freelancer));
 
         return back();
     }

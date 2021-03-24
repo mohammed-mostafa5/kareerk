@@ -13,7 +13,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i>
                         @lang('models/careerRequests.plural')
-                        {{-- <a class="pull-right" href="{{ route('adminPanel.careerRequests.create') }}"><i class="fa fa-plus-square fa-lg"></i></a> --}}
+                        {{-- <a class="pull-right" href="{{ route('adminPanel.careerRequests.create') }}"><i class="fa fa-plus-square fa-lg"></i> Create</a> --}}
                     </div>
                     <div class="card-body">
                         @include('adminPanel.career_requests.table')

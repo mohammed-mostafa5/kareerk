@@ -3,7 +3,8 @@
     <img src="{{asset('logo.png')}}" alt="{{ config('app.name') }}">
 </a>
 <hr>
-Congratulations, You are approved from admin and you can <b><a href="{{ config('app.url') }}/auth/signin">Login</a></b> to {{ config('app.name') }} now.
+
+Thank you for registering with us, your data will be reviewed within 72 hours.
 
 <br>
 <br>

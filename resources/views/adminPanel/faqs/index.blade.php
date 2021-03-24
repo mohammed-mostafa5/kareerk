@@ -13,7 +13,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i>
                         Faqs
-                        <a class="pull-right" href="{{ route('adminPanel.faqs.create') }}"><i class="fa fa-plus-square fa-lg"></i></a>
+                        <a class="pull-right" href="{{ route('adminPanel.faqs.create') }}"><i class="fa fa-plus-square fa-lg"></i> Create</a>
                     </div>
                     <div class="card-body">
                         @include('adminPanel.faqs.table')

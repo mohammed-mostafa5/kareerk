@@ -76,7 +76,7 @@
             </li>
             <li class="nav-item dropdown text-capitalize">
                 <a class="nav-link" style="margin-right: 3rem; font-size: 1.3rem" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    <b><i class="fa fa-angle-down mr-2"></i> {{ Auth::user()->name }}</b>
+                    <b> {{ Auth::user()->name }} <i class="fa fa-angle-down ml-2"></i></b>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
 
@@ -145,7 +145,9 @@
 <script type="text/javascript" language="javascript">
     $(document).ready( function () {
         table = $('.table').DataTable( {
-
+            language: {
+                searchPlaceholder: "Search in all fields"
+            },
         } );
 
     } );

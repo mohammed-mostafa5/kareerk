@@ -53,9 +53,9 @@ Route::get('languages', 'HomeController@languages');
 
 
 // Authenticated Routes
-Route::group(['middleware' => ['auth:api']], function () {
+Route::group(['middleware' => ['auth:api', 'logoutUser']], function () {
 
-    Route::post('logout', 'HomeController@logout');
+    Route::post('logout', 'HomeController@logout')->name('users.logout');
 
     Route::post('update-personal-information', 'HomeController@updatePersonalInformation');
     Route::post('update-password', 'HomeController@updatePassword');

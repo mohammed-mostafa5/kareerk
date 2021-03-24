@@ -35,7 +35,21 @@
                         @csrf
                         @method('patch')
                         @can('freelancers approve')
-                        <button type="submit" class="btn btn-primary btn-sm" {{$freelancer->status == 3 ? 'disabled': ''}}>Approve</button>
+                        <button type="submit" class="btn btn-primary btn-sm" {{$freelancer->status == 3 ? 'disabled': ''}}>{{$freelancer->status == 3 ? 'Approved': 'Approve'}}</button>
+                        @endcan
+                    </form>
+                    <form action="{{ route('adminPanel.users.deactivate', [$freelancer->user->id]) }}" method="post" class="d-inline">
+                        @csrf
+                        @method('patch')
+                        @can('users deactivate')
+                        <button type="submit" class="btn btn-danger btn-sm" {{$freelancer->user->status == 'Inactive' ? 'disabled': ''}}>{{$freelancer->user->status == 'Inactive' ? 'Deactivated': 'Deactivate'}}</button>
+                        @endcan
+                    </form>
+                    <form action="{{ route('adminPanel.users.activate', [$freelancer->user->id]) }}" method="post" class="d-inline">
+                        @csrf
+                        @method('patch')
+                        @can('users activate')
+                        <button type="submit" class="btn btn-success btn-sm" {{$freelancer->user->status == 'Active' ? 'disabled': ''}}>{{$freelancer->user->status == 'Active' ? 'Activated': 'Activate'}}</button>
                         @endcan
                     </form>
                 </td>

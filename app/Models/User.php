@@ -34,7 +34,8 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
         'email_verified_at',
         'subscription',
         'notification_count',
-        'approved_at'
+        'approved_at',
+        'status'
     ];
 
     /**

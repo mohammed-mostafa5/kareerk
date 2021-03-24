@@ -92,4 +92,20 @@ class UserController extends AppBaseController
 
         return view('adminPanel.transactions.index', compact('transactions'));
     }
+
+    public function deactivate($id)
+    {
+        $user = User::find($id);
+        $user->update(['status' => 0]);
+
+        return back();
+    }
+
+    public function activate($id)
+    {
+        $user = User::find($id);
+        $user->update(['status' => 1]);
+
+        return back();
+    }
 }
