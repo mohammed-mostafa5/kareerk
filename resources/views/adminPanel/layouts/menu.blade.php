@@ -1,3 +1,10 @@
+<li class="nav-item {{ Request::is('/') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('adminPanel.dashboard') }}">
+        <i class="nav-icon icon-home "></i>
+        <strong>Dashboard</strong>
+    </a>
+</li>
+
 {{--////////// Users ////////////--}}
 <div class="accordion" id="accordionUsers">
     <div class="card bg-dark m-0">

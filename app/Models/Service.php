@@ -119,7 +119,7 @@ class Service extends Model
 
                 $this->originalImage($file, $fileName);
 
-                $this->thumbImage($file, $fileName, 182, 182);
+                $this->thumbImage($file, $fileName, 190, 275);
 
                 $this->attributes['photo'] = $fileName;
             }

@@ -2,7 +2,7 @@
 <!-- Photo Field -->
 <div class="form-group show">
     {!! Form::label('photo', __('models/freelancers.fields.photo').':') !!}
-    <img src="{{ $freelancer->photo }}" alt="{{$freelancer->name}}">
+    <img src="{{ $freelancer->thumbnail_path }}" alt="{{$freelancer->name}}">
 </div>
 @endif
 

@@ -1,8 +1,8 @@
 <?php
 
 return array(
-    'singular' => 'CareerRequest',
-    'plural' => 'CareerRequests',
+    'singular' => 'Career Request',
+    'plural' => 'Career Requests',
     'fields' =>
     array(
         'id' => 'Id',

@@ -56,7 +56,8 @@
         </button>
         <a class="navbar-brand" href="{{route('adminPanel.dashboard')}}">
             @if ($settings->where('key', 'theme')->first()->value == 'wordpress')
-            {{config('app.name')}}
+            {{-- {{config('app.name')}} --}}
+            <img src="{{asset('logo.png')}}" alt="{{config('app.name')}}">
             @else
             <img class="navbar-brand-full" src="{{$settings->where('key', 'theme')->first()->value == 'wordpress' ? config('app.name') : asset('uploads/images/original/'.$settings->where('key', 'logo')->first()->value ) }}" width="120" height="50" alt="{{$settings->where('key', 'site_name')->first()->value}}">
             @endif
@@ -74,8 +75,8 @@
             <li class="nav-item d-md-down-none">
             </li>
             <li class="nav-item dropdown text-capitalize">
-                <a class="nav-link" style="margin-right: 10px" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    {{ Auth::user()->name }}
+                <a class="nav-link" style="margin-right: 3rem; font-size: 1.3rem" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <b><i class="fa fa-angle-down mr-2"></i> {{ Auth::user()->name }}</b>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
 

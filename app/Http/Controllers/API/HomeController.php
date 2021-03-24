@@ -309,6 +309,15 @@ class HomeController extends Controller
         return response()->json(compact('freelancers'));
     }
 
+    public function landingPageSearchAutoComplete()
+    {
+        $subServices = Service::whereNotNull('parent_id')->get()->pluck('name')->toArray();
+        $skills = Skill::get()->pluck('name')->toArray();
+        $data = array_merge($subServices, $skills);
+
+        return response()->json(compact('data'));
+    }
+
     public function pages($id)
     {
         $page = Page::with('paragraph', 'image')->find($id);
@@ -584,6 +593,8 @@ class HomeController extends Controller
                 'degree'        => $education->degree,
                 'from_date'     => $education->from_date,
                 'to_date'       => $education->to_date,
+                // 'file'          => $education->file,
+                'link'          => $education->link,
                 'description'   => $education->description,
             ]);
         }
@@ -616,6 +627,8 @@ class HomeController extends Controller
                 'from_date'     => $employment->from_date,
                 'to_date'       => $toDate,
                 'description'   => $employment->description,
+                // 'file'          => $employment->file,
+                'link'          => $employment->link,
                 'still_working' => $employment->still_working,
             ]);
         }
@@ -678,6 +691,8 @@ class HomeController extends Controller
         $request->validate([
             'photo' => 'required',
         ]);
+
+
 
         $step = $freelancer->step == 9 ? 9 : 8;
 

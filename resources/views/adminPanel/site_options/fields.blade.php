@@ -1,18 +1,18 @@
 <!-- Job Fees Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('job_fees', __('models/siteOptions.fields.job_fees').':') !!}
+    {!! Form::label('job_fees', __('models/siteOptions.fields.job_fees').' ( $ ) :') !!}
     {!! Form::number('job_fees', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Featured Fees Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('featured_fees', __('models/siteOptions.fields.featured_fees').':') !!}
+    {!! Form::label('featured_fees', __('models/siteOptions.fields.featured_fees').' ( $ ) :') !!}
     {!! Form::number('featured_fees', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Milestone Percentage Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('milestone_percentage', __('models/siteOptions.fields.milestone_percentage').':') !!}
+    {!! Form::label('milestone_percentage', __('models/siteOptions.fields.milestone_percentage').' ( % ) :') !!}
     {!! Form::number('milestone_percentage', null, ['class' => 'form-control']) !!}
 </div>
 

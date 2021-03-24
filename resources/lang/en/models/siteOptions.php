@@ -1,8 +1,8 @@
 <?php
 
 return array(
-    'singular' => 'SiteOption',
-    'plural' => 'SiteOptions',
+    'singular' => 'Site Option',
+    'plural' => 'Site Options',
     'fields' =>
     array(
         'id' => 'ID',

@@ -84,7 +84,7 @@ class Slider extends Model
 
                 $this->originalImage($file, $fileName);
 
-                $this->thumbImage($file, $fileName, 1920, 358);
+                $this->thumbImage($file, $fileName, 1200, 450);
 
                 $this->attributes['photo'] = $fileName;
             } catch (\Throwable $th) {

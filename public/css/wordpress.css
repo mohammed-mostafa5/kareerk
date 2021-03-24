@@ -52,10 +52,10 @@ body {
 
 @media (min-width: 992px) {
     .header-fixed .app-body {
-        margin-top: 40px;
+        margin-top: 55px;
     }
     .sidebar-fixed .app-header+.app-body .sidebar {
-        height: calc(100vh - 40px);
+        height: calc(100vh - 55px);
     }
 }
 
@@ -120,8 +120,8 @@ main.main {
 header.app-header.navbar {
     background-color: #23282D;
     color: #fff;
-    height: 40px;
-    flex: 0 0 40px;
+    height: 55px;
+    flex: 0 0 55px;
     border-bottom: 0;
 }
 
@@ -148,7 +148,7 @@ header.app-header.navbar a:hover {
 }
 
 .app-header .navbar-brand {
-    height: 40px;
+    height: 55px;
 }
 
 input.form-control.form-control-sm,

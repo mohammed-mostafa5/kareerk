@@ -22,6 +22,8 @@ class JobFiles extends Model
 
     public static $rules = [];
 
+
+
     public function setFileAttribute($file)
     {
         if ($file) {
@@ -33,8 +35,6 @@ class JobFiles extends Model
             $this->attributes['file'] = $fileName;
         }
     }
-
-
 
     public function getFileAttribute($val)
     {

@@ -68,6 +68,8 @@ class CreateFreelancersTable extends Migration
             $table->string('degree')->nullable();
             $table->string('from_date')->nullable();
             $table->string('to_date')->nullable();
+            $table->string('file')->nullable();
+            $table->string('link')->nullable();
             $table->text('description')->nullable();
 
             $table->foreign('freelancer_id')->references('id')->on('freelancers')->onDelete('cascade');
@@ -82,6 +84,8 @@ class CreateFreelancersTable extends Migration
             $table->string('title')->nullable();
             $table->string('from_date');
             $table->string('to_date')->nullable();
+            $table->string('file')->nullable();
+            $table->string('link')->nullable();
             $table->text('description')->nullable();
             $table->unsignedTinyInteger('still_working')->comment('0 => No, 1 => Yes');
 

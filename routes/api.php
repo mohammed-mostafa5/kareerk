@@ -40,6 +40,7 @@ Route::post('newsletter', 'HomeController@newsletter');
 
 Route::get('landing-page', 'HomeController@landingPage');
 Route::get('landing-page-search', 'HomeController@landingPageSearch');
+Route::get('landing-page-search-autocomplete', 'HomeController@landingPageSearchAutoComplete');
 Route::get('services', 'HomeController@services');
 Route::get('service/{id}', 'HomeController@service');
 Route::get('freelancers', 'HomeController@freelancers');

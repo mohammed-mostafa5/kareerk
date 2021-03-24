@@ -47,7 +47,7 @@ class Freelancer extends Model
 
 
 
-
+    protected $appends = ['is_featured', 'photo_path', 'thumbnail_path'];
 
     public function setPhotoAttribute($file)
     {
@@ -57,19 +57,23 @@ class Freelancer extends Model
 
             $this->originalImage($file, $fileName);
 
-            $this->thumbImage($file, $fileName);
+            $this->thumbImage($file, $fileName, 180, 180);
 
             $this->attributes['photo'] = $fileName;
         }
     }
 
-
-
-    public function getPhotoAttribute($val)
+    public function getPhotoPathAttribute()
     {
-
-        return $val ? asset('uploads/images/original') . '/' . $val : null;
+        return $this->photo ? asset('uploads/images/original/' . $this->photo) : null;
     }
+
+    public function getThumbnailPathAttribute()
+    {
+        return $this->photo ? asset('uploads/images/thumbnail/' . $this->photo) : null;
+    }
+
+
 
     #################################################################################
     ################################### Relations ###################################
@@ -119,7 +123,7 @@ class Freelancer extends Model
 
     ######################################################################
 
-    protected $appends = ['is_featured'];
+
 
     public function getIsFeaturedAttribute()
     {
