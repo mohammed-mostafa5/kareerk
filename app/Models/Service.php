@@ -28,6 +28,7 @@ class Service extends Model
         'parent_id',
         'photo',
         'icon',
+        'cover',
         'status',
         'in_home'
     ];
@@ -58,6 +59,7 @@ class Service extends Model
         $rules['status'] = 'required|in:0,1';
         $rules['photo'] = '';
         $rules['icon'] = '';
+        $rules['cover'] = '';
 
         return $rules;
     }
@@ -78,6 +80,11 @@ class Service extends Model
     public function getThumbnailPathAttribute()
     {
         return $this->photo ? asset('uploads/images/thumbnail/' . $this->photo) : null;
+    }
+
+    public function getCoverAttribute()
+    {
+        return $this->cover ? asset('uploads/images/original/' . $this->cover) : null;
     }
 
 
@@ -125,6 +132,24 @@ class Service extends Model
             }
         } catch (\Throwable $th) {
             $this->attributes['photo'] = $file;
+        }
+    }
+
+    public function setCoverAttribute($file)
+    {
+        try {
+            if ($file) {
+
+                $fileName = $this->createFileName($file);
+
+                $this->originalImage($file, $fileName);
+
+                $this->thumbImage($file, $fileName, 190, 275);
+
+                $this->attributes['cover'] = $fileName;
+            }
+        } catch (\Throwable $th) {
+            $this->attributes['cover'] = $file;
         }
     }
 

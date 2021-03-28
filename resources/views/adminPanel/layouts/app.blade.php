@@ -15,18 +15,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@icon/coreui-icons-free@1.0.1-alpha.1/coreui-icons-free.css">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-
     <link href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" rel="stylesheet">
-
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.3.0/css/flag-icon.min.css">
     <link href='{{ asset('vendor/choosen/css/chosen.min.css') }}' rel='stylesheet' type='text/css'>
     <script src="https://cdn.ckeditor.com/4.12.1/full/ckeditor.js"></script>
 
-
     <link rel="stylesheet" href="{{ asset('css/bootstrap-iconpicker.min.css') }}">
-
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
     {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> --}}
@@ -67,7 +63,7 @@
             <img class="navbar-brand-minimized" src="{{ asset('uploads/images/original/'.$settings->where('key', 'logo')->first()->value) }}" width="30" height="30" alt="{{$settings->where('key', 'site_name')->first()->value}}">
             @endif
         </a>
-        <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button" data-toggle="sidebar-lg-show">
+        <button class="navbar-toggler sidebar-toggler d-md-down-none ml-4" type="button" data-toggle="sidebar-lg-show">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -80,7 +76,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
 
-                    <a class="dropdown-item" href="/" target="/">
+                    <a class="dropdown-item" href="{{config('app.url')}}" target="/">
                         <i class="fa fa-eye"></i> @lang('auth.app.view_site')
                     </a>
                     @can('siteOptions view')
@@ -130,17 +126,12 @@
 <script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@2.1.16/dist/js/coreui.min.js"></script>
 
-
 <script src='{{ asset('vendor/choosen/js/chosen.jquery.min.js') }}'></script>
 <script>
     $(".chosen-select").chosen({no_results_text: "Oops, nothing found!"});
 </script>
 <script src='{{ asset('vendor/customs/js/dynamic-form-fields.js') }}'></script>
-
-
-
 <script src="{{ asset('js/bootstrap-iconpicker.bundle.min.js')}}"></script>
-
 
 <script type="text/javascript" language="javascript">
     $(document).ready( function () {
@@ -152,7 +143,6 @@
 
     } );
 </script>
-
 
 @yield('scripts')
 

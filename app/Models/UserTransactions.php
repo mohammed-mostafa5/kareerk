@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use App\Helpers\ImageUploaderTrait;
 use Eloquent as Model;
+use App\Helpers\ImageUploaderTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 
 class UserTransactions extends Model
@@ -63,5 +64,10 @@ class UserTransactions extends Model
                 return 'Unknown Transaction';
                 break;
         }
+    }
+
+    public function getCreatedAtAttribute()
+    {
+        return \Carbon\Carbon::parse($this->attributes['created_at'])->diffForHumans();
     }
 }

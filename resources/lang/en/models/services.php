@@ -8,6 +8,7 @@ return array(
         'id' => 'ID',
         'parent' => 'Parent',
         'photo' => 'Photo',
+        'cover' => 'Cover',
         'name' => 'Name',
         'description' => 'Description',
         'status'  => 'Status',

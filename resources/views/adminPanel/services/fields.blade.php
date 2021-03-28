@@ -52,6 +52,19 @@
         {!! Form::file('photo',['class' => 'form-control']) !!}
     </div>
 
+    <!-- cover Field -->
+    <div class="form-group col-sm-6">
+        @if (isset($service->cover))
+        <img src="{{$service->cover}}" alt="" width="200" class="image-thumbnail">
+
+        <div class="clearfix"></div>
+        <br>
+        @endif
+
+        {!! Form::label('cover', __('models/services.fields.cover').':') !!}
+        {!! Form::file('cover',['class' => 'form-control']) !!}
+    </div>
+
     <!-- icon Field -->
     <div class="form-group col-sm-6">
         {!! Form::label('icon', 'Icon :') !!}
