@@ -56,7 +56,6 @@
     <div class="form-group col-sm-6">
         @if (isset($service->cover))
         <img src="{{$service->cover}}" alt="" width="200" class="image-thumbnail">
-
         <div class="clearfix"></div>
         <br>
         @endif

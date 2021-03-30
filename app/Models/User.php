@@ -6,6 +6,7 @@ use App\Helpers\ImageUploaderTrait;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\PasswordReset;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -171,5 +172,25 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     public function scopeActive($query)
     {
         return $query->where('status', 1);
+    }
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new PasswordReset($token));
     }
 }

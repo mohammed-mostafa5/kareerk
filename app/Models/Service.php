@@ -84,7 +84,8 @@ class Service extends Model
 
     public function getCoverAttribute()
     {
-        return $this->cover ? asset('uploads/images/original/' . $this->cover) : null;
+
+        return $this->attributes['cover'] ? asset('uploads/images/original/' . $this->attributes['cover']) : null;
     }
 
 

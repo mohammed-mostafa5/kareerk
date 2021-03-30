@@ -1,7 +1,18 @@
+@if (isset($service->photo))
 <!-- Photo Field -->
 <div class="form-group">
+    <label for="photo">Photo: </label>
     <img src="{{ $service->photo_path }}" alt="{{ $service->name }}" class="image-thumbnail" width="300">
 </div>
+@endif
+
+@if (isset($service->cover))
+<!-- cover Field -->
+<div class="form-group">
+    <label for="cover">Cover: </label>
+    <img src="{{ $service->cover}}" alt="{{ $service->name }}" class="image-thumbnail" width="300">
+</div>
+@endif
 
 <!-- Status Field -->
 <div class="form-group show">
